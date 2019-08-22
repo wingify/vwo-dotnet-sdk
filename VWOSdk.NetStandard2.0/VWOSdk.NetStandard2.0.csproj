@@ -1,0 +1,93 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <OutputType>Library</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>VWOSdk</RootNamespace>
+    <AssemblyName>VWOSdk</AssemblyName>
+    <ProjectGuid>{c593ccfb-3410-46e0-860c-e6814c4e7e06}</ProjectGuid>
+    <OutputType>Library</OutputType>
+    <TargetFramework>netstandard2.0</TargetFramework>
+    <PackageId>VWO.Sdk</PackageId>
+    <Version>0.1.0</Version>
+    <Authors>Sidhant Gakhar, Varun Malhotra</Authors>
+    <Company>Wingify</Company>
+    <Product>VWO</Product>
+    <Copyright>Wingify Pvt. Ltd.</Copyright>
+    <Description>VWO .NET SDK for server-side A/B Testing</Description>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <GenerateDocumentationFile>true</GenerateDocumentationFile>
+    <NuGetPackageImportStamp>
+    </NuGetPackageImportStamp>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <Compile Include="..\VWOSdk\Contract\ILogWriter.cs" Link="Contract\ILogWriter.cs" />
+    <Compile Include="..\VWOSdk\Contract\IUserProfileService.cs" Link="Contract\IUserProfileService.cs" />
+    <Compile Include="..\VWOSdk\Contract\IVWOClient.cs" Link="Contract\IVWOClient.cs" />
+    <Compile Include="..\VWOSdk\Core\VWOClient.cs" Link="Core\VWOClient.cs" />
+    <Compile Include="..\VWOSdk\Internal\Adapter\UserProfileAdapter.cs" Link="Internal\Adapter\UserProfileAdapter.cs" />
+    <Compile Include="..\VWOSdk\Internal\ApiCaller\ApiCaller.cs" Link="Internal\ApiCaller\ApiCaller.cs" />
+    <Compile Include="..\VWOSdk\Internal\ApiCaller\ApiRequest.cs" Link="Internal\ApiCaller\ApiRequest.cs" />
+    <Compile Include="..\VWOSdk\Internal\ApiVerb\ServerSideVerb.cs" Link="Internal\ApiVerb\ServerSideVerb.cs" />
+    <Compile Include="..\VWOSdk\Internal\Constants.cs" Link="Internal\Constants.cs" />
+    <Compile Include="..\VWOSdk\Internal\Context\AppContext.cs" Link="Internal\Context\AppContext.cs" />
+    <Compile Include="..\VWOSdk\Internal\Contract\IApiCaller.cs" Link="Internal\ApiCaller\IApiCaller.cs" />
+    <Compile Include="..\VWOSdk\Internal\Contract\ICampaignAllocator.cs" Link="Internal\Contract\ICampaignAllocator.cs" />
+    <Compile Include="..\VWOSdk\Internal\Contract\ISettingsProcessor.cs" Link="Internal\Contract\ISettingsProcessor.cs" />
+    <Compile Include="..\VWOSdk\Internal\Contract\IUserHasher.cs" Link="Internal\Contract\IUserHasher.cs" />
+    <Compile Include="..\VWOSdk\Internal\Contract\IVariationAllocator.cs" Link="Internal\Contract\IVariationAllocator.cs" />
+    <Compile Include="..\VWOSdk\Internal\Core\CampaignResolver.cs" Link="Internal\Core\CampaignResolver.cs" />
+    <Compile Include="..\VWOSdk\Internal\Core\Murmur32Hasher.cs" Link="Internal\Core\Murmur32Hasher.cs" />
+    <Compile Include="..\VWOSdk\Internal\Core\SettingsProcessor.cs" Link="Internal\Core\SettingsProcessor.cs" />
+    <Compile Include="..\VWOSdk\Internal\Core\VariationAllocator.cs" Link="Internal\Core\VariationAllocator.cs" />
+    <Compile Include="..\VWOSdk\Internal\Extension\Extensions.cs" Link="Internal\Extension\Extensions.cs" />
+    <Compile Include="..\VWOSdk\Internal\Helper\AsyncHelper.cs" Link="Internal\Helper\AsyncHelper.cs" />
+    <Compile Include="..\VWOSdk\Internal\Helper\UuidV5Helper.cs" Link="Internal\Helper\UuidV5Helper.cs" />
+    <Compile Include="..\VWOSdk\Internal\InternalVisibleToVwoTests.cs" Link="Internal\InternalVisibleToVwoTests.cs" />
+    <Compile Include="..\VWOSdk\Internal\Model\AccountSettings.cs" Link="Internal\Model\AccountSettings.cs" />
+    <Compile Include="..\VWOSdk\Internal\Model\BucketedCampaign.cs" Link="Internal\Model\BucketedCampaign.cs" />
+    <Compile Include="..\VWOSdk\Internal\Model\RangeBucket.cs" Link="Internal\Model\RangeBucket.cs" />
+    <Compile Include="..\VWOSdk\Internal\Model\UserAllocationInfo.cs" Link="Internal\Model\UserAllocationInfo.cs" />
+    <Compile Include="..\VWOSdk\Internal\Model\WeightRange.cs" Link="Internal\Model\WeightRange.cs" />
+    <Compile Include="..\VWOSdk\Internal\Validator\Validator.cs" Link="Internal\Validator\Validator.cs" />
+    <Compile Include="..\VWOSdk\Logger\DefaultLogWriter.cs" Link="Logger\DefaultLogWriter.cs" />
+    <Compile Include="..\VWOSdk\Logger\Log.cs" Link="Logger\Log.cs" />
+    <Compile Include="..\VWOSdk\Logger\LogLevel.cs" Link="Logger\LogLevel.cs" />
+    <Compile Include="..\VWOSdk\Logger\Messages\LogDebugMessage.cs" Link="Logger\Messages\LogDebugMessage.cs" />
+    <Compile Include="..\VWOSdk\Logger\Messages\LogErrorMessage.cs" Link="Logger\Messages\LogErrorMessage.cs" />
+    <Compile Include="..\VWOSdk\Logger\Messages\LogInfoMessage.cs" Link="Logger\Messages\LogInfoMessage.cs" />
+    <Compile Include="..\VWOSdk\Logger\Messages\LogWarningMessage.cs" Link="Logger\Messages\LogWarningMessage.cs" />
+    <Compile Include="..\VWOSdk\Model\Campaign.cs" Link="Model\Campaign.cs" />
+    <Compile Include="..\VWOSdk\Model\Changes.cs" Link="Model\Changes.cs" />
+    <Compile Include="..\VWOSdk\Model\Goal.cs" Link="Model\Goal.cs" />
+    <Compile Include="..\VWOSdk\Model\Settings.cs" Link="Model\Settings.cs" />
+    <Compile Include="..\VWOSdk\Model\UserProfileMap.cs" Link="Model\UserProfileMap.cs" />
+    <Compile Include="..\VWOSdk\Model\Variation.cs" Link="Model\Variation.cs" />
+    <Compile Include="..\VWOSdk\VWO.cs" Link="VWO.cs" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <PackageReference Include="Identifiable" Version="4.0.0" />
+    <PackageReference Include="murmurhash" Version="1.0.3" />
+    <PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <Folder Include="Contract\" />
+    <Folder Include="Core\" />
+    <Folder Include="Internal\Adapter\" />
+    <Folder Include="Internal\ApiCaller\" />
+    <Folder Include="Internal\ApiVerb\" />
+    <Folder Include="Internal\Context\" />
+    <Folder Include="Internal\Contract\" />
+    <Folder Include="Internal\Core\" />
+    <Folder Include="Internal\Extension\" />
+    <Folder Include="Internal\Helper\" />
+    <Folder Include="Internal\Model\" />
+    <Folder Include="Internal\Validator\" />
+    <Folder Include="Logger\Messages\" />
+    <Folder Include="Model\" />
+  </ItemGroup>
+
+</Project>

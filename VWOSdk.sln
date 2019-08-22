@@ -1,0 +1,160 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio 15
+VisualStudioVersion = 15.0.28010.2048
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VWOSdk.NetStandard2.0", "VWOSdk.NetStandard2.0\VWOSdk.NetStandard2.0.csproj", "{928D8559-FDD6-46AE-B8C6-D610817EF852}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "VWOSdk.Tests", "VWOSdk.Tests\VWOSdk.Tests.csproj", "{52157161-09DC-4126-A721-638427DF718D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "VWOSdk", "VWOSdk", "{33575DDF-5934-4C6C-955B-CD318311751D}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\VWO.cs = VWOSdk\VWO.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contract", "Contract", "{6B93D7AD-D8EE-43C7-9D66-352C0286219F}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Contract\ILogWriter.cs = VWOSdk\Contract\ILogWriter.cs
+		VWOSdk\Contract\IUserProfileService.cs = VWOSdk\Contract\IUserProfileService.cs
+		VWOSdk\Contract\IVWOClient.cs = VWOSdk\Contract\IVWOClient.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{D74E276D-E13D-4AAE-869E-2B51898DB99F}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Core\VWOClient.cs = VWOSdk\Core\VWOClient.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Internal", "Internal", "{928E8F43-4BA9-485F-850C-E41D69A5E3D5}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Internal\Constants.cs = VWOSdk\Internal\Constants.cs
+		VWOSdk\Internal\InternalVisibleToVwoTests.cs = VWOSdk\Internal\InternalVisibleToVwoTests.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Logger", "Logger", "{5A6B6B8E-8C1E-4EDB-A8EB-76D7BF8B94E8}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Logger\DefaultLogWriter.cs = VWOSdk\Logger\DefaultLogWriter.cs
+		VWOSdk\Logger\Log.cs = VWOSdk\Logger\Log.cs
+		VWOSdk\Logger\LogLevel.cs = VWOSdk\Logger\LogLevel.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Model", "Model", "{445B9720-FF8B-4FB0-854A-EB94A9364AAB}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Model\Campaign.cs = VWOSdk\Model\Campaign.cs
+		VWOSdk\Model\Changes.cs = VWOSdk\Model\Changes.cs
+		VWOSdk\Model\Goal.cs = VWOSdk\Model\Goal.cs
+		VWOSdk\Model\Settings.cs = VWOSdk\Model\Settings.cs
+		VWOSdk\Model\UserProfileMap.cs = VWOSdk\Model\UserProfileMap.cs
+		VWOSdk\Model\Variation.cs = VWOSdk\Model\Variation.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Validator", "Validator", "{C837F07F-DE8C-481F-A113-9D13245D9568}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Internal\Validator\Validator.cs = VWOSdk\Internal\Validator\Validator.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Model", "Model", "{D5AACA6D-F234-41E9-BF9E-0ECDE09992B4}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Internal\Model\AccountSettings.cs = VWOSdk\Internal\Model\AccountSettings.cs
+		VWOSdk\Internal\Model\BucketedCampaign.cs = VWOSdk\Internal\Model\BucketedCampaign.cs
+		VWOSdk\Internal\Model\RangeBucket.cs = VWOSdk\Internal\Model\RangeBucket.cs
+		VWOSdk\Internal\Model\UserAllocationInfo.cs = VWOSdk\Internal\Model\UserAllocationInfo.cs
+		VWOSdk\Internal\Model\WeightRange.cs = VWOSdk\Internal\Model\WeightRange.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Helper", "Helper", "{FD18E733-3D28-4133-9910-6F527A2D9237}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Internal\Helper\AsyncHelper.cs = VWOSdk\Internal\Helper\AsyncHelper.cs
+		VWOSdk\Internal\Helper\UuidV5Helper.cs = VWOSdk\Internal\Helper\UuidV5Helper.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Extension", "Extension", "{915D5A13-BFD1-44C1-B653-861403144DC0}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Internal\Extension\Extensions.cs = VWOSdk\Internal\Extension\Extensions.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{F183B819-93F8-4EBB-A92E-3F2146D8C6BE}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Internal\Core\CampaignResolver.cs = VWOSdk\Internal\Core\CampaignResolver.cs
+		VWOSdk\Internal\Core\Murmur32Hasher.cs = VWOSdk\Internal\Core\Murmur32Hasher.cs
+		VWOSdk\Internal\Core\SettingsProcessor.cs = VWOSdk\Internal\Core\SettingsProcessor.cs
+		VWOSdk\Internal\Core\VariationAllocator.cs = VWOSdk\Internal\Core\VariationAllocator.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Context", "Context", "{5491FFA9-0716-4E8A-9240-C4037D5EF13A}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Internal\Context\AppContext.cs = VWOSdk\Internal\Context\AppContext.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiVerb", "ApiVerb", "{21608572-D724-494B-9655-75B03A194BD6}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Internal\ApiVerb\ServerSideVerb.cs = VWOSdk\Internal\ApiVerb\ServerSideVerb.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiCaller", "ApiCaller", "{DD625CEB-809B-40C8-9D45-24ED101E2B40}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Internal\ApiCaller\ApiCaller.cs = VWOSdk\Internal\ApiCaller\ApiCaller.cs
+		VWOSdk\Internal\ApiCaller\ApiRequest.cs = VWOSdk\Internal\ApiCaller\ApiRequest.cs
+		VWOSdk\Internal\Contract\IApiCaller.cs = VWOSdk\Internal\Contract\IApiCaller.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapter", "Adapter", "{24BA6D73-DCBA-47C4-AE09-2343B6A07AA9}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Internal\Adapter\UserProfileAdapter.cs = VWOSdk\Internal\Adapter\UserProfileAdapter.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contract", "Contract", "{F8250854-614D-4327-A051-9046FAB459F2}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Internal\Contract\ICampaignAllocator.cs = VWOSdk\Internal\Contract\ICampaignAllocator.cs
+		VWOSdk\Internal\Contract\ISettingsProcessor.cs = VWOSdk\Internal\Contract\ISettingsProcessor.cs
+		VWOSdk\Internal\Contract\IUserHasher.cs = VWOSdk\Internal\Contract\IUserHasher.cs
+		VWOSdk\Internal\Contract\IVariationAllocator.cs = VWOSdk\Internal\Contract\IVariationAllocator.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messages", "Messages", "{0FF99BC4-91B0-4E52-B8A7-DE7D5A16609F}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Logger\Messages\LogDebugMessage.cs = VWOSdk\Logger\Messages\LogDebugMessage.cs
+		VWOSdk\Logger\Messages\LogErrorMessage.cs = VWOSdk\Logger\Messages\LogErrorMessage.cs
+		VWOSdk\Logger\Messages\LogInfoMessage.cs = VWOSdk\Logger\Messages\LogInfoMessage.cs
+		VWOSdk\Logger\Messages\LogWarningMessage.cs = VWOSdk\Logger\Messages\LogWarningMessage.cs
+	EndProjectSection
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{928D8559-FDD6-46AE-B8C6-D610817EF852}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{928D8559-FDD6-46AE-B8C6-D610817EF852}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{928D8559-FDD6-46AE-B8C6-D610817EF852}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{928D8559-FDD6-46AE-B8C6-D610817EF852}.Release|Any CPU.Build.0 = Release|Any CPU
+		{52157161-09DC-4126-A721-638427DF718D}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{52157161-09DC-4126-A721-638427DF718D}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{52157161-09DC-4126-A721-638427DF718D}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{52157161-09DC-4126-A721-638427DF718D}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{6B93D7AD-D8EE-43C7-9D66-352C0286219F} = {33575DDF-5934-4C6C-955B-CD318311751D}
+		{D74E276D-E13D-4AAE-869E-2B51898DB99F} = {33575DDF-5934-4C6C-955B-CD318311751D}
+		{928E8F43-4BA9-485F-850C-E41D69A5E3D5} = {33575DDF-5934-4C6C-955B-CD318311751D}
+		{5A6B6B8E-8C1E-4EDB-A8EB-76D7BF8B94E8} = {33575DDF-5934-4C6C-955B-CD318311751D}
+		{445B9720-FF8B-4FB0-854A-EB94A9364AAB} = {33575DDF-5934-4C6C-955B-CD318311751D}
+		{C837F07F-DE8C-481F-A113-9D13245D9568} = {928E8F43-4BA9-485F-850C-E41D69A5E3D5}
+		{D5AACA6D-F234-41E9-BF9E-0ECDE09992B4} = {928E8F43-4BA9-485F-850C-E41D69A5E3D5}
+		{FD18E733-3D28-4133-9910-6F527A2D9237} = {928E8F43-4BA9-485F-850C-E41D69A5E3D5}
+		{915D5A13-BFD1-44C1-B653-861403144DC0} = {928E8F43-4BA9-485F-850C-E41D69A5E3D5}
+		{F183B819-93F8-4EBB-A92E-3F2146D8C6BE} = {928E8F43-4BA9-485F-850C-E41D69A5E3D5}
+		{5491FFA9-0716-4E8A-9240-C4037D5EF13A} = {928E8F43-4BA9-485F-850C-E41D69A5E3D5}
+		{21608572-D724-494B-9655-75B03A194BD6} = {928E8F43-4BA9-485F-850C-E41D69A5E3D5}
+		{DD625CEB-809B-40C8-9D45-24ED101E2B40} = {928E8F43-4BA9-485F-850C-E41D69A5E3D5}
+		{24BA6D73-DCBA-47C4-AE09-2343B6A07AA9} = {928E8F43-4BA9-485F-850C-E41D69A5E3D5}
+		{F8250854-614D-4327-A051-9046FAB459F2} = {928E8F43-4BA9-485F-850C-E41D69A5E3D5}
+		{0FF99BC4-91B0-4E52-B8A7-DE7D5A16609F} = {5A6B6B8E-8C1E-4EDB-A8EB-76D7BF8B94E8}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {5B99551F-3DD7-4543-A35D-8111AD62B9B1}
+	EndGlobalSection
+EndGlobal

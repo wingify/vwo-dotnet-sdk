@@ -1,0 +1,75 @@
+{
+  "sdkKey": "sampleSdkKey",
+  "campaigns": [
+    {
+      "goals": [
+        {
+          "identifier": "revenue-1",
+          "id": 1,
+          "type": "REVENUE_TRACKING"
+        }
+      ],
+      "variations": [
+        {
+          "id": 1,
+          "name": "Control-1",
+          "changes": {},
+          "weight": 20.99
+        },
+        {
+          "id": 2,
+          "name": "Variation-1",
+          "changes": {},
+          "weight": 26.55
+        },
+        {
+          "id": 3,
+          "name": "Variation-2",
+          "changes": {},
+          "weight": 36.54
+        },
+        {
+          "id": 4,
+          "name": "Variation-3",
+          "changes": {},
+          "weight": 15.92
+        }
+      ],
+      "id": 5,
+      "percentTraffic": 20,
+      "key": "NS-SDK-testCampaign-1",
+      "status": "RUNNING",
+      "type": "VISUAL_AB"
+    },
+    {
+      "goals": [
+        {
+          "identifier": "trackConversion-2",
+          "id": 200,
+          "type": "CUSTOM_GOAL"
+        }
+      ],
+      "variations": [
+        {
+          "id": 1,
+          "name": "Control",
+          "changes": {},
+          "weight": 50
+        },
+        {
+          "id": 2,
+          "name": "Variation-1",
+          "changes": {},
+          "weight": 50
+        }
+      ],
+      "id": 6,
+      "percentTraffic": 80,
+      "key": "Campaign-2",
+      "status": "RUNNING",
+      "type": "VISUAL_AB"
+    }
+  ],
+  "accountId": 123456,
+  "version": 1
+}
