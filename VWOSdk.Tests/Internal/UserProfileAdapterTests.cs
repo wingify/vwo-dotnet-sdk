@@ -42,8 +42,8 @@ namespace VWOSdk.Tests
             var result = userProfileServiceAdapter.GetUserMap(MockCampaignTestKey, MockUserId);
             Assert.Null(result);
 
-            mockUserProfileService.Verify(mock => mock.Lookup(It.IsAny<string>()), Times.Once);
-            mockUserProfileService.Verify(mock => mock.Lookup(It.Is<string>(val => MockUserId.Equals(val))), Times.Once);
+            mockUserProfileService.Verify(mock => mock.Lookup(It.IsAny<string>(), It.IsAny<string>()), Times.Once);
+            mockUserProfileService.Verify(mock => mock.Lookup(It.Is<string>(val => MockUserId.Equals(val)), It.Is<string>(val => MockCampaignTestKey.Equals(val))), Times.Once);
         }
 
         [Fact]

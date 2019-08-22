@@ -12,7 +12,7 @@ namespace VWOSdk.Tests
 
         internal static void SetupLookup(Mock<IUserProfileService> mockUserProfileService, UserProfileMap returnValue)
         {
-            mockUserProfileService.Setup(mock => mock.Lookup(It.IsAny<string>()))
+            mockUserProfileService.Setup(mock => mock.Lookup(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(returnValue);
         }
 
@@ -24,7 +24,7 @@ namespace VWOSdk.Tests
 
         internal static void SetupLookup(Mock<IUserProfileService> mockUserProfileService, Exception exception)
         {
-            mockUserProfileService.Setup(mock => mock.Lookup(It.IsAny<string>()))
+            mockUserProfileService.Setup(mock => mock.Lookup(It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(exception);
         }
     }

@@ -28,7 +28,7 @@ namespace VWOSdk
                 return null;
             }
 
-            UserProfileMap userMap = TryGetUserMap(userId);
+            UserProfileMap userMap = TryGetUserMap(userId, campaignTestKey);
 
             if (userMap == null || string.IsNullOrEmpty(userMap.CampaignTestKey)
                 || string.IsNullOrEmpty(userMap.VariationName) || string.IsNullOrEmpty(userMap.UserId)
@@ -48,12 +48,12 @@ namespace VWOSdk
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
-        private UserProfileMap TryGetUserMap(string userId)
+        private UserProfileMap TryGetUserMap(string userId, string campaignTestKey)
         {
             try
             {
                 LogInfoMessage.LookingUpUserProfileService(file, userId);
-                return this._userProfileService.Lookup(userId);
+                return this._userProfileService.Lookup(userId, campaignTestKey);
             }
             catch (Exception ex)
             {
