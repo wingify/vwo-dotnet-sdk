@@ -9,15 +9,15 @@ notifications:
     on_failure: always
 
 stages:
-  - name: 'NetStandard16'
-  - name: 'NetStandard2.2.101'
-  - name: 'NetStandard2.2.205'
-  - name: 'NetStandard2.2.301'
-  - name: 'NetStandard2.2.401'
+  - name: 'NetStandard-2.1.502'
+  - name: 'NetStandard-2.2.101'
+  - name: 'NetStandard-2.2.205'
+  - name: 'NetStandard-2.2.301'
+  - name: 'NetStandard-2.2.401'
 
 jobs:
   include:
-    - stage: 'NetStandard16'
+    - stage: 'NetStandard-2.1.502'
       language: csharp
       solution: VWOSdk.sln
       sudo: required
@@ -29,10 +29,18 @@ jobs:
       install:
       - dotnet restore
       script:
-      - dotnet build
-      - dotnet test
+        - dotnet build
+        - cd minicover && dotnet restore
+        - dotnet minicover instrument --workdir ../ --assemblies "VWOSdk.Tests/**/bin/**/*.dll" --sources  "VWOSdk/**/*.cs" --exclude-sources "VWOSdk.Tests/**/*.cs"
+        - dotnet minicover reset --workdir ../
+        - cd ..
+        - dotnet test --no-build ./VWOSdk.Tests/VWOSdk.Tests.csproj
+        - cd minicover
+        - dotnet minicover report --workdir ../ --threshold 95
+        - dotnet minicover coverallsreport --help
+        - dotnet minicover coverallsreport --root-path ../ --workdir ../ --service-name "travis-ci" --service-job-id "$TRAVIS_JOB_ID"
 
-    - stage: 'NetStandard2.2.101'
+    - stage: 'NetStandard-2.2.101'
       language: csharp
       solution: VWOSdk.sln
       sudo: required
@@ -44,10 +52,18 @@ jobs:
       install:
       - dotnet restore
       script:
-      - dotnet build
-      - dotnet test
+        - dotnet build
+        - cd minicover && dotnet restore
+        - dotnet minicover instrument --workdir ../ --assemblies "VWOSdk.Tests/**/bin/**/*.dll" --sources  "VWOSdk/**/*.cs" --exclude-sources "VWOSdk.Tests/**/*.cs"
+        - dotnet minicover reset --workdir ../
+        - cd ..
+        - dotnet test --no-build ./VWOSdk.Tests/VWOSdk.Tests.csproj
+        - cd minicover
+        - dotnet minicover report --workdir ../ --threshold 95
+        - dotnet minicover coverallsreport --help
+        - dotnet minicover coverallsreport --root-path ../ --workdir ../ --service-name "travis-ci" --service-job-id "$TRAVIS_JOB_ID"
 
-    - stage: 'NetStandard2.2.205'
+    - stage: 'NetStandard-2.2.205'
       language: csharp
       solution: VWOSdk.sln
       sudo: required
@@ -59,10 +75,18 @@ jobs:
       install:
       - dotnet restore
       script:
-      - dotnet build
-      - dotnet test
+        - dotnet build
+        - cd minicover && dotnet restore
+        - dotnet minicover instrument --workdir ../ --assemblies "VWOSdk.Tests/**/bin/**/*.dll" --sources  "VWOSdk/**/*.cs" --exclude-sources "VWOSdk.Tests/**/*.cs"
+        - dotnet minicover reset --workdir ../
+        - cd ..
+        - dotnet test --no-build ./VWOSdk.Tests/VWOSdk.Tests.csproj
+        - cd minicover
+        - dotnet minicover report --workdir ../ --threshold 95
+        - dotnet minicover coverallsreport --help
+        - dotnet minicover coverallsreport --root-path ../ --workdir ../ --service-name "travis-ci" --service-job-id "$TRAVIS_JOB_ID"
 
-    - stage: 'NetStandard2.2.301'
+    - stage: 'NetStandard-2.2.301'
       language: csharp
       solution: VWOSdk.sln
       sudo: required
@@ -74,10 +98,18 @@ jobs:
       install:
       - dotnet restore
       script:
-      - dotnet build
-      - dotnet test
+        - dotnet build
+        - cd minicover && dotnet restore
+        - dotnet minicover instrument --workdir ../ --assemblies "VWOSdk.Tests/**/bin/**/*.dll" --sources  "VWOSdk/**/*.cs" --exclude-sources "VWOSdk.Tests/**/*.cs"
+        - dotnet minicover reset --workdir ../
+        - cd ..
+        - dotnet test --no-build ./VWOSdk.Tests/VWOSdk.Tests.csproj
+        - cd minicover
+        - dotnet minicover report --workdir ../ --threshold 95
+        - dotnet minicover coverallsreport --help
+        - dotnet minicover coverallsreport --root-path ../ --workdir ../ --service-name "travis-ci" --service-job-id "$TRAVIS_JOB_ID"
 
-    - stage: 'NetStandard2.2.401'
+    - stage: 'NetStandard-2.2.401'
       language: csharp
       solution: VWOSdk.sln
       sudo: required
@@ -88,6 +120,15 @@ jobs:
         - linux
       install:
       - dotnet restore
+      - dotnet tool install coveralls.net --version 1.0.0 --tool-path tools
       script:
       - dotnet build
-      - dotnet test
+      - cd minicover && dotnet restore
+      - dotnet minicover instrument --workdir ../ --assemblies "VWOSdk.Tests/**/bin/**/*.dll" --sources  "VWOSdk/**/*.cs" --exclude-sources "VWOSdk.Tests/**/*.cs"
+      - dotnet minicover reset --workdir ../
+      - cd ..
+      - dotnet test --no-build ./VWOSdk.Tests/VWOSdk.Tests.csproj
+      - cd minicover
+      - dotnet minicover report --workdir ../ --threshold 95
+      - dotnet minicover coverallsreport --help
+      - dotnet minicover coverallsreport --root-path ../ --workdir ../ --service-name "travis-ci" --service-job-id "$TRAVIS_JOB_ID"

@@ -352,3 +352,9 @@ MigrationBackup/
 .ionide/
 
 .vscode/
+tools/
+.DS_STORE
+
+coverage-html
+coverage.json
+coverage.hits
