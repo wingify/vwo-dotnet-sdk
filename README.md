@@ -1,4 +1,7 @@
-# VWO NetStandard SDK
+# VWO .NET SDK
+
+[![NuGet](https://img.shields.io/nuget/v/VWO.Sdk.svg?style=plastic)](https://www.nuget.org/packages/VWO.Sdk/)
+[![Build Status](http://img.shields.io/travis/wingify/vwo-dotnet-sdk/master.svg?style=flat)](http://travis-ci.org/wingify/vwo-dotnet-sdk)
 
 This open source library allows you to A/B Test your Website at server-side.
 
@@ -45,7 +48,7 @@ VWO.Configure(LogLevel.DEBUG);
 **Implement and Configure Custom Logger** - implement your own logger class
 
 ```c#
-using Wingify.VWO.Sdk;
+using VWOSdk;
 
 public class CustomLogWriter : ILogWriter
 {
@@ -62,7 +65,7 @@ VWO.Configure(new CustomLogWriter());
 **User Profile Service**
 
 ```c#
-using Wingify.VWO.Sdk;
+using VWOSdk;
 
 public class UserProfileService : IUserProfileService
 {
@@ -97,7 +100,7 @@ dotnet test
 
 ## Demo NetStandard application
 
-[vwo-netstandard-sdk-example](https://gitlab.com/sidhant.gakhar/vwo-netstandard-sdk-example)
+[vwo-dotnet-sdk-example](https://github.com/wingify/vwo-dotnet-sdk-example)
 
 ## Credits
 
@@ -116,11 +119,11 @@ Projects which are published under Apache License 2.0 License:
 
 ## Contributing
 
-Please go through our [contributing guidelines](https://gitlab.com/sidhant.gakhar/vwo-netstandard-sdk/blob/develop/CONTRIBUTING.md)
+Please go through our [contributing guidelines](https://github.com/wingify/vwo-dotnet-sdk/CONTRIBUTING.md)
 
 ## Code of Conduct
 
-[Code of Conduct](https://gitlab.com/sidhant.gakhar/vwo-netstandard-sdk/blob/develop/CODE_OF_CONDUCT.md)
+[Code of Conduct](https://github.com/wingify/vwo-dotnet-sdk/blob/master/CODE_OF_CONDUCT.md)
 
 ## License
 

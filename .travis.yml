@@ -1,0 +1,93 @@
+language: minimal
+branches:
+  only:
+    - master
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
+
+stages:
+  - name: 'NetStandard16'
+  - name: 'NetStandard2.2.101'
+  - name: 'NetStandard2.2.205'
+  - name: 'NetStandard2.2.301'
+  - name: 'NetStandard2.2.401'
+
+jobs:
+  include:
+    - stage: 'NetStandard16'
+      language: csharp
+      solution: VWOSdk.sln
+      sudo: required
+      dist: trusty
+      dotnet: 2.1.502
+      mono: none
+      os:
+        - linux
+      install:
+      - dotnet restore
+      script:
+      - dotnet build
+      - dotnet test
+
+    - stage: 'NetStandard2.2.101'
+      language: csharp
+      solution: VWOSdk.sln
+      sudo: required
+      dist: xenial
+      dotnet: 2.2.101
+      mono: none
+      os:
+        - linux
+      install:
+      - dotnet restore
+      script:
+      - dotnet build
+      - dotnet test
+
+    - stage: 'NetStandard2.2.205'
+      language: csharp
+      solution: VWOSdk.sln
+      sudo: required
+      dist: xenial
+      dotnet: 2.2.205
+      mono: none
+      os:
+        - linux
+      install:
+      - dotnet restore
+      script:
+      - dotnet build
+      - dotnet test
+
+    - stage: 'NetStandard2.2.301'
+      language: csharp
+      solution: VWOSdk.sln
+      sudo: required
+      dist: xenial
+      dotnet: 2.2.301
+      mono: none
+      os:
+        - linux
+      install:
+      - dotnet restore
+      script:
+      - dotnet build
+      - dotnet test
+
+    - stage: 'NetStandard2.2.401'
+      language: csharp
+      solution: VWOSdk.sln
+      sudo: required
+      dist: xenial
+      dotnet: 2.2.401
+      mono: none
+      os:
+        - linux
+      install:
+      - dotnet restore
+      script:
+      - dotnet build
+      - dotnet test
