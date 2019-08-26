@@ -11,9 +11,9 @@
         {
             Log.Info($"({file}): UserId:{userId} of Campaign:{campaignTestKey} got variation: {variationName}");
         }
-        public static void LookingUpUserProfileService(string file, string userId)
+        public static void LookingUpUserProfileService(string file, string userId, string campaignTestKey)
         {
-            Log.Info($"({file}): Looked into UserProfileService for userId:{userId} successful");
+            Log.Info($"({file}): Looked into UserProfileService for userId:{userId} and campaign test key: {campaignTestKey} successful");
         }
         public static void SavingDataUserProfileService(string file, string userId)
         {

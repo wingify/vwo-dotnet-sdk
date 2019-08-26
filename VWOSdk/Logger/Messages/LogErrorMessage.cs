@@ -48,9 +48,10 @@
             apiName = apiName ?? string.Empty;
             Log.Error($"({file}): API used:{apiName} - Campaign:{campaignTestKey} is not RUNNING. Please verify from VWO App");
         }
-        public static void LookUpUserProfileServiceFailed(string file, string userId)
+        public static void LookUpUserProfileServiceFailed(string file, string userId, string campaignTestKey)
         {
-            Log.Error($"({file}): Looking data from UserProfileService failed for userId:{userId}");
+            Log.Error($"({file}): Lookup method could not provide us the stored variation for User Id: {userId} and Campaign test key: {campaignTestKey}. Please check your User Profile Service lookup implementation.");
+            //Log.Error($"({file}): Looking data from UserProfileService failed for userId:{userId}");
         }
         public static void SaveUserProfileServiceFailed(string file, string userId)
         {

@@ -52,12 +52,12 @@ namespace VWOSdk
         {
             try
             {
-                LogInfoMessage.LookingUpUserProfileService(file, userId);
+                LogInfoMessage.LookingUpUserProfileService(file, userId, campaignTestKey);
                 return this._userProfileService.Lookup(userId, campaignTestKey);
             }
             catch (Exception ex)
             {
-                LogErrorMessage.LookUpUserProfileServiceFailed(file, userId);
+                LogErrorMessage.LookUpUserProfileServiceFailed(file, userId, campaignTestKey);
             }
 
             return null;
