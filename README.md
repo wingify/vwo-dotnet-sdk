@@ -37,6 +37,10 @@ string variationName = vwoClient.Activate(campaignTestKey, userId);
 string variationName = vwoClient.GetVariation(campaignTestKey, userId);
 
 // Track API
+// For CUSTOM CONVERSION Goal
+bool isSuccessful = vwoClient.Track(campaignTestKey, userId, goalIdentifier);
+
+// For Revenue Goal
 bool isSuccessful = vwoClient.Track(campaignTestKey, userId, goalIdentifier, revenueValue);
 ```
 
@@ -93,15 +97,23 @@ var vwoClient = VWO.Instantiate(settingsFile, userProfileService: new UserProfil
 
 Refer [Official VWO Documentation](https://developers.vwo.com/reference#server-side-introduction)
 
+## Demo NetStandard application
+
+[vwo-dotnet-sdk-example](https://github.com/wingify/vwo-dotnet-sdk-example)
+
+## Setting Up development environment
+
+```bash
+chmod +x start-dev.sh; ./start-dev;
+```
+
+It will install the git-hooks necessary for commiting and pushing the code. Commit-messages follow a [guideline](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines). All test cases must pass before pushing the code.
+
 ## Running Unit Tests
 
 ```bash
 dotnet test
 ```
-
-## Demo NetStandard application
-
-[vwo-dotnet-sdk-example](https://github.com/wingify/vwo-dotnet-sdk-example)
 
 ## Credits
 
@@ -116,7 +128,8 @@ Projects which are published under Apache License 2.0 License:
 
 ## Authors
 
-[Sidhant Gakhar](https://github.com/sidhantgakhar)
+* Main Contributor - [Sidhant Gakhar](https://github.com/sidhantgakhar)
+* Repo health maintainer - [Varun Malhotra](https://github.com/softvar)([@s0ftvar](https://twitter.com/s0ftvar))
 
 ## Contributing
 
