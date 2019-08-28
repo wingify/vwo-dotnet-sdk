@@ -65,7 +65,7 @@
         /// Fetch Settings for valid accountId and sdkKey.
         /// Null for invalid parameters, unable to connect to VWO, etc.
         /// </returns>
-        public static Settings GetSettings(long accountId, string sdkKey)
+        public static Settings GetSettingsFile(long accountId, string sdkKey)
         {
             if (Validator.GetSettings(accountId, sdkKey))
             {
@@ -89,7 +89,7 @@
         /// <returns>
         /// IVWOClient instance to call Activate, GetVariation and Track apis for given user and goal.
         /// </returns>
-        public static IVWOClient Instantiate(Settings settingFile, bool isDevelopmentMode = false, IUserProfileService userProfileService = null)
+        public static IVWOClient CreateInstance(Settings settingFile, bool isDevelopmentMode = false, IUserProfileService userProfileService = null)
         {
             if (Validator.SettingsFile(settingFile))
             {

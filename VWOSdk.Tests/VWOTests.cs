@@ -28,7 +28,7 @@ namespace VWOSdk.Tests
             Mock.SetupGetSettings(mockValidator, false);
             VWO.Configure(mockValidator.Object);
 
-            var result = VWO.GetSettings(MockAccountId, MockSdkKey);
+            var result = VWO.GetSettingsFile(MockAccountId, MockSdkKey);
             Assert.Null(result);
 
             mockValidator.Verify(mock => mock.GetSettings(It.IsAny<long>(), It.IsAny<string>()), Times.Once);
@@ -46,7 +46,7 @@ namespace VWOSdk.Tests
             var mockValidator = Mock.GetValidator();
             VWO.Configure(mockValidator.Object);
 
-            var result = VWO.GetSettings(MockAccountId, MockSdkKey);
+            var result = VWO.GetSettingsFile(MockAccountId, MockSdkKey);
             Assert.NotNull(result);
 
             mockValidator.Verify(mock => mock.GetSettings(It.IsAny<long>(), It.IsAny<string>()), Times.Once);
@@ -64,7 +64,7 @@ namespace VWOSdk.Tests
             var mockValidator = Mock.GetValidator();
             VWO.Configure(mockValidator.Object);
 
-            var result = VWO.GetSettings(MockAccountId, MockSdkKey);
+            var result = VWO.GetSettingsFile(MockAccountId, MockSdkKey);
             Assert.Null(result);
 
             mockValidator.Verify(mock => mock.GetSettings(It.IsAny<long>(), It.IsAny<string>()), Times.Once);
@@ -82,7 +82,7 @@ namespace VWOSdk.Tests
             var mockSettingProcessor = Mock.GetSettingsProcessor();
             VWO.Configure(mockSettingProcessor.Object);
             
-            var vwoClient = VWO.Instantiate(validSettings);
+            var vwoClient = VWO.CreateInstance(validSettings);
             Assert.NotNull(vwoClient);
             Assert.IsType<VWO>(vwoClient);
 
@@ -100,7 +100,7 @@ namespace VWOSdk.Tests
             var mockSettingProcessor = Mock.GetSettingsProcessor();
             VWO.Configure(mockSettingProcessor.Object);
 
-            var vwoClient = VWO.Instantiate(inValidSettings);
+            var vwoClient = VWO.CreateInstance(inValidSettings);
             Assert.Null(vwoClient);
 
             mockValidator.Verify(mock => mock.SettingsFile(It.IsAny<Settings>()), Times.Once);
@@ -120,7 +120,7 @@ namespace VWOSdk.Tests
             //Mock.SetupProcessAndBucket(mockSettingProcessor, returnValue: null);
             VWO.Configure(mockSettingProcessor.Object);
 
-            var vwoClient = VWO.Instantiate(inValidSettings);
+            var vwoClient = VWO.CreateInstance(inValidSettings);
             Assert.Null(vwoClient);
 
             mockValidator.Verify(mock => mock.SettingsFile(It.IsAny<Settings>()), Times.Once);

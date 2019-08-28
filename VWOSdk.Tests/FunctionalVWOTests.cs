@@ -182,12 +182,12 @@ namespace VWOSdk.Tests
         {
             AppContext.Configure(new FileReaderApiCaller("Campaign50percVariation50-50"));
             VWO.Configure(new Validator());
-            var settings = VWO.GetSettings(123456, "sampleSdkKey");
+            var settings = VWO.GetSettingsFile(123456, "sampleSdkKey");
             Assert.NotNull(settings);
             Assert.Equal(123456, settings.AccountId);
             Assert.Equal("sampleSdkKey", settings.SdkKey);
 
-            var vwoClient = VWO.Instantiate(settings, isDevelopmentMode: true);
+            var vwoClient = VWO.CreateInstance(settings, isDevelopmentMode: true);
             var getVariationResponse = vwoClient.GetVariation(campaignTestKey, userId);
             if (expectedPartOfCampaign)
             {
