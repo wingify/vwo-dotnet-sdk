@@ -3,6 +3,7 @@
 [![NuGet](https://img.shields.io/nuget/v/VWO.Sdk.svg?style=plastic)](https://www.nuget.org/packages/VWO.Sdk/)
 [![Build Status](http://img.shields.io/travis/wingify/vwo-dotnet-sdk/master.svg?style=flat)](http://travis-ci.org/wingify/vwo-dotnet-sdk)
 [![Coverage Status](https://img.shields.io/coveralls/wingify/vwo-dotnet-sdk.svg)](https://coveralls.io/r/wingify/vwo-dotnet-sdk)
+[![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 This open source library allows you to A/B Test your Website at server-side.
 
@@ -115,16 +116,9 @@ It will install the git-hooks necessary for commiting and pushing the code. Comm
 dotnet test
 ```
 
-## Credits
+## Third-party Resources and Credits
 
-We use the following open-source projects. Thanks to the authors and maintainers of the corresponding projects.
-
-Projects which are published under MIT License:
-* [Newtonsoft.Json](https://github.com/JamesNK/Newtonsoft.Json) by [@JamesNK](https://github.com/JamesNK)
-
-Projects which are published under Apache License 2.0 License:
-* [murmurhash](https://github.com/darrenkopp/murmurhash-net) by [@darrenkopp](https://github.com/darrenkopp)
-* [Identifiable](https://github.com/seanterry/Identifiable) by [@seanterry](https://github.com/seanterry)
+Refer [third-party-attributions.txt](https://github.com/wingify/vwo-dotnet-sdk/blob/master/third-party-attributions.txt)
 
 ## Authors
 
@@ -141,26 +135,6 @@ Please go through our [contributing guidelines](https://github.com/wingify/vwo-d
 
 ## License
 
-```text
-    MIT License
+[Apache License, Version 2.0](https://github.com/wingify/vwo-dotnet-sdk/blob/master/LICENSE)
 
-    Copyright (c) 2019 Wingify Software Pvt. Ltd.
-
-    Permission is hereby granted, free of charge, to any person obtaining a copy
-    of this software and associated documentation files (the "Software"), to deal
-    in the Software without restriction, including without limitation the rights
-    to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-    copies of the Software, and to permit persons to whom the Software is
-    furnished to do so, subject to the following conditions:
-
-    The above copyright notice and this permission notice shall be included in all
-    copies or substantial portions of the Software.
-
-    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
-    IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
-    FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
-    AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
-    LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
-    OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
-    SOFTWARE.
-```
+Copyright 2019 Wingify Software Pvt. Ltd.

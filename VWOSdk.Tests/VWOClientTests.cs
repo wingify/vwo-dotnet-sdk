@@ -1,4 +1,22 @@
-﻿using System.Collections.Generic;
+﻿#pragma warning disable 1587
+/**
+ * Copyright 2019 Wingify Software Pvt. Ltd.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+#pragma warning restore 1587
+
+using System.Collections.Generic;
 using Moq;
 using Xunit;
 
@@ -54,9 +72,9 @@ namespace VWOSdk.Tests
             mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
             mockValidator.Verify(mock => mock.Track
             (
-                It.Is<string>(val => MockCampaignTestKey.Equals(val)), 
-                It.Is<string>(val => MockUserId.Equals(val)), 
-                It.Is<string>(val => MockGoalIdentifier.Equals(val)), 
+                It.Is<string>(val => MockCampaignTestKey.Equals(val)),
+                It.Is<string>(val => MockUserId.Equals(val)),
+                It.Is<string>(val => MockGoalIdentifier.Equals(val)),
                 It.Is<string>(val => MockRevenueValue.Equals(val))
             ), Times.Once);
         }
@@ -164,7 +182,7 @@ namespace VWOSdk.Tests
             Mock.SetupResolve(mockCampaignResolver, selectedCampaign);
             var mockVariationResolver = Mock.GetVariationResolver();
             Mock.SetupResolve(mockVariationResolver, null);
-            
+
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
             var result = vwoClient.Activate(MockCampaignTestKey, MockUserId);
             Assert.Null(result);
@@ -211,7 +229,7 @@ namespace VWOSdk.Tests
 
             mockVariationResolver.Verify(mock => mock.Allocate(It.IsAny<UserProfileMap>(), It.IsAny<BucketedCampaign>(), It.IsAny<string>()), Times.Once);
             mockVariationResolver.Verify(mock => mock.Allocate(It.IsAny<UserProfileMap>(), It.Is<BucketedCampaign>(val => ReferenceEquals(selectedCampaign, val)), It.Is<string>(val => MockUserId.Equals(val))), Times.Once);
-            
+
             mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
         }
 
