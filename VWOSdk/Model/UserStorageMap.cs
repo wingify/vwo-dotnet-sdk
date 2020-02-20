@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,22 +18,22 @@
 
 namespace VWOSdk
 {
-    public class UserProfileMap
+    public class UserStorageMap
     {
-        public UserProfileMap()
+        public UserStorageMap()
         {
 
         }
 
-        public UserProfileMap(string userId, string campaignTestKey, string variationName)
+        public UserStorageMap(string userId, string campaignKey, string variationName)
         {
             this.UserId = userId;
-            this.CampaignTestKey = campaignTestKey;
+            this.CampaignKey = campaignKey;
             this.VariationName = variationName;
         }
 
         public string UserId { get; set; }
-        public string CampaignTestKey { get; set; }
+        public string CampaignKey { get; set; }
         public string VariationName { get; set; }
     }
 }

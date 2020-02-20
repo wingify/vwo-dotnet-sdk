@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -48,41 +48,38 @@ namespace VWOSdk
         {
             Log.Debug($"({file}): Settings file processed");
         }
-        public static void NoStoredVariation(string file, string userId, string campaignTestKey)
+        public static void NoStoredVariation(string file, string userId, string campaignKey)
         {
-            Log.Debug($"({file}): No stored variation for UserId:{userId} for Campaign:{campaignTestKey} found in UserProfileService");
+            Log.Debug($"({file}): No stored variation for UserId:{userId} for Campaign:{campaignKey} found in UserStorageService");
         }
-        public static void NoUserProfileServiceLookup(string file)
+        public static void NoUserStorageServiceGet(string file)
         {
-            Log.Debug($"({file}): No UserProfileService to look for stored data");
+            Log.Debug($"({file}): No UserStorageService to look for stored data");
         }
-        public static void NoUserProfileServiceSave(string file)
+        public static void NoUserStorageServiceSet(string file)
         {
-            Log.Debug($"({file}): No UserProfileService to save data");
+            Log.Debug($"({file}): No UserStorageService to set data");
         }
-        public static void GettingStoredVariation(string file, string userId, string campaignTestKey, string variationName)
+
+        public static void CheckUserEligibilityForCampaign(string file, string campaignKey, double trafficAllocation, string userId)
         {
-            Log.Debug($"({file}): Got stored variation for UserId:{userId} of Campaign:{campaignTestKey} as Variation: {variationName}, found in UserProfileService");
-        }
-        public static void CheckUserEligibilityForCampaign(string file, string campaignTestKey, double trafficAllocation, string userId)
-        {
-            Log.Debug($"({file}): campaign:{campaignTestKey} having traffic allocation:{trafficAllocation} assigned value:{trafficAllocation} to userId:{userId}");
+            Log.Debug($"({file}): campaign:{campaignKey} having traffic allocation:{trafficAllocation} assigned value:{trafficAllocation} to userId:{userId}");
         }
         public static void UserHashBucketValue(string file, string userId, double hashValue, double bucketValue)
         {
             Log.Debug($"({file}): userId:{userId} having hash:{hashValue} got bucketValue:{bucketValue}");
         }
-        public static void VariationHashBucketValue(string file, string userId, string campaignTestKey, double percentTraffic, double hashValue, double bucketValue)
+        public static void VariationHashBucketValue(string file, string userId, string campaignKey, double percentTraffic, double hashValue, double bucketValue)
         {
-            Log.Debug($"({file}): userId:{userId} for campaign:{campaignTestKey} having percent traffic:{percentTraffic} got hash-value:{hashValue} and bucket value:{bucketValue}");
+            Log.Debug($"({file}): userId:{userId} for campaign:{campaignKey} having percent traffic:{percentTraffic} got hash-value:{hashValue} and bucket value:{bucketValue}");
         }
-        public static void GotVariationForUser(string file, string userId, string campaignTestKey, string variationName, string method)
+        public static void GotVariationForUser(string file, string userId, string campaignKey, string variationName, string method)
         {
-            Log.Debug($"({file}): userId:{userId} for campaign:{campaignTestKey} got variationName:{variationName} inside method:{method}");
+            Log.Debug($"({file}): userId:{userId} for campaign:{campaignKey} got variationName:{variationName} inside method:{method}");
         }
-        public static void UserNotPartOfCampaign(string file, string userId, string campaignTestKey, string method)
+        public static void UserNotPartOfCampaign(string file, string userId, string campaignKey, string method)
         {
-            Log.Debug($"({file}): userId:{userId} for campaign:{campaignTestKey} did not become part of campaign, method:{method}");
+            Log.Debug($"({file}): userId:{userId} for campaign:{campaignKey} did not become part of campaign, method:{method}");
         }
         public static void UuidForUser(string file, string userId, long accountId, string desiredUuid)
         {
@@ -96,6 +93,8 @@ namespace VWOSdk
         {
             Log.Debug($"({file}): impression built for track-goal - {properties}");
         }
-
+        public static void ImpressionForPushTag(string file, string properties) {
+            Log.Debug($"({file}): impression built for push-tags - {properties}");
+        }
     }
 }

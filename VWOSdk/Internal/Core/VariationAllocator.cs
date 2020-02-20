@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,24 +22,24 @@ namespace VWOSdk
     {
         private static readonly string file = typeof(VariationAllocator).FullName;
         private readonly IBucketService _userHasher;
-        internal VariationAllocator(IBucketService userHasher)
+        internal VariationAllocator(IBucketService userHasher = null)
         {
             this._userHasher = userHasher;
         }
 
         /// <summary>
-        /// Allocate Variation by checking previously assigned variation if userProfileMap is provided, else by computing User Hash and matching it in bucket for eligible variation.
+        /// Allocate Variation by checking previously assigned variation if userStorageMap is provided, else by computing User Hash and matching it in bucket for eligible variation.
         /// </summary>
-        /// <param name="userProfileMap"></param>
+        /// <param name="userStorageMap"></param>
         /// <param name="campaign"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public Variation Allocate(UserProfileMap userProfileMap, BucketedCampaign campaign, string userId)
+        public Variation Allocate(UserStorageMap userStorageMap, BucketedCampaign campaign, string userId)
         {
             if (campaign == null)
                 return null;
 
-            if (userProfileMap == null)
+            if (userStorageMap == null)
             {
                 double maxVal = Constants.Variation.MAX_TRAFFIC_VALUE;
                 double multiplier = maxVal / campaign.PercentTraffic / 100; ///This is to evenly spread all user among variations.
@@ -49,12 +49,20 @@ namespace VWOSdk
                 return selectedVariation;
             }
 
-            return campaign.Variations.Find(userProfileMap.VariationName, GetVariationName);
+            return campaign.Variations.Find(userStorageMap.VariationName, GetVariationName);
+        }
+
+        public Variation GetSavedVariation(BucketedCampaign campaign, string variationName) {
+            return campaign.Variations.Find(variationName, GetVariationName);
         }
 
         private string GetVariationName(Variation variation)
         {
             return variation.Name;
+        }
+        internal int GetVariationId(Variation variation)
+        {
+            return variation.Id;
         }
     }
 }

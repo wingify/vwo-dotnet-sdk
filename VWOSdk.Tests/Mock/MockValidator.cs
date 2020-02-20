@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 #pragma warning restore 1587
 
 using Moq;
+using System.Collections.Generic;
 
 namespace VWOSdk.Tests
 {
@@ -29,6 +30,9 @@ namespace VWOSdk.Tests
             SetupActivate(mockValidator, returnValue: true);
             SetupGetVariation(mockValidator, returnValue: true);
             SetupTrack(mockValidator, returnValue: true);
+            SetupIsFeatureEnabled(mockValidator, returnValue: true);
+            SetupGetFeatureVariableValue(mockValidator, returnValue: true);
+            SetupPush(mockValidator, returnValue: true);
             SetupSettingsFile(mockValidator, returnValue: true);
             return mockValidator;
         }
@@ -41,21 +45,40 @@ namespace VWOSdk.Tests
 
         internal static void SetupActivate(Mock<IValidator> mockValidator, bool returnValue)
         {
-            mockValidator.Setup(mock => mock.Activate(It.IsAny<string>(), It.IsAny<string>()))
+            mockValidator.Setup(mock => mock.Activate(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>()))
                 .Returns(returnValue);
         }
 
         internal static void SetupGetVariation(Mock<IValidator> mockValidator, bool returnValue)
         {
-            mockValidator.Setup(mock => mock.GetVariation(It.IsAny<string>(), It.IsAny<string>()))
+            mockValidator.Setup(mock => mock.GetVariation(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>()))
                 .Returns(returnValue);
         }
 
         internal static void SetupTrack(Mock<IValidator> mockValidator, bool returnValue)
         {
-            mockValidator.Setup(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+            mockValidator.Setup(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>()))
                 .Returns(returnValue);
         }
+
+        internal static void SetupIsFeatureEnabled(Mock<IValidator> mockValidator, bool returnValue)
+        {
+            mockValidator.Setup(mock => mock.IsFeatureEnabled(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>()))
+                .Returns(returnValue);
+        }
+
+        internal static void SetupGetFeatureVariableValue(Mock<IValidator> mockValidator, bool returnValue)
+        {
+            mockValidator.Setup(mock => mock.GetFeatureVariableValue(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>()))
+                .Returns(returnValue);
+        }
+
+        internal static void SetupPush(Mock<IValidator> mockValidator, bool returnValue)
+        {
+            mockValidator.Setup(mock => mock.Push(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(returnValue);
+        }
+
 
         internal static void SetupSettingsFile(Mock<IValidator> mockValidator, bool returnValue)
         {

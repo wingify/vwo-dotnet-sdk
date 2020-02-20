@@ -358,3 +358,5 @@ tools/
 coverage-html
 coverage.json
 coverage.hits
+
+VWOSdk.DemoApp/

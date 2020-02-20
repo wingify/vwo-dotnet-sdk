@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,7 @@ namespace VWOSdk
 {
     internal class BucketedCampaign : Campaign
     {
-        public BucketedCampaign(int id, double PercentTraffic, string Key, string Status, string Type) : base(id, PercentTraffic, Key, Status, Type, null, null)
+        public BucketedCampaign(int id, double PercentTraffic, string Key, string Status, string Type, Dictionary<string, dynamic> Segments = null, List<Dictionary<string, dynamic>> Variables = null) : base(id, PercentTraffic, Key, Status, Type, null, null, Segments, Variables)
         {
 
         }

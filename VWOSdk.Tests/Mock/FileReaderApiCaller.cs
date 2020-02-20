@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,6 +18,7 @@
 
 using System.IO;
 using System.Reflection;
+using System.Collections.Generic;
 using System.Threading.Tasks;
 
 namespace VWOSdk.Tests
@@ -38,7 +39,15 @@ namespace VWOSdk.Tests
 
         public T Execute<T>(ApiRequest apiRequest)
         {
-            if(typeof(T) == typeof(Settings))
+            if(typeof(T) == typeof(Settings) || typeof(T) == typeof(Dictionary<string, dynamic>))
+            {
+                return GetSettingsFile<T>(this._settingsFileName);
+            }
+            return default(T);
+        }
+        public T GetJsonContent<T>()
+        {
+            if(typeof(T) == typeof(Settings) || typeof(T) == typeof(Dictionary<string, dynamic>))
             {
                 return GetSettingsFile<T>(this._settingsFileName);
             }

@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -27,10 +27,13 @@ namespace VWOSdk.Tests
             return new Mock<ICampaignAllocator>();
         }
 
-        internal static void SetupResolve(Mock<ICampaignAllocator> mockCampaignResolver, BucketedCampaign returnValue)
+        internal static void SetupResolve(Mock<ICampaignAllocator> mockCampaignResolver, BucketedCampaign allocateCampaignReturnValue, BucketedCampaign getCampaignReturnValue = null)
         {
-            mockCampaignResolver.Setup(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserProfileMap>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(returnValue);
+            mockCampaignResolver.Setup(mock => mock.Allocate(It.IsAny<AccountSettings>(), It.IsAny<UserStorageMap>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns(allocateCampaignReturnValue);
+
+            mockCampaignResolver.Setup(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()))
+                .Returns(getCampaignReturnValue);
         }
     }
 }

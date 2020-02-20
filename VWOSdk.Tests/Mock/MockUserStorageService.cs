@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -21,28 +21,28 @@ using Moq;
 
 namespace VWOSdk.Tests
 {
-    internal class MockUserProfileService
+    internal class MockUserStorageService
     {
-        internal static Mock<IUserProfileService> Get()
+        internal static Mock<IUserStorageService> Get()
         {
-            return new Mock<IUserProfileService>();
+            return new Mock<IUserStorageService>();
         }
 
-        internal static void SetupLookup(Mock<IUserProfileService> mockUserProfileService, UserProfileMap returnValue)
+        internal static void SetupGet(Mock<IUserStorageService> mockUserStorageService, UserStorageMap returnValue)
         {
-            mockUserProfileService.Setup(mock => mock.Lookup(It.IsAny<string>(), It.IsAny<string>()))
+            mockUserStorageService.Setup(mock => mock.Get(It.IsAny<string>(), It.IsAny<string>()))
                 .Returns(returnValue);
         }
 
-        internal static void SetupSave(Mock<IUserProfileService> mockUserProfileService, Exception exception)
+        internal static void SetupSet(Mock<IUserStorageService> mockUserStorageService, Exception exception)
         {
-            mockUserProfileService.Setup(mock => mock.Save(It.IsAny<UserProfileMap>()))
+            mockUserStorageService.Setup(mock => mock.Set(It.IsAny<UserStorageMap>()))
                 .Throws(exception);
         }
 
-        internal static void SetupLookup(Mock<IUserProfileService> mockUserProfileService, Exception exception)
+        internal static void SetupGet(Mock<IUserStorageService> mockUserStorageService, Exception exception)
         {
-            mockUserProfileService.Setup(mock => mock.Lookup(It.IsAny<string>(), It.IsAny<string>()))
+            mockUserStorageService.Setup(mock => mock.Get(It.IsAny<string>(), It.IsAny<string>()))
                 .Throws(exception);
         }
     }

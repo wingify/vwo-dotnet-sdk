@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -50,7 +50,7 @@ namespace VWOSdk
 
         private BucketedCampaign Process(Campaign campaign)
         {
-            return new BucketedCampaign(campaign.Id, campaign.PercentTraffic, campaign.Key, campaign.Status, campaign.Type)
+            return new BucketedCampaign(campaign.Id, campaign.PercentTraffic, campaign.Key, campaign.Status, campaign.Type, campaign.Segments, campaign.Variables)
             {
                 Goals = ToDictionary(campaign.Goals, (goal) => goal.Identifier),
                 Variations = Bucket(campaign.Variations, campaign.Key)
@@ -70,13 +70,13 @@ namespace VWOSdk
             return result;
         }
 
-        private RangeBucket<Variation> Bucket(IReadOnlyList<Variation> variations, string campaignTestKey)
+        private RangeBucket<Variation> Bucket(IReadOnlyList<Variation> variations, string campaignKey)
         {
             RangeBucket<Variation> bucket = new RangeBucket<Variation>(Constants.Variation.MAX_TRAFFIC_VALUE);
             foreach (var variation in variations)
             {
                 bucket.Add(variation.Weight, variation, out double start, out double end);
-                LogInfoMessage.VariationRangeAllocation(file, campaignTestKey, variation.Name, variation.Weight, start, end);
+                LogInfoMessage.VariationRangeAllocation(file, campaignKey, variation.Name, variation.Weight, start, end);
             }
             return bucket;
         }

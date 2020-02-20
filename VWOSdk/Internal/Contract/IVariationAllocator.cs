@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,8 @@ namespace VWOSdk
 {
     internal interface IVariationAllocator
     {
-        Variation Allocate(UserProfileMap userProfileMap, BucketedCampaign campaign, string userId);
+        Variation Allocate(UserStorageMap userStorageMap, BucketedCampaign campaign, string userId);
+
+        Variation GetSavedVariation(BucketedCampaign campaign, string variationName);
     }
 }

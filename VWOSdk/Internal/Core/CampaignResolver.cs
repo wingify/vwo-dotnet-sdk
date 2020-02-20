@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -28,21 +28,21 @@ namespace VWOSdk
         }
 
         /// <summary>
-        /// Allocate Campaign based on userProfileMap, trafficAllocation by computing userHash for userId and provided CampaignTestKey.
+        /// Allocate Campaign based on userStorageMap, trafficAllocation by computing userHash for userId and provided CampaignTKey.
         /// </summary>
         /// <param name="settings"></param>
-        /// <param name="userProfileMap"></param>
-        /// <param name="campaignTestKey"></param>
+        /// <param name="userStorageMap"></param>
+        /// <param name="campaignKey"></param>
         /// <param name="userId"></param>
         /// <param name="apiName">Api name which called this implementation, Activate/GetVariation/Track. This is for logging purpose.</param>
         /// <returns></returns>
-        public BucketedCampaign Allocate(AccountSettings settings, UserProfileMap userProfileMap, string campaignTestKey, string userId, string apiName = null)
+        public BucketedCampaign Allocate(AccountSettings settings, UserStorageMap userStorageMap, string campaignKey, string userId, string apiName = null)
         {
             BucketedCampaign allocatedCampaign = null;
-            BucketedCampaign requestedCampaign = settings.Campaigns.Find((campaign) => campaign.Key.Equals(campaignTestKey));
+            BucketedCampaign requestedCampaign = settings.Campaigns.Find((campaign) => campaign.Key.Equals(campaignKey));
             if (requestedCampaign != null)
             {
-                allocatedCampaign = AllocateCampaign(userId, campaignTestKey, userProfileMap, requestedCampaign);
+                allocatedCampaign = AllocateCampaign(userId, campaignKey, userStorageMap, requestedCampaign);
 
                 if (allocatedCampaign != null)
                 {
@@ -54,30 +54,41 @@ namespace VWOSdk
                 }
             }
 
-            LogErrorMessage.CampaignNotRunning(file, campaignTestKey, apiName);
+            LogErrorMessage.CampaignNotRunning(file, campaignKey, apiName);
 
             LogInfoMessage.UserEligibilityForCampaign(file, userId, false);
-            LogDebugMessage.UserNotPartOfCampaign(file, userId, campaignTestKey, nameof(Allocate));
+            LogDebugMessage.UserNotPartOfCampaign(file, userId, campaignKey, nameof(Allocate));
             return null;
+        }
+        /// <summary>
+        /// Get Campaign From Settings using campaignKey
+        /// </summary>
+        /// <param name="settings"></param>
+        /// <param name="campaignKey"></param>
+        /// <returns></returns>
+        public BucketedCampaign GetCampaign(AccountSettings settings, string campaignKey)
+        {
+            BucketedCampaign requestedCampaign = settings.Campaigns.Find((campaign) => campaign.Key.Equals(campaignKey));
+            return requestedCampaign;
         }
 
         /// <summary>
-        /// Allocate Campaign based on userProfileMap, of if userProfileMap is not present based on trafficAllocation.
+        /// Allocate Campaign based on userStorageMap, of if userStorageMap is not present based on trafficAllocation.
         /// </summary>
         /// <param name="userId"></param>
-        /// <param name="campaignTestKey"></param>
-        /// <param name="userProfileMap"></param>
+        /// <param name="campaignKey"></param>
+        /// <param name="userStorageMap"></param>
         /// <param name="requestedCampaign"></param>
         /// <returns></returns>
-        private BucketedCampaign AllocateCampaign(string userId, string campaignTestKey, UserProfileMap userProfileMap, BucketedCampaign requestedCampaign)
+        private BucketedCampaign AllocateCampaign(string userId, string campaignKey, UserStorageMap userStorageMap, BucketedCampaign requestedCampaign)
         {
             BucketedCampaign allocatedCampaign = null;
-            LogDebugMessage.CheckUserEligibilityForCampaign(file, campaignTestKey, requestedCampaign.PercentTraffic, userId);
-            if (userProfileMap == null)
+            LogDebugMessage.CheckUserEligibilityForCampaign(file, campaignKey, requestedCampaign.PercentTraffic, userId);
+            if (userStorageMap == null)
             {
                 allocatedCampaign = AllocateByTrafficAllocation(userId, requestedCampaign);
             }
-            else if (userProfileMap.CampaignTestKey.Equals(requestedCampaign.Key))
+            else if (userStorageMap.CampaignKey.Equals(requestedCampaign.Key))
             {
                 allocatedCampaign = requestedCampaign;
             }

@@ -14,6 +14,7 @@
   <ItemGroup>
     <EmbeddedResource Include="Resources\Campaign50percVariation50-50.json" />
     <EmbeddedResource Include="Resources\SampleSettingsFile.json" />
+    <EmbeddedResource Include="Resources\SegmentExpectations.json" />
   </ItemGroup>
 
   <ItemGroup>

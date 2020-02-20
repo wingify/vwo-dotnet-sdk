@@ -15,7 +15,7 @@ EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contract", "Contract", "{6B93D7AD-D8EE-43C7-9D66-352C0286219F}"
 	ProjectSection(SolutionItems) = preProject
 		VWOSdk\Contract\ILogWriter.cs = VWOSdk\Contract\ILogWriter.cs
-		VWOSdk\Contract\IUserProfileService.cs = VWOSdk\Contract\IUserProfileService.cs
+		VWOSdk\Contract\IUserStorageService.cs = VWOSdk\Contract\IUserStorageService.cs
 		VWOSdk\Contract\IVWOClient.cs = VWOSdk\Contract\IVWOClient.cs
 	EndProjectSection
 EndProject
@@ -43,7 +43,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Model", "Model", "{445B9720
 		VWOSdk\Model\Changes.cs = VWOSdk\Model\Changes.cs
 		VWOSdk\Model\Goal.cs = VWOSdk\Model\Goal.cs
 		VWOSdk\Model\Settings.cs = VWOSdk\Model\Settings.cs
-		VWOSdk\Model\UserProfileMap.cs = VWOSdk\Model\UserProfileMap.cs
+		VWOSdk\Model\UserStorageMap.cs = VWOSdk\Model\UserStorageMap.cs
 		VWOSdk\Model\Variation.cs = VWOSdk\Model\Variation.cs
 	EndProjectSection
 EndProject
@@ -99,7 +99,7 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "ApiCaller", "ApiCaller", "{
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Adapter", "Adapter", "{24BA6D73-DCBA-47C4-AE09-2343B6A07AA9}"
 	ProjectSection(SolutionItems) = preProject
-		VWOSdk\Internal\Adapter\UserProfileAdapter.cs = VWOSdk\Internal\Adapter\UserProfileAdapter.cs
+		VWOSdk\Internal\Adapter\UserStorageAdapter.cs = VWOSdk\Internal\Adapter\UserStorageAdapter.cs
 	EndProjectSection
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contract", "Contract", "{F8250854-614D-4327-A051-9046FAB459F2}"

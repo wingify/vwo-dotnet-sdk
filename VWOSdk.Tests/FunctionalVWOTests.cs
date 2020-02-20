@@ -1,6 +1,6 @@
 #pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -196,7 +196,7 @@ namespace VWOSdk.Tests
         [InlineData("DEV_TEST_6", "Zeba", true, "Variation-1")]
 
 
-        public void GetVariation_Should_Return_Desired_Output(string campaignTestKey, string userId, bool expectedPartOfCampaign, string expectedVariationName)
+        public void GetVariation_Should_Return_Desired_Output(string campaignKey, string userId, bool expectedPartOfCampaign, string expectedVariationName)
         {
             AppContext.Configure(new FileReaderApiCaller("Campaign50percVariation50-50"));
             VWO.Configure(new Validator());
@@ -206,7 +206,7 @@ namespace VWOSdk.Tests
             Assert.Equal("sampleSdkKey", settings.SdkKey);
 
             var vwoClient = VWO.CreateInstance(settings, isDevelopmentMode: true);
-            var getVariationResponse = vwoClient.GetVariation(campaignTestKey, userId);
+            var getVariationResponse = vwoClient.GetVariation(campaignKey, userId);
             if (expectedPartOfCampaign)
             {
                 Assert.NotNull(getVariationResponse);
@@ -219,7 +219,7 @@ namespace VWOSdk.Tests
                 Assert.Null(getVariationResponse);
             }
 
-            var activateResponse = vwoClient.Activate(campaignTestKey, userId);
+            var activateResponse = vwoClient.Activate(campaignKey, userId);
             if (expectedPartOfCampaign)
             {
                 Assert.NotNull(activateResponse);
@@ -232,7 +232,7 @@ namespace VWOSdk.Tests
                 Assert.Null(activateResponse);
             }
 
-            var trackResponse = vwoClient.Track(campaignTestKey, userId, "CUSTOM");
+            var trackResponse = vwoClient.Track(campaignKey, userId, "CUSTOM");
             Assert.Equal(expectedPartOfCampaign, trackResponse);
         }
     }

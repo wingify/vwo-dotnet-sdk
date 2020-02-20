@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -23,6 +23,7 @@ namespace VWOSdk
     internal interface IApiCaller
     {
         T Execute<T>(ApiRequest apiRequest);
+        T GetJsonContent<T>();
         Task<byte[]> ExecuteAsync(ApiRequest apiRequest);
     }
 }

@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -25,9 +25,12 @@ namespace VWOSdk
     internal interface IValidator
     {
         bool GetSettings(long accountId, string sdkKey);
-        bool Activate(string campaignTestKey, string userId);
-        bool GetVariation(string campaignTestKey, string userId);
-        bool Track(string campaignTestKey, string userId, string goalIdentifier, string revenueValue);
+        bool Activate(string campaignKey, string userId, Dictionary<string, dynamic> options = null);
+        bool GetVariation(string campaignKey, string userId, Dictionary<string, dynamic> options = null);
+        bool Track(string campaignKey, string userId, string goalIdentifier, string revenueValue, Dictionary<string, dynamic> options = null);
+        bool IsFeatureEnabled(string campaignKey, string userId, Dictionary<string, dynamic> options = null);
+        bool GetFeatureVariableValue(string campaignKey, string variableKey, string userId, Dictionary<string, dynamic> options = null);
+        bool Push(dynamic tagKey, dynamic tagValue, string userId);
         bool SettingsFile(Settings settingsFile);
     }
 
@@ -40,25 +43,46 @@ namespace VWOSdk
             return ValidateWithLog(() => ValidateString(sdkKey), nameof(sdkKey), nameof(GetSettings)) && accountIdResult;
         }
 
-        public bool Activate(string campaignTestKey, string userId)
+        public bool Activate(string campaignKey, string userId, Dictionary<string, dynamic> options = null)
         {
-            var campaignTestKeyResult = ValidateWithLog(() => ValidateString(campaignTestKey), nameof(campaignTestKey), nameof(Activate));
-            return ValidateWithLog(() => ValidateString(userId), nameof(userId), nameof(Activate)) && campaignTestKeyResult;
+            var campaignKeyResult = ValidateWithLog(() => ValidateString(campaignKey), nameof(campaignKey), nameof(Activate));
+            var customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
+            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>), nameof(userId), nameof(Activate)); 
         }
 
-        public bool GetVariation(string campaignTestKey, string userId)
+        public bool GetVariation(string campaignKey, string userId, Dictionary<string, dynamic> options = null)
         {
-            var campaignTestKeyResult = ValidateWithLog(() => ValidateString(campaignTestKey), nameof(campaignTestKey), nameof(GetVariation));
-            return ValidateWithLog(() => ValidateString(userId), nameof(userId), nameof(GetVariation)) && campaignTestKeyResult;
+            var campaignKeyResult = ValidateWithLog(() => ValidateString(campaignKey), nameof(campaignKey), nameof(GetVariation));
+            var customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
+            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>) , nameof(userId), nameof(GetVariation)) ;
         }
 
-        public bool Track(string campaignTestKey, string userId, string goalIdentifier, string revenueValue)
+        public bool Track(string campaignKey, string userId, string goalIdentifier, string revenueValue, Dictionary<string, dynamic> options = null) 
         {
-            var result = ValidateWithLog(() => ValidateString(campaignTestKey), nameof(campaignTestKey), nameof(Track));
+            var result = ValidateWithLog(() => ValidateString(campaignKey), nameof(campaignKey), nameof(Track));
             result = ValidateWithLog(() => ValidateString(userId), nameof(userId), nameof(Track)) && result;
             result = ValidateWithLog(() => ValidateString(goalIdentifier), nameof(goalIdentifier), nameof(Track)) && result;
+            var customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
+            return ValidateWithLog(() => ValidateNullableFloat(revenueValue) && (customVariables == null || customVariables is Dictionary<string, dynamic>) , nameof(revenueValue), nameof(Track)) && result;
+        }
 
-            return ValidateWithLog(() => ValidateNullableFloat(revenueValue), nameof(revenueValue), nameof(Track)) && result;
+        public bool IsFeatureEnabled(string campaignKey, string userId, Dictionary<string, dynamic> options = null)
+        {
+            var campaignKeyResult = ValidateWithLog(() => ValidateString(campaignKey), nameof(campaignKey), nameof(GetVariation));
+            var customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
+            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>) , nameof(userId), nameof(GetVariation)) ;
+        }
+
+        public bool GetFeatureVariableValue(string campaignKey, string variableKey, string userId, Dictionary<string, dynamic> options = null)
+        {
+            var campaignKeyResult = ValidateWithLog(() => ValidateString(campaignKey), nameof(campaignKey), nameof(GetVariation));
+            var customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
+            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>) , nameof(userId), nameof(GetVariation)) ;
+        }
+
+        public bool Push(dynamic tagKey, dynamic tagValue, string userId)
+        {
+            return ValidateWithLog(() => ValidateString(tagKey) && ValidateString(tagValue) && ValidateString(userId), nameof(tagKey) , nameof(Push));   
         }
 
         public bool SettingsFile(Settings settingsFile)
@@ -72,19 +96,16 @@ namespace VWOSdk
         private bool Validate(IReadOnlyList<Campaign> campaigns)
         {
             var result = NotNull(campaigns) && NotEmpty(campaigns);
-
             foreach(var campaign in campaigns)
             {
                 result = result && Validate(campaign);
             }
-
             return result;
         }
 
         private bool Validate(Campaign campaign)
         {
             var result = NotNull(campaign);
-
             result = result && ValidateLong(campaign.Id);
             result = result && ValidateString(campaign.Key);
             result = result && ValidateDouble(campaign.PercentTraffic);
@@ -96,12 +117,10 @@ namespace VWOSdk
         private bool Validate(IReadOnlyList<Variation> variations)
         {
             var result = NotNull(variations) && NotEmpty(variations);
-
             foreach(var variation in variations)
             {
                 result = result && Validate(variation);
             }
-
             return result;
         }
 

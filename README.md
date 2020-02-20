@@ -31,18 +31,126 @@ IVWOClient vwoClient = VWO.Instantiate(settingsFile);           //  Create VWO C
 **API usage**
 
 ```c#
-// Activate API
-string variationName = vwoClient.Activate(campaignTestKey, userId);
+using System.Collections.Generic;
 
-// GetVariation API
-string variationName = vwoClient.GetVariation(campaignTestKey, userId);
+// Activate API
+// Without Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
+string variationName = vwoClient.Activate(campaignKey, userId, options);
+
+// With Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+{
+    {
+        "custom_variable": new Dictionary<string, dynamic>()
+        {
+            {"value", 10}
+        }
+    }
+};
+string variationName = vwoClient.Activate(campaignKey, userId, options);
+
+// GetVariationName API
+// Without Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
+string variationName = vwoClient.GetVariationName(campaignKey, userId, options);
+
+// With Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+{
+    {
+        "custom_variable": new Dictionary<string, dynamic>()
+        {
+            {"value", 10}
+        }
+    }
+};
+string variationName = vwoClient.GetVariationName(campaignKey, userId, options);
 
 // Track API
 // For CUSTOM CONVERSION Goal
-bool isSuccessful = vwoClient.Track(campaignTestKey, userId, goalIdentifier);
+bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier);
 
-// For Revenue Goal
-bool isSuccessful = vwoClient.Track(campaignTestKey, userId, goalIdentifier, revenueValue);
+// Without Revenue Value and Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
+bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options);
+
+// For only Revenue Value
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+{
+    { "revenue_value", 10.2 },
+};
+bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options);
+
+// For only Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+{
+    {
+        "custom_variable": new Dictionary<string, dynamic>()
+        {
+            {"value", 10}
+        }
+    }
+};
+bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options);
+
+// For Revenue Value and Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+{
+    { "revenue_value", 10.2 },
+    {
+        "custom_variable": new Dictionary<string, dynamic>()
+        {
+            {"value", 10}
+        }
+    }
+};
+bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options);
+
+//IsFeatureEnabled API
+//Without Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
+bool isSuccessful = vwo.Client.IsFeatureEnabled(campaignKey, userId, options);
+
+//With Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+{
+    {
+        "custom_variable": new Dictionary<string, dynamic>()
+        {
+            {"value", 10}
+        }
+    }
+};
+bool isSuccessful = vwo.Client.IsFeatureEnabled(campaignKey, userId, options);
+
+//GetFeatureVariableValue API
+//Without Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
+dynamic variableValue = vwo.Client.GetFeatureVariableValue(campaignKey, variableKey, userId, options);
+
+//With Custom Variable
+Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+{
+    {
+        "custom_variable": new Dictionary<string, dynamic>()
+        {
+            {"value", 10}
+        }
+    }
+};
+dynamic variableValue = vwo.Client.GetFeatureVariableValue(campaignKey, variableKey, userId, options);
+
+//Push API
+bool isSuccessful = vwo.Client.Push(tagKey, tagValue, userId);
+
+//Pass TagKey
+var TagKey = "abc";
+bool isSuccessful = vwo.Client.Push(TagKey, tagValue, userId);
+
+//Pass TagValue
+var TagValue = "abc";
+bool isSuccessful = vwo.Client.Push(tagKey, TagValue, userId);
 ```
 
 **Configure Log Level**
@@ -68,20 +176,20 @@ public class CustomLogWriter : ILogWriter
 VWO.Configure(new CustomLogWriter());
 ```
 
-**User Profile Service**
+**User Storage Service**
 
 ```c#
 using VWOSdk;
 
-public class UserProfileService : IUserProfileService
+public class UserStorageService : IUserStorageService
 {
-    public UserProfileMap Lookup(string userId)
+    public UserStorageMap Get(string userId)
     {
         // ...code here for getting data
         // return data
     }
 
-    public void Save(UserProfileMap userProfileMap)
+    public void Set(UserStorageMap userStorageMap)
     {
         // ...code to persist data
     }
@@ -90,8 +198,8 @@ public class UserProfileService : IUserProfileService
 
 var settingsFile = VWO.GetSettings(VWOConfig.AccountId, VWOConfig.SdkKey);
 
-//  Provide UserProfileService instance while vwoClient Instantiation.
-var vwoClient = VWO.Instantiate(settingsFile, userProfileService: new UserProfileService());
+//  Provide UserStorageService instance while vwoClient Instantiation.
+var vwoClient = VWO.Instantiate(settingsFile, userStorageService: new UserStorageService());
 ```
 
 ## Documentation
@@ -105,7 +213,8 @@ Refer [Official VWO Documentation](https://developers.vwo.com/reference#server-s
 ## Setting Up development environment
 
 ```bash
-chmod +x start-dev.sh; ./start-dev;
+chmod +x start-dev.sh;
+bash start-dev.sh;
 ```
 
 It will install the git-hooks necessary for commiting and pushing the code. Commit-messages follow a [guideline](https://github.com/angular/angular/blob/master/CONTRIBUTING.md#-commit-message-guidelines). All test cases must pass before pushing the code.
@@ -141,4 +250,4 @@ Please go through our [contributing guidelines](https://github.com/wingify/vwo-d
 
 [Apache License, Version 2.0](https://github.com/wingify/vwo-dotnet-sdk/blob/master/LICENSE)
 
-Copyright 2019 Wingify Software Pvt. Ltd.
+Copyright 2019-2020 Wingify Software Pvt. Ltd.

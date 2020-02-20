@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -37,55 +37,55 @@ namespace VWOSdk.Tests
         }
 
         private readonly string MockUserId = "MockUserId";
-        private readonly string MockCampaignTestKey = "MockCampaignTestKey";
+        private readonly string MockCampaignKey = "MockCampaignKey";
         private readonly string MockVariationName = "VariationName";
 
         [Fact]
-        public void Allocate_Should_Return_Null_When_Valid_UserProfileMap_With_InValid_Campaign_Is_Given()
+        public void Allocate_Should_Return_Null_When_Valid_UserStorageMap_With_InValid_Campaign_Is_Given()
         {
             var mockUserHasher = MockUserHasher.Get();
             var campaignAllocator = GetCampaignResolver(mockUserHasher);
-            UserProfileMap userProfileMap = new UserProfileMap(MockUserId, MockCampaignTestKey + MockCampaignTestKey, MockVariationName);
-            var selectedCampaign = campaignAllocator.Allocate(GetAccountSettings(), userProfileMap, MockCampaignTestKey, MockUserId);
+            UserStorageMap userStorageMap = new UserStorageMap(MockUserId, MockCampaignKey + MockCampaignKey, MockVariationName);
+            var selectedCampaign = campaignAllocator.Allocate(GetAccountSettings(), userStorageMap, MockCampaignKey, MockUserId);
             Assert.Null(selectedCampaign);
 
             mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Never);
         }
 
         [Fact]
-        public void Allocate_Should_Return_Null_When_Valid_UserProfileMap_With_Valid_Campaign_Is_Given_And_Campaign_Is_Not_Running()
+        public void Allocate_Should_Return_Null_When_Valid_UserStorageMap_With_Valid_Campaign_Is_Given_And_Campaign_Is_Not_Running()
         {
             var mockUserHasher = MockUserHasher.Get();
             var campaignResolver = GetCampaignResolver(mockUserHasher);
-            UserProfileMap userProfileMap = new UserProfileMap(MockUserId, MockCampaignTestKey, MockVariationName);
-            var selectedCampaign = campaignResolver.Allocate(GetAccountSettings(status: "NOT_RUNNING"), userProfileMap, MockCampaignTestKey, MockUserId);
+            UserStorageMap userStorageMap = new UserStorageMap(MockUserId, MockCampaignKey, MockVariationName);
+            var selectedCampaign = campaignResolver.Allocate(GetAccountSettings(status: "NOT_RUNNING"), userStorageMap, MockCampaignKey, MockUserId);
             Assert.Null(selectedCampaign);
 
             mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Never);
         }
 
         [Fact]
-        public void Allocate_Should_Return_Null_When_InValid_CampaignTestKey_Is_Provided()
+        public void Allocate_Should_Return_Null_When_InValid_CampaignKey_Is_Provided()
         {
             var mockUserHasher = MockUserHasher.Get();
             var campaignResolver = GetCampaignResolver(mockUserHasher);
-            UserProfileMap userProfileMap = null;
-            var selectedCampaign = campaignResolver.Allocate(GetAccountSettings(status: "RUNNING"), userProfileMap, MockCampaignTestKey + MockCampaignTestKey, MockUserId);
+            UserStorageMap userStorageMap = null;
+            var selectedCampaign = campaignResolver.Allocate(GetAccountSettings(status: "RUNNING"), userStorageMap, MockCampaignKey + MockCampaignKey, MockUserId);
             Assert.Null(selectedCampaign);
 
             mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Never);
         }
 
         [Fact]
-        public void Allocate_Should_Compute_Hash_When_UserProfileMap_Is_Null()
+        public void Allocate_Should_Compute_Hash_When_UserStorageMap_Is_Null()
         {
             var mockUserHasher = Mock.GetUserHasher();
             Mock.SetupCompute(mockUserHasher, returnVal: 10);
             CampaignAllocator campaignResolver = GetCampaignResolver(mockUserHasher);
-            UserProfileMap userProfileMap = null;
-            var selectedCampaign = campaignResolver.Allocate(GetAccountSettings(), userProfileMap, MockCampaignTestKey, MockUserId);
+            UserStorageMap userStorageMap = null;
+            var selectedCampaign = campaignResolver.Allocate(GetAccountSettings(), userStorageMap, MockCampaignKey, MockUserId);
             Assert.NotNull(selectedCampaign);
-            Assert.Equal(MockCampaignTestKey, selectedCampaign.Key);
+            Assert.Equal(MockCampaignKey, selectedCampaign.Key);
 
             mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Once);
             mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.Is<string>((val) => MockUserId.Equals(val)), It.Is<double>((val) => 100 == val), It.Is<double>(val => 1 == val)), Times.Once);
@@ -97,8 +97,8 @@ namespace VWOSdk.Tests
             var mockUserHasher = Mock.GetUserHasher();
             Mock.SetupCompute(mockUserHasher, returnVal: 80);
             CampaignAllocator campaignResolver = GetCampaignResolver(mockUserHasher);
-            UserProfileMap userProfileMap = null;
-            var selectedCampaign = campaignResolver.Allocate(GetAccountSettings(), userProfileMap, MockCampaignTestKey, MockUserId);
+            UserStorageMap userStorageMap = null;
+            var selectedCampaign = campaignResolver.Allocate(GetAccountSettings(), userStorageMap, MockCampaignKey, MockUserId);
             Assert.Null(selectedCampaign);
 
             mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Once);
@@ -118,11 +118,11 @@ namespace VWOSdk.Tests
             return result;
         }
 
-        private BucketedCampaign GetCampaign(string campaignTestKey = null, string variationName = null, string status = "RUNNING")
+        private BucketedCampaign GetCampaign(string campaignKey = null, string variationName = null, string status = "RUNNING")
         {
-            campaignTestKey = campaignTestKey ?? MockCampaignTestKey;
+            campaignKey = campaignKey ?? MockCampaignKey;
             variationName = variationName ?? MockVariationName;
-            return new BucketedCampaign(1, 70, campaignTestKey, status, null)
+            return new BucketedCampaign(1, 70, campaignKey, status, null)
             {
                 Variations = GetVariations(variationName),
             };
@@ -131,7 +131,7 @@ namespace VWOSdk.Tests
         private RangeBucket<Variation> GetVariations(string variationName)
         {
             var result = new RangeBucket<Variation>(10000);
-            result.Add(100, new Variation(1, variationName, null, 100));
+            result.Add(100, new Variation(1, variationName, null, 100, false));
             return result;
         }
 

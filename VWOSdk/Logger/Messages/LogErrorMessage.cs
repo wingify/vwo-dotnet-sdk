@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -43,7 +43,7 @@ namespace VWOSdk
         //}
         //public static void GET_VARIATION_API_MISSING_PARAMS(string file)
         //{
-        //    Log.Error($"({file}): \"getVariation\" API got bad parameters. It expects campaignTestKey(String) as first and userId(String) as second argument");
+        //    Log.Error($"({file}): \"getVariation\" API got bad parameters. It expects campaignKey(String) as first and userId(String) as second argument");
         //}
         //public static void GET_VARIATION_API_CONFIG_CORRUPTED(string file)
         //{
@@ -51,29 +51,41 @@ namespace VWOSdk
         //}
         //public static void TRACK_API_MISSING_PARAMS(string file)
         //{
-        //    Log.Error($"({file}): \"track\" API got bad parameters. It expects campaignTestKey(String) as first, userId(String) as second and goalIdentifier(String/Number) as third argument. Fourth is revenueValue(Float/Number/String) and is required for revenue goal only.");
+        //    Log.Error($"({file}): \"track\" API got bad parameters. It expects campaignKey(String) as first, userId(String) as second and goalIdentifier(String/Number) as third argument. Fourth is revenueValue(Float/Number/String) and is required for revenue goal only.");
         //}
         //public static void TRACK_API_CONFIG_CORRUPTED(string file)
         //{
         //    Log.Error($"({file}): \"track\" API has corrupted configuration");
         //}
-        public static void TrackApiVariationNotFound(string file, string campaignTestKey, string userId)
-        {
-            Log.Error($"({file}): Variation not found for campaign:{campaignTestKey} and userId:{userId}");
+
+        public static void InvalidApi(string file, string userId, string campaignKey, string campaignType, string apiName) {
+            Log.Error($"({file}): {apiName} API is not valid for user ID: {userId} in campaign ID: {campaignKey} having campaign type: {campaignType}.");
         }
-        public static void CampaignNotRunning(string file, string campaignTestKey, string apiName = null)
+        public static void VariableNotFound(string file,string variableKey, string campaignKey, string campaignType, string userId, string apiName) {
+            Log.Error($"({file}): In API: {apiName} Variable: {variableKey} not found for campaign: {campaignKey} and type: {campaignType} for user ID: {userId}.");
+        }
+        
+        public static void TrackApiVariationNotFound(string file, string campaignKey, string userId)
+        {
+            Log.Error($"({file}): Variation not found for campaign:{campaignKey} and userId:{userId}");
+        }
+        public static void CampaignNotRunning(string file, string campaignKey, string apiName = null)
         {
             apiName = apiName ?? string.Empty;
-            Log.Error($"({file}): API used:{apiName} - Campaign:{campaignTestKey} is not RUNNING. Please verify from VWO App");
+            Log.Error($"({file}): API used:{apiName} - Campaign:{campaignKey} is not RUNNING. Please verify from VWO App");
         }
-        public static void LookUpUserProfileServiceFailed(string file, string userId, string campaignTestKey)
+        public static void GetUserStorageServiceFailed(string file, string userId, string campaignKey)
         {
-            Log.Error($"({file}): Lookup method could not provide us the stored variation for User Id: {userId} and Campaign test key: {campaignTestKey}. Please check your User Profile Service lookup implementation.");
-            //Log.Error($"({file}): Looking data from UserProfileService failed for userId:{userId}");
+            Log.Error($"({file}): Get method could not provide us the stored variation for User Id: {userId} and Campaign test key: {campaignKey}. Please check your User Storage Service Get implementation.");
+            //Log.Error($"({file}): Looking data from UserStorageService failed for userId:{userId}");
         }
-        public static void SaveUserProfileServiceFailed(string file, string userId)
+        public static void SetUserStorageServiceFailed(string file, string userId)
         {
-            Log.Error($"({file}): Saving data into UserProfileService failed for userId:{userId}");
+            Log.Error($"({file}): Saving data into UserStorageService failed for userId:{userId}");
+        }
+        public static void UnableToTypeCast(string file, string value, string variableType, string ofType)
+        {
+            Log.Error($"({file}): Unable to typecast value: {value} of type: {ofType} to type: {variableType}.");
         }
         //public static void InvalidCampaign(string file, string method)
         //{
@@ -88,19 +100,27 @@ namespace VWOSdk
             Log.Error($"({file}): Impression event could not be sent to VWO - {endPoint}");
         }
 
-        internal static void TrackApiRevenueNotPassedForRevenueGoal(string file, string goalIdentifier, string campaignTestKey, string userId)
+        internal static void TrackApiRevenueNotPassedForRevenueGoal(string file, string goalIdentifier, string campaignKey, string userId)
         {
-            Log.Error($"({file}): Revenue value should be passed for revenue goal:{goalIdentifier} for campaign:{campaignTestKey} and userId:{userId}");
+            Log.Error($"({file}): Revenue value should be passed for revenue goal:{goalIdentifier} for campaign:{campaignKey} and userId:{userId}");
         }
 
-        internal static void TrackApiGoalNotFound(string file, string goalIdentifier, string campaignTestKey, string userId)
+        internal static void TrackApiGoalNotFound(string file, string goalIdentifier, string campaignKey, string userId)
         {
-            Log.Error($"({file}): Goal:{goalIdentifier} not found for campaign:{campaignTestKey} and userId:{userId}");
+            Log.Error($"({file}): Goal:{goalIdentifier} not found for campaign:{campaignKey} and userId:{userId}");
         }
 
         public static void CustomLoggerMisconfigured(string file)
         {
             Log.Error($"({file}): custom logger is provided but seems to have misconfigured. please check the api docs. using default logger.");
+        }
+
+        public static void TagKeyLengthExceeded(string file, string tagKey, string userId,  string apiName) {
+            Log.Error($"({file}): In API: {apiName}, the length of tagKey:{tagKey} and userID: {userId} can not be greater than 255");
+        }
+
+        public static void TagValueLengthExceeded(string file, string tagValue, string userId, string apiName) {
+            Log.Error($"({file}): In API: {apiName}, the length of tagValue:{tagValue} and userID: {userId} can not be greater than 255");
         }
 
     }

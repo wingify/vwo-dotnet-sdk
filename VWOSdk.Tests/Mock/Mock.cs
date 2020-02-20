@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -38,24 +38,24 @@ namespace VWOSdk.Tests
             MockUserHasher.SetupComputeBucketValue(mockUserHasher, returnVal, outHashValue);
         }
 
-        internal static Mock<IUserProfileService> GetUserProfileService()
+        internal static Mock<IUserStorageService> GetUserStorageService()
         {
-            return MockUserProfileService.Get();
+            return MockUserStorageService.Get();
         }
 
-        internal static void SetupLookup(Mock<IUserProfileService> mockUserProfileService, UserProfileMap returnValue)
+        internal static void SetupGet(Mock<IUserStorageService> mockUserStorageService, UserStorageMap returnValue)
         {
-            MockUserProfileService.SetupLookup(mockUserProfileService, returnValue);
+            MockUserStorageService.SetupGet(mockUserStorageService, returnValue);
         }
 
-        internal static void SetupLookup(Mock<IUserProfileService> mockUserProfileService, Exception exception)
+        internal static void SetupGet(Mock<IUserStorageService> mockUserStorageService, Exception exception)
         {
-            MockUserProfileService.SetupLookup(mockUserProfileService, exception);
+            MockUserStorageService.SetupGet(mockUserStorageService, exception);
         }
 
-        internal static void SetupSave(Mock<IUserProfileService> mockUserProfileService, Exception exception)
+        internal static void SetupSet(Mock<IUserStorageService> mockUserStorageService, Exception exception)
         {
-            MockUserProfileService.SetupSave(mockUserProfileService, exception);
+            MockUserStorageService.SetupSet(mockUserStorageService, exception);
         }
 
         internal static Mock<IApiCaller> GetApiCaller<T>(IApiCaller innerApiCaller = null)
@@ -92,6 +92,21 @@ namespace VWOSdk.Tests
             MockValidator.SetupTrack(mockValidator, returnValue);
         }
 
+        internal static void SetupIsFeatureEnabled(Mock<IValidator> mockValidator, bool returnValue)
+        {
+            MockValidator.SetupIsFeatureEnabled(mockValidator, returnValue);
+        }
+
+        internal static void SetupGetFeatureVariableValue(Mock<IValidator> mockValidator, bool returnValue)
+        {
+            MockValidator.SetupGetFeatureVariableValue(mockValidator, returnValue);
+        }
+
+        internal static void SetupPush(Mock<IValidator> mockValidator, bool returnValue)
+        {
+            MockValidator.SetupPush(mockValidator, returnValue);
+        }
+
         internal static Mock<ISettingsProcessor> GetSettingsProcessor()
         {
             return MockSettingsProcessor.Get();
@@ -107,9 +122,19 @@ namespace VWOSdk.Tests
             return MockCampaignAllocator.Get();
         }
 
-        internal static void SetupResolve(Mock<ICampaignAllocator> mockCampaignResolver, BucketedCampaign returnValue)
+        internal static Mock<ISegmentEvaluator> GetSegmentEvaluator()
         {
-            MockCampaignAllocator.SetupResolve(mockCampaignResolver, returnValue);
+            return MockSegmentEvaluator.Get();
+        }
+
+        internal static void SetupResolve(Mock<ICampaignAllocator> mockCampaignResolver, BucketedCampaign allocatedCampaign, BucketedCampaign getCampaign = null)
+        {
+            MockCampaignAllocator.SetupResolve(mockCampaignResolver, allocatedCampaign, getCampaign);
+        }
+
+        internal static void SetupResolve(Mock<ISegmentEvaluator> mockSegmentEvaluator, bool returnValue)
+        {
+            MockSegmentEvaluator.SetupResolve(mockSegmentEvaluator, returnValue);
         }
 
         internal static Mock<IVariationAllocator> GetVariationResolver()

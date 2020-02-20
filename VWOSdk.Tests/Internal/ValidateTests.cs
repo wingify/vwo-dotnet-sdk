@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -17,6 +17,7 @@
 #pragma warning restore 1587
 
 using Xunit;
+using System.Collections.Generic;
 
 namespace VWOSdk.Tests
 {
@@ -48,9 +49,9 @@ namespace VWOSdk.Tests
         [InlineData("987654", null, false)]
         [InlineData("654654", "", false)]
         [InlineData("654654", "21", true)]
-        public void Validate_GetVariation_With_InValid_AccountId_And_SdkKey(string campaignTestKey, string userId, bool expectedResult)
+        public void Validate_GetVariation_With_InValid_AccountId_And_SdkKey(string campaignKey, string userId, bool expectedResult)
         {
-            var result = new Validator().GetVariation(campaignTestKey, userId);
+            var result = new Validator().GetVariation(campaignKey, userId, new Dictionary<string, dynamic>());
             Assert.Equal(expectedResult, result);
         }
 
@@ -64,9 +65,9 @@ namespace VWOSdk.Tests
         [InlineData("987654", null, false)]
         [InlineData("654654", "", false)]
         [InlineData("654654", "21", true)]
-        public void Validate_Activate_With_InValid_AccountId_And_SdkKey(string campaignTestKey, string userId, bool expectedResult)
+        public void Validate_Activate_With_InValid_AccountId_And_SdkKey(string campaignKey, string userId, bool expectedResult)
         {
-            var result = new Validator().Activate(campaignTestKey, userId);
+            var result = new Validator().Activate(campaignKey, userId, new Dictionary<string, dynamic>());
             Assert.Equal(expectedResult, result);
         }
 
@@ -315,9 +316,9 @@ namespace VWOSdk.Tests
         [InlineData("Campaign1122", "User1122", "Goal1122", "0.321", true)]
         [InlineData("Campaign1122", "User1122", "Goal1122", "1", true)]
         [InlineData("Campaign1122", "User1122", "Goal1122", "1.3213", true)]
-        public void Validate_Track_With_InValid_AccountId_And_SdkKey(string campaignTestKey, string userId, string goalIdentifier, string revenueValue, bool expectedResult)
+        public void Validate_Track_With_InValid_AccountId_And_SdkKey(string campaignKey, string userId, string goalIdentifier, string revenueValue, bool expectedResult)
         {
-            var result = new Validator().Track(campaignTestKey, userId, goalIdentifier, revenueValue);
+            var result = new Validator().Track(campaignKey, userId, goalIdentifier, revenueValue,  new Dictionary<string, dynamic>());
             Assert.Equal(expectedResult, result);
         }
     }

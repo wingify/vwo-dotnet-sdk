@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2020 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -24,6 +24,7 @@ namespace VWOSdk
         private static readonly IBucketService UserHasher;
         private static readonly ICampaignAllocator CampaignAllocator;
         private static readonly IVariationAllocator VariationAllocator;
+        private static readonly ISegmentEvaluator SegmentEvaluator;
         private static ISettingsProcessor SettingsProcessor;
         private static readonly string file = typeof(VWO).FullName;
 
@@ -36,6 +37,7 @@ namespace VWOSdk
             UserHasher = new Murmur32BucketService();
             CampaignAllocator = new CampaignAllocator(UserHasher);
             VariationAllocator = new VariationAllocator(UserHasher);
+            SegmentEvaluator = new SegmentEvaluator();
             SettingsProcessor = new SettingsProcessor();
         }
 
@@ -103,11 +105,11 @@ namespace VWOSdk
         /// </summary>
         /// <param name="settingFile">Settings as provided by GetSettings call.</param>
         /// <param name="isDevelopmentMode">When running in development or non-production mode. This ensures no operations are tracked on VWO account.</param>
-        /// <param name="userProfileService">UserProfileService to Lookup and Save User-assigned variations.</param>
+        /// <param name="userStorageService">UserStorageService to Get and Save User-assigned variations.</param>
         /// <returns>
         /// IVWOClient instance to call Activate, GetVariation and Track apis for given user and goal.
         /// </returns>
-        public static IVWOClient CreateInstance(Settings settingFile, bool isDevelopmentMode = false, IUserProfileService userProfileService = null)
+        public static IVWOClient CreateInstance(Settings settingFile, bool isDevelopmentMode = false, IUserStorageService userStorageService = null)
         {
             if (Validator.SettingsFile(settingFile))
             {
@@ -120,7 +122,7 @@ namespace VWOSdk
                 if(isDevelopmentMode)
                     LogDebugMessage.SetDevelopmentMode(file);
 
-                var vwoClient = new VWO(accountSettings, Validator, userProfileService, CampaignAllocator, VariationAllocator, isDevelopmentMode);
+                var vwoClient = new VWO(accountSettings, Validator, userStorageService, CampaignAllocator, SegmentEvaluator, VariationAllocator, isDevelopmentMode);
                 LogDebugMessage.SdkInitialized(file);
                 return vwoClient;
             }
