@@ -23,7 +23,7 @@ namespace VWOSdk
     {
         public static void ProjectConfigCorrupted(string file)
         {
-            Log.Error($"({file}): config passed to createInstance is not a valid object.");
+            Log.Error($"({file}): config passed to Launch is not a valid object.");
         }
         //public static void INVALID_CONFIGURATION(string file)
         //{
@@ -64,7 +64,7 @@ namespace VWOSdk
         public static void VariableNotFound(string file,string variableKey, string campaignKey, string campaignType, string userId, string apiName) {
             Log.Error($"({file}): In API: {apiName} Variable: {variableKey} not found for campaign: {campaignKey} and type: {campaignType} for user ID: {userId}.");
         }
-        
+
         public static void TrackApiVariationNotFound(string file, string campaignKey, string userId)
         {
             Log.Error($"({file}): Variation not found for campaign:{campaignKey} and userId:{userId}");

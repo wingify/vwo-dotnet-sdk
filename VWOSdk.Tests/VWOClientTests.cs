@@ -30,7 +30,7 @@ namespace VWOSdk.Tests
         private readonly string MockTagValue = "MockTagValue";
         private readonly string MockVariableKey = "MockVariableKey";
         private readonly Dictionary<string, dynamic> MockTrackCustomVariables = new Dictionary<string, dynamic>() {
-            {"revenue_value", 0.321}
+            {"revenueValue", 0.321}
         };
         private readonly string MockGoalIdentifier = "MockGoalIdentifier";
         private readonly string MockVariationName = "VariationName";
@@ -223,69 +223,69 @@ namespace VWOSdk.Tests
         private readonly Dictionary<string, dynamic> MockOptions = new Dictionary<string, dynamic>()
         {
             {
-                "custom_variables", new Dictionary<string, dynamic>()
+                "customVariables", new Dictionary<string, dynamic>()
                     {
                         {"hello", "world"},
                         {"a", "012345"}
                     }
             },
             {
-                "revenue_value", 10.1
+                "revenueValue", 10.1
             }
         };
         private readonly Dictionary<string, dynamic> MockOptionsStartWith = new Dictionary<string, dynamic>()
         {
             {
-                "custom_variables", new Dictionary<string, dynamic>()
+                "customVariables", new Dictionary<string, dynamic>()
                     {
                         {"hello", "world"},
                         {"a", "12345"}
                     }
             },
             {
-                "revenue_value", 10.1
+                "revenueValue", 10.1
             }
         };
 
         private readonly Dictionary<string, dynamic> MockOptionsEquals = new Dictionary<string, dynamic>()
         {
             {
-                "custom_variables", new Dictionary<string, dynamic>()
+                "customVariables", new Dictionary<string, dynamic>()
                     {
                         {"hello", "world"},
                         {"a", "12345"}
                     }
             },
             {
-                "revenue_value", 10.1
+                "revenueValue", 10.1
             }
         };
 
         private readonly Dictionary<string, dynamic> MockOptionsEndWith = new Dictionary<string, dynamic>()
         {
             {
-                "custom_variables", new Dictionary<string, dynamic>()
+                "customVariables", new Dictionary<string, dynamic>()
                     {
                         {"hello", "world"},
                         {"a", "91123"}
                     }
             },
             {
-                "revenue_value", 10.1
+                "revenueValue", 10.1
             }
         };
 
         private readonly Dictionary<string, dynamic> MockOptionsLower = new Dictionary<string, dynamic>()
         {
             {
-                "custom_variables", new Dictionary<string, dynamic>()
+                "customVariables", new Dictionary<string, dynamic>()
                     {
                         {"hello", "world"},
                         {"a", "91123"}
                     }
             },
             {
-                "revenue_value", 10.1
+                "revenueValue", 10.1
             }
         };
 
@@ -718,7 +718,7 @@ namespace VWOSdk.Tests
         }
 
         [Fact]
-        public void Track_Should_Return_False_When_Requested_Goal_Is_Revenue_Type_And_No_Revenue_Value_Is_Passed()
+        public void Track_Should_Return_False_When_Requested_Goal_Is_Revenue_Type_And_No_RevenueValue_Is_Passed()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
             AppContext.Configure(mockApiCaller.Object);
@@ -748,7 +748,7 @@ namespace VWOSdk.Tests
         }
 
         [Fact]
-        public void Track_Should_Return_True_When_Requested_Goal_Is_Revenue_Type_And_No_Revenue_Value_Is_Passed_As_Integer()
+        public void Track_Should_Return_True_When_Requested_Goal_Is_Revenue_Type_And_No_RevenueValue_Is_Passed_As_Integer()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
             AppContext.Configure(mockApiCaller.Object);
@@ -759,12 +759,12 @@ namespace VWOSdk.Tests
             var mockVariationResolver = Mock.GetVariationResolver();
             Mock.SetupResolve(mockVariationResolver, GetVariation());
 
-            Dictionary<string, dynamic> revenueDict = new Dictionary<string, dynamic>(){{"revenue_value", -1}};
+            Dictionary<string, dynamic> revenueDict = new Dictionary<string, dynamic>(){{"revenueValue", -1}};
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
             var result = vwoClient.Track(MockCampaignKey, MockUserId, MockGoalIdentifier, revenueDict);
             Assert.True(result);
 
-            int revenueValue = revenueDict["revenue_value"];
+            int revenueValue = revenueDict["revenueValue"];
             mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>()), Times.Once);
             mockValidator.Verify(mock => mock.Track
             (
@@ -780,7 +780,7 @@ namespace VWOSdk.Tests
         }
 
         [Fact]
-        public void Track_Should_Return_True_When_Requested_Goal_Is_Revenue_Type_And_No_Revenue_Value_Is_Passed_As_Float()
+        public void Track_Should_Return_True_When_Requested_Goal_Is_Revenue_Type_And_No_RevenueValue_Is_Passed_As_Float()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
             AppContext.Configure(mockApiCaller.Object);
@@ -791,12 +791,12 @@ namespace VWOSdk.Tests
             var mockVariationResolver = Mock.GetVariationResolver();
             Mock.SetupResolve(mockVariationResolver, GetVariation());
 
-            Dictionary<string, dynamic> revenueDict = new Dictionary<string, dynamic>() {{"revenue_value", -1}};
+            Dictionary<string, dynamic> revenueDict = new Dictionary<string, dynamic>() {{"revenueValue", -1}};
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
             var result = vwoClient.Track(MockCampaignKey, MockUserId, MockGoalIdentifier, revenueDict);
             Assert.True(result);
 
-            string revenueValue = revenueDict["revenue_value"].ToString();
+            string revenueValue = revenueDict["revenueValue"].ToString();
             mockValidator.Verify(mock => mock.Track(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>()), Times.Once);
             mockValidator.Verify(mock => mock.Track
             (
@@ -1316,7 +1316,7 @@ namespace VWOSdk.Tests
             var selectedCampaign = GetCampaign(campaignType: Constants.CampaignTypes.FEATURE_TEST, mockVariables: MockVariables);
             Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
             var mockVariationResolver = Mock.GetVariationResolver();
-            var selectedVariation = GetVariation(); 
+            var selectedVariation = GetVariation();
             Mock.SetupResolve(mockVariationResolver, selectedVariation);
 
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
@@ -1338,7 +1338,7 @@ namespace VWOSdk.Tests
             var selectedCampaign = GetCampaign(campaignType: Constants.CampaignTypes.FEATURE_TEST, mockVariables: MockVariablesInt);
             Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
             var mockVariationResolver = Mock.GetVariationResolver();
-            var selectedVariation = GetVariation(variables: MockVariablesInt); 
+            var selectedVariation = GetVariation(variables: MockVariablesInt);
             Mock.SetupResolve(mockVariationResolver, selectedVariation);
 
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
@@ -1360,7 +1360,7 @@ namespace VWOSdk.Tests
             var selectedCampaign = GetCampaign(campaignType: Constants.CampaignTypes.FEATURE_TEST, mockVariables: MockVariablesBool);
             Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
             var mockVariationResolver = Mock.GetVariationResolver();
-            var selectedVariation = GetVariation(variables: MockVariablesBool); 
+            var selectedVariation = GetVariation(variables: MockVariablesBool);
             Mock.SetupResolve(mockVariationResolver, selectedVariation);
 
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
@@ -1382,7 +1382,7 @@ namespace VWOSdk.Tests
             var selectedCampaign = GetCampaign(campaignType: Constants.CampaignTypes.FEATURE_TEST, mockVariables: MockVariablesDouble);
             Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
             var mockVariationResolver = Mock.GetVariationResolver();
-            var selectedVariation = GetVariation(variables: MockVariablesDouble); 
+            var selectedVariation = GetVariation(variables: MockVariablesDouble);
             Mock.SetupResolve(mockVariationResolver, selectedVariation);
 
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
@@ -2137,7 +2137,7 @@ namespace VWOSdk.Tests
         }
 
         [Fact]
-        public void IsFeatureEnabled_Should_Return_False_When_Segments_Are_Passed_But_Custom_Variables_Are_Not_Passed()
+        public void IsFeatureEnabled_Should_Return_False_When_Segments_Are_Passed_But_customVariables_Are_Not_Passed()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
             AppContext.Configure(mockApiCaller.Object);

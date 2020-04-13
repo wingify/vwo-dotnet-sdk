@@ -34,7 +34,7 @@ namespace VWOSdk
         string Activate(string campaignKey, string userId, Dictionary<string, dynamic> options = null);
 
         /// <summary>
-        /// Activates a server-side A/B test for the specified user for a particular running campaign.
+        /// Backward Compatible API: Returns a variation assigned for the specified user for a particular running campaign.
         /// </summary>
         /// <param name="campaignKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
@@ -43,6 +43,17 @@ namespace VWOSdk
         /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
         /// </returns>
         string GetVariation(string campaignKey, string userId, Dictionary<string, dynamic> options = null);
+
+        /// <summary>
+        /// Returns a variation assigned for the specified user for a particular running campaign.
+        /// </summary>
+        /// <param name="campaignKey">Campaign key to uniquely identify a server-side campaign.</param>
+        /// <param name="userId">User ID which uniquely identifies each user.</param>
+        /// <param name="options">Dictionary for passing extra parameters to activate</param>
+        /// <returns>
+        /// The name of the variation in which the user is bucketed, or null if the user doesn't qualify to become a part of the campaign.
+        /// </returns>
+        string GetVariationName(string campaignKey, string userId, Dictionary<string, dynamic> options = null);
 
         /// <summary>
         /// Tracks a conversion event for a particular user for a running server-side campaign.

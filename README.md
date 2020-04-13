@@ -25,7 +25,7 @@ PM> Install-Package VWO.Sdk
 using VWOSdk;
 
 Settings settingsFile = VWO.GetSettings(accountId, sdkKey);     //  Fetch settingsFile from VWO.
-IVWOClient vwoClient = VWO.Instantiate(settingsFile);           //  Create VWO Client to user APIs.
+IVWOClient vwoClient = VWO.Launch(settingsFile);           //  Create VWO Client to user APIs.
 ```
 
 **API usage**
@@ -42,7 +42,7 @@ string variationName = vwoClient.Activate(campaignKey, userId, options);
 Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
 {
     {
-        "custom_variable": new Dictionary<string, dynamic>()
+        "customVariables": new Dictionary<string, dynamic>()
         {
             {"value", 10}
         }
@@ -59,7 +59,7 @@ string variationName = vwoClient.GetVariationName(campaignKey, userId, options);
 Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
 {
     {
-        "custom_variable": new Dictionary<string, dynamic>()
+        "customVariables": new Dictionary<string, dynamic>()
         {
             {"value", 10}
         }
@@ -78,7 +78,7 @@ bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options
 // For only Revenue Value
 Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
 {
-    { "revenue_value", 10.2 },
+    { "revenueValue", 10.2 },
 };
 bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options);
 
@@ -86,7 +86,7 @@ bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options
 Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
 {
     {
-        "custom_variable": new Dictionary<string, dynamic>()
+        "customVariables": new Dictionary<string, dynamic>()
         {
             {"value", 10}
         }
@@ -97,9 +97,9 @@ bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options
 // For Revenue Value and Custom Variable
 Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
 {
-    { "revenue_value", 10.2 },
+    { "revenueValue", 10.2 },
     {
-        "custom_variable": new Dictionary<string, dynamic>()
+        "customVariables": new Dictionary<string, dynamic>()
         {
             {"value", 10}
         }
@@ -116,7 +116,7 @@ bool isSuccessful = vwo.Client.IsFeatureEnabled(campaignKey, userId, options);
 Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
 {
     {
-        "custom_variable": new Dictionary<string, dynamic>()
+        "customVariables": new Dictionary<string, dynamic>()
         {
             {"value", 10}
         }
@@ -133,7 +133,7 @@ dynamic variableValue = vwo.Client.GetFeatureVariableValue(campaignKey, variable
 Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
 {
     {
-        "custom_variable": new Dictionary<string, dynamic>()
+        "customVariables": new Dictionary<string, dynamic>()
         {
             {"value", 10}
         }
@@ -199,7 +199,7 @@ public class UserStorageService : IUserStorageService
 var settingsFile = VWO.GetSettings(VWOConfig.AccountId, VWOConfig.SdkKey);
 
 //  Provide UserStorageService instance while vwoClient Instantiation.
-var vwoClient = VWO.Instantiate(settingsFile, userStorageService: new UserStorageService());
+var vwoClient = VWO.Launch(settingsFile, userStorageService: new UserStorageService());
 ```
 
 ## Documentation

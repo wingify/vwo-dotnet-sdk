@@ -205,7 +205,7 @@ namespace VWOSdk.Tests
             Assert.Equal(123456, settings.AccountId);
             Assert.Equal("sampleSdkKey", settings.SdkKey);
 
-            var vwoClient = VWO.CreateInstance(settings, isDevelopmentMode: true);
+            var vwoClient = VWO.Launch(settings, isDevelopmentMode: true);
             var getVariationResponse = vwoClient.GetVariation(campaignKey, userId);
             if (expectedPartOfCampaign)
             {

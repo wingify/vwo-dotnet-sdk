@@ -55,7 +55,7 @@ namespace VWOSdk
         public string Activate(string campaignKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
-            Dictionary<string, dynamic> customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
+            Dictionary<string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
             if (this._validator.Activate(campaignKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignKey);
@@ -90,7 +90,7 @@ namespace VWOSdk
         public string GetVariation(string campaignKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
-            Dictionary <string, dynamic> customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
+            Dictionary <string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
             if (this._validator.GetVariation(campaignKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignKey);
@@ -107,8 +107,6 @@ namespace VWOSdk
                 var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, apiName: nameof(GetVariation));
                 if (assignedVariation.Variation != null)
                 {
-                    var trackUserRequest = ServerSideVerb.TrackUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode);
-                    trackUserRequest.ExecuteAsync();
                     return assignedVariation.Variation.Name;
                 }
                 return assignedVariation.Variation?.Name;
@@ -137,8 +135,8 @@ namespace VWOSdk
         public bool Track(string campaignKey, string userId, string goalIdentifier, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
-            string revenueValue = options.ContainsKey("revenue_value") ? options["revenue_value"].ToString() : null;
-            Dictionary <string, dynamic> customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
+            string revenueValue = options.ContainsKey("revenueValue") ? options["revenueValue"].ToString() : null;
+            Dictionary <string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
             if(this._validator.Track(campaignKey, userId, goalIdentifier, revenueValue, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignKey);
@@ -200,7 +198,7 @@ namespace VWOSdk
         public bool IsFeatureEnabled(string campaignKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
-            Dictionary <string, dynamic> customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
+            Dictionary <string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
             if (this._validator.IsFeatureEnabled(campaignKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignKey);
@@ -254,7 +252,7 @@ namespace VWOSdk
         public dynamic GetFeatureVariableValue(string campaignKey, string variableKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
-            Dictionary <string, dynamic> customVariables = options.ContainsKey("custom_variables") ? options["custom_variables"] : null;
+            Dictionary <string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
             var variables = new List<Dictionary<string, dynamic>>();
             var variable = new Dictionary<string, dynamic>();
 
