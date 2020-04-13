@@ -35,33 +35,34 @@ using System.Collections.Generic;
 
 // Activate API
 // Without Custom Variable
-Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
+public static Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
 string variationName = vwoClient.Activate(campaignKey, userId, options);
 
 // With Custom Variable
-Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+public static Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
 {
     {
-        "customVariables": new Dictionary<string, dynamic>()
+        "customVariables", new Dictionary<string, dynamic>()
         {
-            {"value", 10}
+            {"price", 100.1}
         }
     }
 };
+
 string variationName = vwoClient.Activate(campaignKey, userId, options);
 
 // GetVariationName API
 // Without Custom Variable
-Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
+public static Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
 string variationName = vwoClient.GetVariationName(campaignKey, userId, options);
 
 // With Custom Variable
-Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+public static Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
 {
     {
-        "customVariables": new Dictionary<string, dynamic>()
+        "customVariables", new Dictionary<string, dynamic>()
         {
-            {"value", 10}
+            {"gender", 'f'}
         }
     }
 };
@@ -76,30 +77,30 @@ Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
 bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options);
 
 // For only Revenue Value
-Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+public static Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
 {
     { "revenueValue", 10.2 },
 };
 bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options);
 
 // For only Custom Variable
-Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+public static Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
 {
     {
-        "customVariables": new Dictionary<string, dynamic>()
+        "customVariables", new Dictionary<string, dynamic>()
         {
-            {"value", 10}
+            {"location", 'India'}
         }
     }
 };
 bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options);
 
 // For Revenue Value and Custom Variable
-Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+public static Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
 {
     { "revenueValue", 10.2 },
     {
-        "customVariables": new Dictionary<string, dynamic>()
+        "customVariables", new Dictionary<string, dynamic>()
         {
             {"value", 10}
         }
@@ -109,14 +110,14 @@ bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options
 
 //IsFeatureEnabled API
 //Without Custom Variable
-Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
+public static Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
 bool isSuccessful = vwo.Client.IsFeatureEnabled(campaignKey, userId, options);
 
 //With Custom Variable
-Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+public static Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
 {
     {
-        "customVariables": new Dictionary<string, dynamic>()
+        "customVariables", new Dictionary<string, dynamic>()
         {
             {"value", 10}
         }
@@ -130,10 +131,10 @@ Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
 dynamic variableValue = vwo.Client.GetFeatureVariableValue(campaignKey, variableKey, userId, options);
 
 //With Custom Variable
-Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+public static Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
 {
     {
-        "customVariables": new Dictionary<string, dynamic>()
+        "customVariables", new Dictionary<string, dynamic>()
         {
             {"value", 10}
         }
