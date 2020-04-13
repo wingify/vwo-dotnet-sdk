@@ -9,12 +9,12 @@
     <OutputType>Library</OutputType>
     <TargetFramework>netstandard2.0</TargetFramework>
     <PackageId>VWO.Sdk</PackageId>
-    <Version>1.5.0</Version>
-    <Authors>Sidhant Gakhar, Varun Malhotra</Authors>
+    <Version>1.5.1</Version>
+    <Authors>VWO devs</Authors>
     <Company>Wingify</Company>
     <Product>VWO</Product>
     <Copyright>Wingify Software Pvt. Ltd.</Copyright>
-    <Description>VWO .NET SDK for server-side A/B Testing</Description>
+    <Description>VWO .NET SDK for server-side Testing</Description>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <NuGetPackageImportStamp>
