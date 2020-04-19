@@ -110,6 +110,14 @@ namespace VWOSdk
             return true;
         }
 
+        internal bool AddNew(T item, double start, double end)
+        {
+            var weightRange = new WeightRange(start, end);
+            this._buckets.Add(new KeyValuePair<WeightRange, T>(weightRange, item));
+
+            return true;
+        }
+
         /// <summary>
         /// Find an element within bucket matching the given criteria, returns the first match.
         /// </summary>
@@ -138,6 +146,16 @@ namespace VWOSdk
         internal bool Add(double weight, T item)
         {
             return Add(weight, item, out double start, out double end);
+        }
+
+        public List<T> All()
+        {
+            List<T> result = new List<T> { };
+            foreach (var pair in this._buckets)
+            {
+                result.Add(pair.Value);
+            }
+            return result;
         }
     }
 }

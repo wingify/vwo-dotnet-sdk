@@ -19,6 +19,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Xunit;
+using System;
 [assembly: CollectionBehavior(DisableTestParallelization = true)]
 
 namespace VWOSdk.Tests
@@ -194,6 +195,18 @@ namespace VWOSdk.Tests
         [InlineData("DEV_TEST_6", "Xin", true, "Variation-1")]
         [InlineData("DEV_TEST_6", "You", true, "Variation-1")]
         [InlineData("DEV_TEST_6", "Zeba", true, "Variation-1")]
+
+
+        [InlineData("DEV_TEST_8", "Varun", true, "Variation-1")]
+        [InlineData("DEV_TEST_8", "You", true, "Variation-1")]
+        [InlineData("DEV_TEST_8", "Faizan", true, "Control")]
+        [InlineData("DEV_TEST_8", "Rohit", true, "Variation-1")]
+        [InlineData("DEV_TEST_8", "Bob", true, "Variation-1")]
+        [InlineData("DEV_TEST_8", "Ashley", true, "Variation-1")]
+        [InlineData("DEV_TEST_8", "Gimmy", true, "Variation-3")]
+        [InlineData("DEV_TEST_8", "Chris", true, "Variation-3")]
+        [InlineData("DEV_TEST_8", "Lisa", true, "Control")]
+
 
 
         public void GetVariation_Should_Return_Desired_Output(string campaignKey, string userId, bool expectedPartOfCampaign, string expectedVariationName)

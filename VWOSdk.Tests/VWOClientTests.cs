@@ -370,7 +370,7 @@ namespace VWOSdk.Tests
             Mock.SetupPush(mockValidator, false);
 
             var vwoClient = GetVwoClient(mockValidator: mockValidator);
-            var result = vwoClient.Push(MockTagKey, MockTagValue,  MockUserId);
+            var result = vwoClient.Push(MockTagKey, MockTagValue, MockUserId);
             Assert.False(result);
 
             mockValidator.Verify(mock => mock.Push(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -472,7 +472,7 @@ namespace VWOSdk.Tests
             Mock.SetupResolve(mockCampaignResolver, null);
 
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver);
-            var result = vwoClient.GetFeatureVariableValue(MockCampaignKey, MockVariableKey , MockUserId);
+            var result = vwoClient.GetFeatureVariableValue(MockCampaignKey, MockVariableKey, MockUserId);
             Assert.Null(result);
 
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
@@ -591,7 +591,7 @@ namespace VWOSdk.Tests
             Mock.SetupResolve(mockVariationResolver, null);
 
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
-            var result = vwoClient.GetFeatureVariableValue(MockCampaignKey, MockVariableKey ,MockUserId);
+            var result = vwoClient.GetFeatureVariableValue(MockCampaignKey, MockVariableKey, MockUserId);
             Assert.Null(result);
 
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
@@ -759,7 +759,7 @@ namespace VWOSdk.Tests
             var mockVariationResolver = Mock.GetVariationResolver();
             Mock.SetupResolve(mockVariationResolver, GetVariation());
 
-            Dictionary<string, dynamic> revenueDict = new Dictionary<string, dynamic>(){{"revenueValue", -1}};
+            Dictionary<string, dynamic> revenueDict = new Dictionary<string, dynamic>() { { "revenueValue", -1 } };
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
             var result = vwoClient.Track(MockCampaignKey, MockUserId, MockGoalIdentifier, revenueDict);
             Assert.True(result);
@@ -791,7 +791,7 @@ namespace VWOSdk.Tests
             var mockVariationResolver = Mock.GetVariationResolver();
             Mock.SetupResolve(mockVariationResolver, GetVariation());
 
-            Dictionary<string, dynamic> revenueDict = new Dictionary<string, dynamic>() {{"revenueValue", -1}};
+            Dictionary<string, dynamic> revenueDict = new Dictionary<string, dynamic>() { { "revenueValue", -1 } };
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
             var result = vwoClient.Track(MockCampaignKey, MockUserId, MockGoalIdentifier, revenueDict);
             Assert.True(result);
@@ -885,7 +885,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
         }
 
-         [Fact]
+        [Fact]
         public void Track_Should_Return_False_When_Campaign_Not_Found()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
@@ -907,7 +907,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
         }
 
-         [Fact]
+        [Fact]
         public void IsFeatureEnabled_Should_Return_False_When_Campaign_Not_Found()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
@@ -929,7 +929,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
         }
 
-         [Fact]
+        [Fact]
         public void GetFeatureVariableValue_Should_Return_Null_When_Campaign_Not_Found()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
@@ -1014,7 +1014,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
         }
 
-         [Fact]
+        [Fact]
         public void IsFeatureEnabled_Should_Return_False_When_Campaign_Is_Not_Running()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
@@ -1035,7 +1035,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
         }
 
-         [Fact]
+        [Fact]
         public void GetFeatureVariableValue_Should_Return_Null_When_Campaign_Is_Not_Running()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
@@ -1049,7 +1049,7 @@ namespace VWOSdk.Tests
             Mock.SetupResolve(mockVariationResolver, selectedVariation);
 
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
-            var result = vwoClient.GetFeatureVariableValue(MockCampaignKey,MockVariableKey, MockUserId);
+            var result = vwoClient.GetFeatureVariableValue(MockCampaignKey, MockVariableKey, MockUserId);
             Assert.Null(result);
 
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
@@ -1098,7 +1098,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
         }
 
-         [Fact]
+        [Fact]
         public void Track_Should_Return_False_When_Campaign_Is_Feature_Rollout()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
@@ -1482,7 +1482,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
         }
 
-         [Fact]
+        [Fact]
         public void Track_Should_Return_True_When_PreSegmentation_Passes_With_Contains()
         {
 
@@ -1890,7 +1890,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
         }
 
-         [Fact]
+        [Fact]
         public void GetVariation_Should_Return_Variation_When_PreSegmentation_Passes_With_Equals()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
@@ -1912,7 +1912,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
         }
 
-         [Fact]
+        [Fact]
         public void Track_Should_Return_Variation_When_PreSegmentation_Passes_With_Equals()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
@@ -1933,7 +1933,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
         }
 
-         [Fact]
+        [Fact]
         public void IsFeatureEnabled_Should_Return_Variation_When_PreSegmentation_Passes_With_Equals()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
@@ -1954,7 +1954,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
         }
 
-         [Fact]
+        [Fact]
         public void GetFeatureVariableValue_Should_Return_Variation_When_PreSegmentation_Passes_With_Equals()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
@@ -2038,7 +2038,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
         }
 
-         [Fact]
+        [Fact]
         public void GetFeatureVariableValue_Should_Return_Null_When_PreSegmentation_Fails()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
@@ -2079,7 +2079,7 @@ namespace VWOSdk.Tests
             var mockTagKey = MockLongString;
 
             var vwoClient = GetVwoClient(mockValidator: mockValidator);
-            var result = vwoClient.Push(mockTagKey , MockTagValue,  MockUserId);
+            var result = vwoClient.Push(mockTagKey, MockTagValue, MockUserId);
             Assert.False(result);
 
             mockValidator.Verify(mock => mock.Push(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -2096,7 +2096,7 @@ namespace VWOSdk.Tests
             var mockTagKey = "test";
 
             var vwoClient = GetVwoClient(mockValidator: mockValidator);
-            var result = vwoClient.Push(mockTagKey, MockTagValue,  MockUserId);
+            var result = vwoClient.Push(mockTagKey, MockTagValue, MockUserId);
             Assert.True(result);
 
             mockValidator.Verify(mock => mock.Push(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -2112,7 +2112,7 @@ namespace VWOSdk.Tests
             var mockTagValue = MockLongString;
 
             var vwoClient = GetVwoClient(mockValidator: mockValidator);
-            var result = vwoClient.Push(MockTagKey, mockTagValue,  MockUserId);
+            var result = vwoClient.Push(MockTagKey, mockTagValue, MockUserId);
             Assert.False(result);
 
             mockValidator.Verify(mock => mock.Push(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -2129,7 +2129,7 @@ namespace VWOSdk.Tests
             var mockTagKey = "test";
 
             var vwoClient = GetVwoClient(mockValidator: mockValidator);
-            var result = vwoClient.Push(mockTagKey, MockTagValue,  MockUserId);
+            var result = vwoClient.Push(mockTagKey, MockTagValue, MockUserId);
             Assert.True(result);
 
             mockValidator.Verify(mock => mock.Push(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
@@ -2201,10 +2201,10 @@ namespace VWOSdk.Tests
 
         private bool VerifyTrackUserVerb(ApiRequest apiRequest)
         {
-            if(apiRequest != null)
+            if (apiRequest != null)
             {
                 var url = apiRequest.Uri.ToString().ToLower();
-                if(url.Contains("track-user") && url.Contains("experiment_id =-1") && url.Contains("combination=-2"))
+                if (url.Contains("track-user") && url.Contains("experiment_id =-1") && url.Contains("combination=-2"))
                 {
                     return true;
                 }
@@ -2227,13 +2227,14 @@ namespace VWOSdk.Tests
                 Mock.SetupResolve(mockVariationResolver, GetVariation());
             }
 
-            if (segmentEvaluator == null) {
+            if (segmentEvaluator == null)
+            {
                 var mockSegmentEvaluator = Mock.GetSegmentEvaluator();
                 Mock.SetupResolve(mockSegmentEvaluator, true);
                 segmentEvaluator = mockSegmentEvaluator.Object;
             }
 
-            return new VWO(GetSettings(), mockValidator.Object, null, mockCampaignResolver.Object,  segmentEvaluator, mockVariationResolver.Object, true);
+            return new VWO(GetSettings(), mockValidator.Object, null, mockCampaignResolver.Object, segmentEvaluator, mockVariationResolver.Object, true);
         }
 
         private AccountSettings GetSettings()
@@ -2251,7 +2252,7 @@ namespace VWOSdk.Tests
         private BucketedCampaign GetCampaign(string campaignKey = null, string variationName = null, string status = "RUNNING", string goalIdentifier = null, string campaignType = null, Dictionary<string, dynamic> segments = null, List<Dictionary<string, dynamic>> mockVariables = null)
         {
             campaignKey = campaignKey ?? MockCampaignKey;
-            return new BucketedCampaign(-1, 100, campaignKey, status, campaignType != null ? campaignType : Constants.CampaignTypes.VISUAL_AB, segments, mockVariables)
+            return new BucketedCampaign(-1, 100, campaignKey, status, campaignType != null ? campaignType : Constants.CampaignTypes.VISUAL_AB, false, segments, mockVariables)
             {
                 Variations = GetVariations(variationName, mockVariables),
                 Goals = GetGoals(goalIdentifier)

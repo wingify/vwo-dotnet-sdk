@@ -16,6 +16,9 @@
  */
 #pragma warning restore 1587
 
+using System.Collections.Generic;
+using System;
+
 namespace VWOSdk
 {
     internal class VariationAllocator : IVariationAllocator
@@ -52,7 +55,89 @@ namespace VWOSdk
             return campaign.Variations.Find(userStorageMap.VariationName, GetVariationName);
         }
 
-        public Variation GetSavedVariation(BucketedCampaign campaign, string variationName) {
+        public Variation TargettedVariation(string userId, List<Variation> whiteListedVariations)
+        {
+            int whiteListedVariationsLength = whiteListedVariations.Count;
+            RangeBucket<Variation> whiteListedVariationsList = new RangeBucket<Variation>();
+            Variation targettedVariation;
+            if (whiteListedVariationsLength == 0)
+            {
+                return null;
+            }
+            else if (whiteListedVariationsLength == 1)
+            {
+                targettedVariation = whiteListedVariations[0];
+            }
+            else
+            {
+                whiteListedVariations = ScaleVariations(whiteListedVariations);
+                whiteListedVariationsList = GetVariationAllocationRanges(whiteListedVariations);
+                double maxVal = Constants.Variation.MAX_TRAFFIC_VALUE;
+                double multiplier = 1;
+                var bucketValue = this._userHasher.ComputeBucketValue(userId, maxVal, multiplier);
+                targettedVariation = whiteListedVariationsList.Find(bucketValue);
+            }
+            return targettedVariation;
+        }
+
+        public RangeBucket<Variation> GetVariationAllocationRanges(List<Variation> variations)
+        {
+            int currentAllocation = 0;
+            RangeBucket<Variation> bucket = new RangeBucket<Variation>(Constants.Variation.MAX_TRAFFIC_VALUE);
+            foreach (var variation in variations)
+            {
+                int stepFactor = GetVariationBucketingRange(variation.Weight);
+                if (stepFactor != 0)
+                {
+                    bucket.AddNew(variation, currentAllocation + 1, currentAllocation + stepFactor);
+                    currentAllocation += stepFactor;
+                }
+                else
+                {
+                    bucket.AddNew(variation, -1, -1);
+                }
+            }
+            return bucket;
+        }
+
+        public int GetVariationBucketingRange(double weight)
+        {
+            if (weight == 0)
+            {
+                return 0;
+            }
+            double startRange = Convert.ToInt32(Math.Ceiling(weight * 100));
+            return Convert.ToInt32(Math.Min(startRange, 10000));
+        }
+
+        public List<Variation> ScaleVariations(List<Variation> variations)
+        {
+            double weightSum = 0.0;
+            foreach (var variation in variations)
+            {
+                weightSum += variation.Weight;
+            }
+
+            if (weightSum == 0)
+            {
+                double normalizedWeight = 100.0 / variations.Count;
+                foreach (var variation in variations)
+                {
+                    variation.Weight = normalizedWeight;
+                }
+            }
+            else
+            {
+                foreach (var variation in variations)
+                {
+                    variation.Weight = (variation.Weight / weightSum) * 100;
+                }
+            }
+            return variations;
+        }
+
+        public Variation GetSavedVariation(BucketedCampaign campaign, string variationName)
+        {
             return campaign.Variations.Find(variationName, GetVariationName);
         }
 

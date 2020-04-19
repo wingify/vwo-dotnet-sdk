@@ -22,7 +22,7 @@ namespace VWOSdk
 {
     internal interface ISegmentEvaluator
     {
-        bool evaluate(string userId, string campaignKey, Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables);
+        bool evaluate(string userId, string campaignKey, Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargettingVariable);
         dynamic getTypeCastedFeatureValue(dynamic value, string variableType);
     }
 }
