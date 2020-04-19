@@ -29,8 +29,9 @@ namespace VWOSdk
         private static string GroupingPattern = @"^(.+?)\((.*)\)$";
         private static string WildcardPattern = @"(^\*|^)(.+?)(\*$|$)";
 
-        internal OperandEvaluator() {}
-        public bool EvaluateOperand(Dictionary<string, dynamic> operandData, Dictionary<string, dynamic> customVariables) {
+        internal OperandEvaluator() { }
+        public bool EvaluateOperand(Dictionary<string, dynamic> operandData, Dictionary<string, dynamic> customVariables)
+        {
             var operandKey = operandData.Keys.First();
             string operand = operandData[operandKey];
             // Retrieve corresponding custom_variable value from custom_variables
@@ -46,7 +47,8 @@ namespace VWOSdk
             string[] trueTypesData = this.ConvertToTrueTypes(operandValue, customVariablesValue);
             operandValue = trueTypesData[0];
             customVariablesValue = trueTypesData[1];
-            switch (operandType) {
+            switch (operandType)
+            {
                 case Constants.OperandValueTypes.CONTAINS:
                     return this.Contains(operandValue, customVariablesValue);
                 case Constants.OperandValueTypes.STARTS_WITH:
@@ -63,15 +65,34 @@ namespace VWOSdk
             }
         }
 
-        private string ProcessCustomVariablesValue(dynamic customVariableValue) {
+        public bool EvaluateUser(string operandData, Dictionary<string, dynamic> variationTargettingVariable)
+        {
+            String[] strlist = operandData.Split(',');
+            foreach (String s in strlist)
+            {
+                Console.WriteLine("--------------------------------------");
+                Console.WriteLine(s);
+                Console.WriteLine(variationTargettingVariable["_vwo_user_id"]);
+                if (s.Trim() == variationTargettingVariable["_vwo_user_id"])
+                {
+                    return true;
+                }
+            }
+            return false;
+        }
+
+        private string ProcessCustomVariablesValue(dynamic customVariableValue)
+        {
             if (customVariableValue == null || customVariableValue.ToString().Length == 0) return "";
-            if (customVariableValue.GetType() == typeof(bool)) {
+            if (customVariableValue.GetType() == typeof(bool))
+            {
                 customVariableValue = customVariableValue ? Constants.OperandValueBooleanTypes.TRUE : Constants.OperandValueBooleanTypes.FALSE;
             }
             return customVariableValue.ToString();
         }
 
-        private string[] ProcessOperandValue(string operand) {
+        private string[] ProcessOperandValue(string operand)
+        {
             var seperatedOperand = this.SeperateOperand(operand);
             var operandTypeName = seperatedOperand[0];
             var operandValue = seperatedOperand[1];
@@ -82,74 +103,101 @@ namespace VWOSdk
             var operandType = typeof(Constants.OperandValueTypesName).GetField(operandTypeName.ToUpper(), BindingFlags.NonPublic | BindingFlags.Static).GetValue(null).ToString();
             string startingStar = "";
             string endingStar = "";
-            if (operandTypeName == Constants.OperandValueTypesName.WILDCARD) {
+            if (operandTypeName == Constants.OperandValueTypesName.WILDCARD)
+            {
                 Match match = Regex.Match(operandValue, OperandEvaluator.WildcardPattern);
-                if (match.Success) {
+                if (match.Success)
+                {
                     startingStar = match.Groups[1].Value;
                     operandValue = match.Groups[2].Value;
                     endingStar = match.Groups[3].Value;
                 }
-                if (startingStar.Length > 0 && endingStar.Length > 0) {
+                if (startingStar.Length > 0 && endingStar.Length > 0)
+                {
                     operandType = Constants.OperandValueTypes.CONTAINS;
-                } else if (startingStar.Length > 0) {
+                }
+                else if (startingStar.Length > 0)
+                {
                     operandType = Constants.OperandValueTypes.ENDS_WITH;
-                } else if (endingStar.Length > 0) {
+                }
+                else if (endingStar.Length > 0)
+                {
                     operandType = Constants.OperandValueTypes.STARTS_WITH;
-                } else {
+                }
+                else
+                {
                     operandType = Constants.OperandValueTypes.EQUALS;
                 }
             }
 
             // In case there is an abnormal patter, it would have passed all the above if cases, which means it
             // Should be equals, so set the whole operand as operand value and operand type as equals
-            if (operandType.Length == 0) {
+            if (operandType.Length == 0)
+            {
                 return new string[] { Constants.OperandValueTypes.EQUALS, operand };
-            } else {
+            }
+            else
+            {
                 return new string[] { operandType, operandValue };
             }
         }
 
-        private string[] SeperateOperand(string operand) {
+        private string[] SeperateOperand(string operand)
+        {
             Match match = Regex.Match(operand, OperandEvaluator.GroupingPattern);
-            if (match.Success) {
+            if (match.Success)
+            {
                 return new string[] { match.Groups[1].Value, match.Groups[2].Value };
             }
             return new string[] { Constants.OperandValueTypesName.EQUALS, operand };
         }
 
-        private string[] ConvertToTrueTypes(dynamic operatorValue, dynamic customVariableValue) {
-            try {
+        private string[] ConvertToTrueTypes(dynamic operatorValue, dynamic customVariableValue)
+        {
+            try
+            {
                 var trueTypeOperatorValue = Convert.ToDouble(Convert.ToString(operatorValue));
                 var trueTypeCustomVariablesValue = Convert.ToDouble(Convert.ToString(customVariableValue));
                 if (trueTypeOperatorValue == Math.Floor(trueTypeOperatorValue)) trueTypeOperatorValue = Convert.ToInt32(trueTypeOperatorValue);
                 if (trueTypeOperatorValue == Math.Floor(trueTypeCustomVariablesValue)) trueTypeCustomVariablesValue = Convert.ToInt32(trueTypeCustomVariablesValue);
                 return new string[] { Convert.ToString(trueTypeOperatorValue), Convert.ToString(trueTypeCustomVariablesValue) };
-            } catch {
+            }
+            catch
+            {
                 return new string[] { operatorValue, customVariableValue };
             }
         }
 
-        private bool Contains(string operandValue, string customVariablesValue) {
+        private bool Contains(string operandValue, string customVariablesValue)
+        {
             return customVariablesValue.Contains(operandValue);
         }
-        private bool StartsWith(string operandValue, string customVariablesValue) {
+        private bool StartsWith(string operandValue, string customVariablesValue)
+        {
             return customVariablesValue.StartsWith(operandValue);
         }
-        private bool EndsWith(string operandValue, string customVariablesValue) {
+        private bool EndsWith(string operandValue, string customVariablesValue)
+        {
             return customVariablesValue.EndsWith(operandValue);
         }
-        private bool Lower(string operandValue, string customVariablesValue) {
+        private bool Lower(string operandValue, string customVariablesValue)
+        {
             return customVariablesValue.ToLower() == operandValue.ToLower();
         }
-        private bool Regexp(string operandValue, string customVariablesValue) {
-            try {
+        private bool Regexp(string operandValue, string customVariablesValue)
+        {
+            try
+            {
                 Match match = Regex.Match(customVariablesValue, operandValue);
                 return match.Success;
-            } catch {
+            }
+            catch
+            {
                 return false;
             }
         }
-        private bool Equals(string operandValue, string customVariablesValue) {
+        private bool Equals(string operandValue, string customVariablesValue)
+        {
             return customVariablesValue == operandValue;
         }
     }

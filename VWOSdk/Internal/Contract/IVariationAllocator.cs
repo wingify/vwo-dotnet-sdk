@@ -16,12 +16,14 @@
  */
 #pragma warning restore 1587
 
+using System.Collections.Generic;
+
 namespace VWOSdk
 {
     internal interface IVariationAllocator
     {
         Variation Allocate(UserStorageMap userStorageMap, BucketedCampaign campaign, string userId);
-
+        Variation TargettedVariation(string userId, List<Variation> whiteListedVariations);
         Variation GetSavedVariation(BucketedCampaign campaign, string variationName);
     }
 }

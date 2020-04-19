@@ -122,7 +122,7 @@ namespace VWOSdk.Tests
         {
             campaignKey = campaignKey ?? MockCampaignKey;
             variationName = variationName ?? MockVariationName;
-            return new BucketedCampaign(1, 70, campaignKey, status, null)
+            return new BucketedCampaign(1, 70, campaignKey, status, null, false)
             {
                 Variations = GetVariations(variationName),
             };

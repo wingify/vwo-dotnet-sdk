@@ -24,7 +24,7 @@ namespace VWOSdk
     public class Variation
     {
         [JsonConstructor]
-        internal Variation(int id, string name, Changes changes, double weight, bool IsFeatureEnabled, List<Dictionary<string, dynamic>> Variables = null)
+        internal Variation(int id, string name, Changes changes, double weight, bool IsFeatureEnabled, List<Dictionary<string, dynamic>> Variables = null, Dictionary<string, dynamic> segments = null)
         {
             this.Id = id;
             this.Name = name;
@@ -33,6 +33,8 @@ namespace VWOSdk
             this.IsFeatureEnabled = IsFeatureEnabled;
             if (this.Variables == null) this.Variables = new List<Dictionary<string, dynamic>>();
             this.Variables = Variables;
+            if (segments == null) segments = new Dictionary<string, dynamic>();
+            this.Segments = segments;
         }
 
         public int Id { get; internal set; }
@@ -41,5 +43,6 @@ namespace VWOSdk
         public double Weight { get; internal set; }
         public bool IsFeatureEnabled { get; internal set; }
         public List<Dictionary<string, dynamic>> Variables { get; internal set; }
+        public Dictionary<string, dynamic> Segments { get; internal set; }
     }
 }
