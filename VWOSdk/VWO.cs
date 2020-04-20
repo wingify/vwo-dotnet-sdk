@@ -109,7 +109,7 @@ namespace VWOSdk
         /// <returns>
         /// IVWOClient instance to call Activate, GetVariation and Track apis for given user and goal.
         /// </returns>
-        public static IVWOClient CreateInstance(Settings settingFile, bool isDevelopmentMode = false, IUserStorageService userStorageService = null)
+        public static IVWOClient Launch(Settings settingFile, bool isDevelopmentMode = false, IUserStorageService userStorageService = null)
         {
             if (Validator.SettingsFile(settingFile))
             {
