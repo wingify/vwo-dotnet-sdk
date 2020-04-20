@@ -29,22 +29,29 @@ namespace VWOSdk
 
         private readonly OperandEvaluator operandEvaluator;
 
-        internal SegmentEvaluator() {
+        internal SegmentEvaluator()
+        {
             this.operandEvaluator = new OperandEvaluator();
         }
 
-        public bool evaluate(string userId, string campaignKey, Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables) {
-            var result = this.evaluateSegment(segments, customVariables);
-            if (result) {
+        public bool evaluate(string userId, string campaignKey, Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargettingVariable)
+        {
+            var result = this.evaluateSegment(segments, customVariables, variationTargettingVariable);
+            if (result)
+            {
                 LogInfoMessage.UserPassedPreSegmentation(typeof(SegmentEvaluator).FullName, userId, campaignKey, customVariables);
-            } else {
+            }
+            else
+            {
                 LogInfoMessage.UserFailedPreSegmentation(typeof(SegmentEvaluator).FullName, userId, campaignKey, customVariables);
             }
             return result;
         }
 
-        public dynamic getTypeCastedFeatureValue(dynamic value, string variableType) {
-            try {
+        public dynamic getTypeCastedFeatureValue(dynamic value, string variableType)
+        {
+            try
+            {
                 if (value.GetType().Name == Constants.DotnetVariableTypes.VALUES[variableType])
                 {
                     return value;
@@ -57,7 +64,7 @@ namespace VWOSdk
                 {
                     return Convert.ToInt32(value);
                 }
-                if (variableType== Constants.VariableTypes.DOUBLE)
+                if (variableType == Constants.VariableTypes.DOUBLE)
                 {
                     return Convert.ToDouble(value);
                 }
@@ -66,46 +73,59 @@ namespace VWOSdk
                     return Convert.ToBoolean(value);
                 }
                 return value;
-            } catch {
+            }
+            catch
+            {
                 LogErrorMessage.UnableToTypeCast(typeof(IVWOClient).FullName, value, variableType, value.GetType().Name);
                 return null;
             }
         }
 
-        private bool evaluateSegment(Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables) {
-            if (segments.Count == 0) {
+        private bool evaluateSegment(Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargettingVariable)
+        {
+            if (segments.Count == 0)
+            {
                 return true;
             }
             var segmentOperator = segments.Keys.First();
             var subSegments = ToDictionary(segments[segmentOperator]);
-            switch(segmentOperator) {
+            switch (segmentOperator)
+            {
                 case Constants.OperatorTypes.NOT:
-                    return !this.evaluateSegment(subSegments, customVariables);
+                    return !this.evaluateSegment(subSegments, customVariables, variationTargettingVariable);
                 case Constants.OperatorTypes.AND:
-                    foreach(var subSegment in subSegments) {
+                    foreach (var subSegment in subSegments)
+                    {
                         var segment = ToDictionary(subSegment);
-                        if (!this.evaluateSegment(segment, customVariables)) {
+                        if (!this.evaluateSegment(segment, customVariables, variationTargettingVariable))
+                        {
                             return false;
                         }
                     }
                     return true;
                 case Constants.OperatorTypes.OR:
-                    foreach(var subSegment in subSegments) {
+                    foreach (var subSegment in subSegments)
+                    {
                         var segment = ToDictionary(subSegment);
-                        if (this.evaluateSegment(segment, customVariables)) {
+                        if (this.evaluateSegment(segment, customVariables, variationTargettingVariable))
+                        {
                             return true;
                         }
                     }
                     return false;
                 case Constants.OperandTypes.CUSTOM_VARIABLE:
                     return this.operandEvaluator.EvaluateOperand(subSegments, customVariables);
+                case Constants.OperandTypes.USER:
+                    return this.operandEvaluator.EvaluateUser(subSegments, variationTargettingVariable);
                 default:
                     return true;
             }
         }
 
-        private static dynamic ToDictionary(dynamic input) {
-            if (input.GetType() == typeof(JObject)) {
+        private static dynamic ToDictionary(dynamic input)
+        {
+            if (input.GetType() == typeof(JObject))
+            {
                 return JObject.FromObject(input).ToObject<Dictionary<string, dynamic>>();
             }
             return input;

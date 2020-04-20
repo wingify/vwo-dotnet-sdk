@@ -73,6 +73,7 @@ namespace VWOSdk
         public static class OperandTypes
         {
             internal const string CUSTOM_VARIABLE = "custom_variable";
+            internal const string USER = "user";
         }
 
         public static class OperandValueTypesName

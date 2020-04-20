@@ -50,7 +50,7 @@ namespace VWOSdk
 
         private BucketedCampaign Process(Campaign campaign)
         {
-            return new BucketedCampaign(campaign.Id, campaign.PercentTraffic, campaign.Key, campaign.Status, campaign.Type, campaign.Segments, campaign.Variables)
+            return new BucketedCampaign(campaign.Id, campaign.PercentTraffic, campaign.Key, campaign.Status, campaign.Type, campaign.IsForcedVariationEnabled, campaign.Segments, campaign.Variables)
             {
                 Goals = ToDictionary(campaign.Goals, (goal) => goal.Identifier),
                 Variations = Bucket(campaign.Variations, campaign.Key)
