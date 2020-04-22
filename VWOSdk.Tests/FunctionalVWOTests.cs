@@ -245,8 +245,8 @@ namespace VWOSdk.Tests
                 Assert.Null(activateResponse);
             }
 
-            // var trackResponse = vwoClient.Track(campaignKey, userId, "CUSTOM");
-            // Assert.Equal(expectedPartOfCampaign, trackResponse);
+            var trackResponse = vwoClient.Track(campaignKey, userId, "CUSTOM");
+            Assert.Equal(expectedPartOfCampaign, trackResponse);
         }
     }
 }

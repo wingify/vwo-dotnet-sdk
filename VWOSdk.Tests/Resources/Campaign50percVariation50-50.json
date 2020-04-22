@@ -318,14 +318,9 @@
     {
       "Goals": [
         {
-          "Identifier": "rev",
-          "Id": 2,
-          "Type": "REVENUE_TRACKING"
-        },
-        {
-          "Identifier": "custom",
-          "Id": 294,
-          "Type": "CUSTOM_GOAL"
+          "identifier": "CUSTOM",
+          "id": 213,
+          "type": "CUSTOM_GOAL"
         }
       ],
       "Variations": [
