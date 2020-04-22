@@ -25,7 +25,7 @@ namespace VWOSdk
     {
         public static string StringifyCustomVariables(Dictionary<string, dynamic> customVariables)
         {
-            if (customVariables.Count == 0) {
+            if (customVariables == null || customVariables.Count == 0) {
                 return "";
             }
             StringBuilder builder = new StringBuilder();
