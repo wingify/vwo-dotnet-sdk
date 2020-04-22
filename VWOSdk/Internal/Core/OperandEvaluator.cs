@@ -70,8 +70,6 @@ namespace VWOSdk
             String[] strlist = operandData.Split(',');
             foreach (String s in strlist)
             {
-                Console.WriteLine("--------------------------------------");
-                Console.WriteLine(s);
                 Console.WriteLine(variationTargettingVariable["_vwo_user_id"]);
                 if (s.Trim() == variationTargettingVariable["_vwo_user_id"])
                 {

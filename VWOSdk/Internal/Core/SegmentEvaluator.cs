@@ -89,8 +89,6 @@ namespace VWOSdk
             }
             var segmentOperator = segments.Keys.First();
             var subSegments = ToDictionary(segments[segmentOperator]);
-            Console.WriteLine("-----------------------------------------------");
-            Console.WriteLine(subSegments);
             switch (segmentOperator)
             {
                 case Constants.OperatorTypes.NOT:

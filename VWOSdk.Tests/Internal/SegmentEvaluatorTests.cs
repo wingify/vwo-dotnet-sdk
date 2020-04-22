@@ -36,9 +36,9 @@ namespace VWOSdk.Tests
                     // Uncomment to debug
                     // System.Console.WriteLine(testCaseContent.Key);
                     Dictionary<string, dynamic> customVariables = testCaseContent.Value.ContainsKey("custom_variables") ? JObject.FromObject(testCaseContent.Value["custom_variables"]).ToObject<Dictionary<string, dynamic>>() : null;
-                    // Dictionary<string, dynamic> variationTargettingVariable = testCaseContent.Value.ContainsKey("custom_variables") ? JObject.FromObject(testCaseContent.Value["custom_variables"]).ToObject<Dictionary<string, dynamic>>() : null;
+                    Dictionary<string, dynamic> variationTargettingVariables = testCaseContent.Value.ContainsKey("variation_targeting_variables") ? JObject.FromObject(testCaseContent.Value["variation_targeting_variables"]).ToObject<Dictionary<string, dynamic>>() : null;
                     bool expectation = testCaseContent.Value["expectation"];
-                    bool result = new SegmentEvaluator().evaluate("user", "dummyCampaign", segments, customVariables, customVariables);
+                    bool result = new SegmentEvaluator().evaluate("user", "dummyCampaign", segments, customVariables, variationTargettingVariables);
                     Assert.Equal(result, expectation);
                 }
             }
