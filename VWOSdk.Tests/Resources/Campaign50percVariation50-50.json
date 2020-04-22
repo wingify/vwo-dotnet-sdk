@@ -336,7 +336,13 @@
           "Weight": 25.0,
           "IsFeatureEnabled": false,
           "Variables": null,
-          "Segments": {}
+          "Segments": {
+            "or": [
+              {
+                "user": " You, Faizan, Rohit "
+              }
+            ]
+          }
         },
         {
           "Id": 2,
@@ -348,7 +354,7 @@
           "Segments": {
             "or": [
               {
-                "user": "Varun,  You, Faizan, Rohit , Bob"
+                "user": "Varun,  You, Rohit , Bob"
               }
             ]
           }

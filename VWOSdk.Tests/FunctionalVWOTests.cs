@@ -199,9 +199,15 @@ namespace VWOSdk.Tests
 
         [InlineData("DEV_TEST_8", "Varun", true, "Variation-1")]
         [InlineData("DEV_TEST_8", "You", true, "Variation-1")]
-        [InlineData("DEV_TEST_8", "Faizan", true, "Variation-1")]
+        [InlineData("DEV_TEST_8", "Faizan", true, "Control")]
         [InlineData("DEV_TEST_8", "Rohit", true, "Variation-1")]
         [InlineData("DEV_TEST_8", "Bob", true, "Variation-1")]
+        [InlineData("DEV_TEST_8", "Ashley", true, "Variation-1")]
+        [InlineData("DEV_TEST_8", "Gimmy", true, "Variation-3")]
+        [InlineData("DEV_TEST_8", "Chris", true, "Variation-3")]
+        [InlineData("DEV_TEST_8", "Lisa", true, "Control")]
+
+
 
         public void GetVariation_Should_Return_Desired_Output(string campaignKey, string userId, bool expectedPartOfCampaign, string expectedVariationName)
         {
