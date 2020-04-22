@@ -35,7 +35,7 @@ namespace VWOSdk
             var operandKey = operandData.Keys.First();
             string operand = operandData[operandKey];
             // Retrieve corresponding custom_variable value from custom_variables
-            var customVariablesValue = customVariables.ContainsKey(operandKey) ? customVariables[operandKey] : null;
+            var customVariablesValue = customVariables != null && customVariables.ContainsKey(operandKey) ? customVariables[operandKey] : null;
             // Pre process custom_variable value
             customVariablesValue = this.ProcessCustomVariablesValue(customVariablesValue);
             // Pre process operand value

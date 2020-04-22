@@ -17,6 +17,7 @@
 #pragma warning restore 1587
 
 using System.Collections.Generic;
+using System;
 
 namespace VWOSdk
 {
@@ -395,6 +396,10 @@ namespace VWOSdk
                         {
                             LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignKey, apiName);
                             customVariables = new Dictionary<string, dynamic>();
+                        }
+                        if (variationTargettingVariable == null)
+                        {
+                            variationTargettingVariable = new Dictionary<string, dynamic>();
                         }
                         if (!this._segmentEvaluator.evaluate(userId, campaignKey, campaign.Segments, customVariables, variationTargettingVariable))
                         {
