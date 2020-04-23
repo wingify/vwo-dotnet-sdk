@@ -17,7 +17,6 @@
 #pragma warning restore 1587
 
 using System.Collections.Generic;
-using System;
 
 namespace VWOSdk
 {
@@ -437,6 +436,7 @@ namespace VWOSdk
             }
             return null;
         }
+
         private List<Variation> GetWhiteListedVariationsList(string userId, BucketedCampaign campaign, string campaignKey, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargettingVariable)
         {
             List<Variation> result = new List<Variation> { };
@@ -458,6 +458,7 @@ namespace VWOSdk
             }
             return result;
         }
+        
         private UserAllocationInfo GetControlVariation(BucketedCampaign campaign, Variation variation)
         {
             return new UserAllocationInfo(variation, campaign);
