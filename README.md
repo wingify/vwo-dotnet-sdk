@@ -9,7 +9,7 @@ This open source library allows you to A/B Test your Website at server-side.
 
 ## Requirements
 
-* Works with NetStandard: 2.0 onwards.
+- Works with NetStandard: 2.0 onwards.
 
 ## Installation
 
@@ -45,6 +45,10 @@ public static Dictionary<string, dynamic> options = new Dictionary<string, dynam
         "customVariables", new Dictionary<string, dynamic>()
         {
             {"price", 100.1}
+        },
+        "variationTargettingVariable", new Dictionary<string, dynamic>()
+        {
+            {"_vwo_user_id", "User"}
         }
     }
 };
@@ -63,6 +67,10 @@ public static Dictionary<string, dynamic> options = new Dictionary<string, dynam
         "customVariables", new Dictionary<string, dynamic>()
         {
             {"gender", 'f'}
+        }
+        "variationTargettingVariable", new Dictionary<string, dynamic>()
+        {
+            {"_vwo_user_id", "User"}
         }
     }
 };
@@ -232,8 +240,8 @@ Refer [third-party-attributions.txt](https://github.com/wingify/vwo-dotnet-sdk/b
 
 ## Authors
 
-* Main Contributor - [Sidhant Gakhar](https://github.com/sidhantgakhar)
-* Repo health maintainer - [Varun Malhotra](https://github.com/softvar)([@s0ftvar](https://twitter.com/s0ftvar))
+- Main Contributor - [Sidhant Gakhar](https://github.com/sidhantgakhar)
+- Repo health maintainer - [Varun Malhotra](https://github.com/softvar)([@s0ftvar](https://twitter.com/s0ftvar))
 
 ## Changelog
 
