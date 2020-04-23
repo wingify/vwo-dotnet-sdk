@@ -424,8 +424,6 @@ namespace VWOSdk
 
         private Variation FindTargetedVariation(BucketedCampaign campaign, string campaignKey, string userId, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargettingVariable)
         {
-            // Console.Write("--------------------------------------- FindTargetedVariation -----------------------");
-            // Console.Write(campaign.IsForcedVariationEnabled);
             if (campaign.IsForcedVariationEnabled)
             {
                 if (variationTargettingVariable == null)
@@ -455,9 +453,6 @@ namespace VWOSdk
                 }
                 if (status)
                 {
-                    Console.Write("This is the status---------------------------------------");
-                    Console.Write(variation.Name);
-                    Console.Write(status);
                     result.Add(variation);
                 }
             }
