@@ -111,7 +111,6 @@ namespace VWOSdk
             result = result && ValidateDouble(campaign.PercentTraffic);
             result = result && ValidateString(campaign.Type);
             result = result && Validate(campaign.Variations);
-            // result = result && ValidateBool(campaign.IsForcedVariationEnabled);
             return result;
         }
 
