@@ -38,18 +38,24 @@ using System.Collections.Generic;
 public static Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
 string variationName = vwoClient.Activate(campaignKey, userId, options);
 
-// With Custom Variable
-public static Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
+// With Custom Variable , variation targeting variable
+public readonly static Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
 {
     {
-        "customVariables", new Dictionary<string, dynamic>()
-        {
-            {"price", 100.1}
-        },
-        "variationTargettingVariable", new Dictionary<string, dynamic>()
-        {
-            {"_vwo_user_id", "User"}
-        }
+      "customVariables", new Dictionary<string, dynamic>()
+      {
+          {
+            "gender", "f"
+          }
+      }
+    },
+    {
+      "variationTargettingVariable", new Dictionary<string, dynamic>()
+      {
+          {
+              "abcd", 1
+          }
+      }
     }
 };
 
@@ -60,18 +66,24 @@ string variationName = vwoClient.Activate(campaignKey, userId, options);
 public static Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
 string variationName = vwoClient.GetVariationName(campaignKey, userId, options);
 
-// With Custom Variable
+// With Custom Variable snd variation targeting variable
 public static Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
 {
     {
-        "customVariables", new Dictionary<string, dynamic>()
-        {
-            {"gender", 'f'}
-        }
-        "variationTargettingVariable", new Dictionary<string, dynamic>()
-        {
-            {"_vwo_user_id", "User"}
-        }
+      "customVariables", new Dictionary<string, dynamic>()
+      {
+          {
+            "gender", "f"
+          }
+      }
+    },
+    {
+      "variationTargettingVariable", new Dictionary<string, dynamic>()
+      {
+          {
+              "abcd", 1
+          }
+      }
     }
 };
 string variationName = vwoClient.GetVariationName(campaignKey, userId, options);
@@ -103,15 +115,27 @@ public static Dictionary<string, dynamic> options = new Dictionary<string, dynam
 };
 bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options);
 
-// For Revenue Value and Custom Variable
+// For Revenue Value and Custom Variable and Variation Targeting varaible
 public static Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
 {
-    { "revenueValue", 10.2 },
     {
-        "customVariables", new Dictionary<string, dynamic>()
-        {
-            {"value", 10}
-        }
+        "revenue_value", 10
+    },
+    {
+      "customVariables", new Dictionary<string, dynamic>()
+      {
+          {
+            "gender", "f"
+          }
+      }
+    },
+    {
+      "variationTargettingVariable", new Dictionary<string, dynamic>()
+      {
+          {
+              "abcd", 1
+          }
+      }
     }
 };
 bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options);
