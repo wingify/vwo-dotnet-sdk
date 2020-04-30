@@ -99,5 +99,8 @@ namespace VWOSdk
         public static void SkippingSegmentation(string file , string userId, string campaignKey, string apiName, string variationName) {
             Log.Info($"({file}): In API: {apiName}, Skipping segmentation for UserId:{userId} in campaing:{campaignKey} for variation: {variationName} as no valid segment is found");
         }
+        public static void SegmentationStatus(string file , string userId, string campaignKey, string apiName, string variationName, string status) {
+            Log.Info($"({file}): In API: {apiName}, Whitelisting for UserId:{userId} in campaing:{campaignKey} for variation: {variationName} is: {status}");
+        }
     }
 }

@@ -34,16 +34,19 @@ namespace VWOSdk
             this.operandEvaluator = new OperandEvaluator();
         }
 
-        public bool evaluate(string userId, string campaignKey, Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables)
+        public bool evaluate(string userId, string campaignKey, string segmentationType, Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables)
         {
             var result = this.evaluateSegment(segments, customVariables);
-            if (result)
+            if (segmentationType == Constants.SegmentationType.PRE_SEGMENTATION)
             {
-                LogInfoMessage.UserPassedPreSegmentation(typeof(SegmentEvaluator).FullName, userId, campaignKey, customVariables);
-            }
-            else
-            {
-                LogInfoMessage.UserFailedPreSegmentation(typeof(SegmentEvaluator).FullName, userId, campaignKey, customVariables);
+                if (result)
+                {
+                    LogInfoMessage.UserPassedPreSegmentation(typeof(SegmentEvaluator).FullName, userId, campaignKey, customVariables);
+                }
+                else
+                {
+                    LogInfoMessage.UserFailedPreSegmentation(typeof(SegmentEvaluator).FullName, userId, campaignKey, customVariables);
+                }
             }
             return result;
         }

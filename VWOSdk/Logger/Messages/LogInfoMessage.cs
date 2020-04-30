@@ -80,8 +80,8 @@ namespace VWOSdk
             Log.Info($"({file}): In API: {apiName}, Skipping Whitelisting for UserId:{userId} in campaing:{campaignKey}");
         }
 
-        public static void WhitelistingStatus(string file , string userId, string campaignKey, string apiName, string variationName, string status) {
-            Log.Info($"({file}): In API: {apiName}, Whitelisting for UserId:{userId} in campaing:{campaignKey} for variation: {variationName} is: {status}");
+        public static void WhitelistingStatus(string file , string userId, string campaignKey, string apiName, string variationString, string status) {
+            Log.Info($"({file}): In API: {apiName}, Whitelisting for UserId:{userId} in campaing:{campaignKey} is: {status} {variationString}");
         }
 
         public static void FeatureEnabledForUser(string file, string campaignKey, string userId, string apiName)

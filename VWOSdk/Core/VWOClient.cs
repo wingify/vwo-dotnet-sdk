@@ -392,6 +392,7 @@ namespace VWOSdk
                 {
                     if (campaign.Segments.Count > 0)
                     {
+                        string segmentationType = Constants.SegmentationType.PRE_SEGMENTATION;
                         if (customVariables == null)
                         {
                             LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignKey, apiName);
@@ -401,7 +402,7 @@ namespace VWOSdk
                         {
                             variationTargettingVariable = new Dictionary<string, dynamic>();
                         }
-                        if (!this._segmentEvaluator.evaluate(userId, campaignKey, campaign.Segments, customVariables ))
+                        if (!this._segmentEvaluator.evaluate(userId, campaignKey, segmentationType, campaign.Segments, customVariables ))
                         {
                             return new UserAllocationInfo();
                         }
@@ -445,14 +446,14 @@ namespace VWOSdk
                 List<Variation> whiteListedVariations = this.GetWhiteListedVariationsList(apiName, userId, campaign, campaignKey, customVariables, variationTargettingVariable);
 
                 string status = Constants.WhitelistingStatus.FAILED;
-                string variationName = " ";
+                string variationString = " ";
                 Variation variation = this._variationAllocator.TargettedVariation(userId, whiteListedVariations);
                 if (variation != null)
                 {
                     status = Constants.WhitelistingStatus.PASSED;
-                    variationName = variation.Name;
+                    variationString = $"and variation: {variation.Name} is assigned";
                 }
-                LogInfoMessage.WhitelistingStatus(typeof(IVWOClient).FullName, userId, campaignKey, apiName, variationName, status);
+                LogInfoMessage.WhitelistingStatus(typeof(IVWOClient).FullName, userId, campaignKey, apiName, variationString, status);
                 return variation;
             }
             LogInfoMessage.SkippingWhitelisting(typeof(IVWOClient).FullName, userId, campaignKey, apiName);
@@ -464,20 +465,22 @@ namespace VWOSdk
             List<Variation> result = new List<Variation> { };
             foreach (var variation in campaign.Variations.All())
             {
-                bool status;
+                string status = Constants.SegmentationStatus.FAILED;
+                string segmentationType  = Constants.SegmentationType.WHITELISTING;
                 if (variation.Segments.Count == 0)
                 {
-                    status = false;
                     LogDebugMessage.SkippingSegmentation(typeof(IVWOClient).FullName, userId, campaignKey, apiName, variation.Name);
                 }
                 else
                 {
-                    status = this._segmentEvaluator.evaluate(userId, campaignKey, variation.Segments, variationTargettingVariable);
+                    if (this._segmentEvaluator.evaluate(userId, campaignKey, segmentationType, variation.Segments, variationTargettingVariable))
+                    {
+                        status = Constants.SegmentationStatus.PASSED;
+                        result.Add(variation);
+                    }
+                    LogDebugMessage.SegmentationStatus(typeof(IVWOClient).FullName, userId, campaignKey, apiName, variation.Name, status);
                 }
-                if (status)
-                {
-                    result.Add(variation);
-                }
+
             }
             return result;
         }

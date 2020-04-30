@@ -40,7 +40,7 @@ namespace VWOSdk.Tests
                         customVariables = variationTargettingVariables;
                     }
                     bool expectation = testCaseContent.Value["expectation"];
-                    bool result = new SegmentEvaluator().evaluate("user", "dummyCampaign", segments, customVariables);
+                    bool result = new SegmentEvaluator().evaluate("user", "dummyCampaign", Constants.SegmentationType.PRE_SEGMENTATION, segments, customVariables);
                     Assert.Equal(result, expectation);
                 }
             }
