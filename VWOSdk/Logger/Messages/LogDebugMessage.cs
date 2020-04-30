@@ -96,5 +96,8 @@ namespace VWOSdk
         public static void ImpressionForPushTag(string file, string properties) {
             Log.Debug($"({file}): impression built for push-tags - {properties}");
         }
+        public static void SkippingSegmentation(string file , string userId, string campaignKey, string apiName, string variationName) {
+            Log.Info($"({file}): In API: {apiName}, Skipping segmentation for UserId:{userId} in campaing:{campaignKey} for variation: {variationName} as no valid segment is found");
+        }
     }
 }

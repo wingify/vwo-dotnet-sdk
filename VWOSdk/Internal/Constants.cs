@@ -50,6 +50,12 @@ namespace VWOSdk
             internal static readonly string RUNNING = "RUNNING";
         }
 
+        public static class WhitelistingStatus
+        {
+            internal static readonly string PASSED = "PASSED";
+            internal static readonly string FAILED = "FAILED";
+        }
+
         public static class CampaignTypes
         {
             internal static readonly string VISUAL_AB = "VISUAL_AB";

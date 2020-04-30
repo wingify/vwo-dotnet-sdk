@@ -372,7 +372,7 @@ namespace VWOSdk
         /// </returns>
         private UserAllocationInfo AllocateVariation(string campaignKey, string userId, BucketedCampaign campaign, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargettingVariable, string apiName = null)
         {
-            Variation TargettedVariation = this.FindTargetedVariation(campaign, campaignKey, userId, customVariables, variationTargettingVariable);
+            Variation TargettedVariation = this.FindTargetedVariation(apiName, campaign, campaignKey, userId, customVariables, variationTargettingVariable);
             if (TargettedVariation != null)
             {
                 return new UserAllocationInfo(TargettedVariation, campaign);
@@ -422,7 +422,7 @@ namespace VWOSdk
             return new UserAllocationInfo();
         }
 
-        private Variation FindTargetedVariation(BucketedCampaign campaign, string campaignKey, string userId, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargettingVariable)
+        private Variation FindTargetedVariation(string apiName, BucketedCampaign campaign, string campaignKey, string userId, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargettingVariable)
         {
             if (campaign.IsForcedVariationEnabled)
             {
@@ -442,14 +442,24 @@ namespace VWOSdk
                         variationTargettingVariable.Add("_vwo_user_id", userId);
                     }
                 }
-                List<Variation> whiteListedVariations = this.GetWhiteListedVariationsList(userId, campaign, campaignKey, customVariables, variationTargettingVariable);
+                List<Variation> whiteListedVariations = this.GetWhiteListedVariationsList(apiName, userId, campaign, campaignKey, customVariables, variationTargettingVariable);
 
-                return this._variationAllocator.TargettedVariation(userId, whiteListedVariations);
+                string status = Constants.WhitelistingStatus.FAILED;
+                string variationName = " ";
+                Variation variation = this._variationAllocator.TargettedVariation(userId, whiteListedVariations);
+                if (variation != null)
+                {
+                    status = Constants.WhitelistingStatus.PASSED;
+                    variationName = variation.Name;
+                }
+                LogInfoMessage.WhitelistingStatus(typeof(IVWOClient).FullName, userId, campaignKey, apiName, variationName, status);
+                return variation;
             }
+            LogInfoMessage.SkippingWhitelisting(typeof(IVWOClient).FullName, userId, campaignKey, apiName);
             return null;
         }
 
-        private List<Variation> GetWhiteListedVariationsList(string userId, BucketedCampaign campaign, string campaignKey, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargettingVariable)
+        private List<Variation> GetWhiteListedVariationsList(string apiName, string userId, BucketedCampaign campaign, string campaignKey, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargettingVariable)
         {
             List<Variation> result = new List<Variation> { };
             foreach (var variation in campaign.Variations.All())
@@ -458,6 +468,7 @@ namespace VWOSdk
                 if (variation.Segments.Count == 0)
                 {
                     status = false;
+                    LogDebugMessage.SkippingSegmentation(typeof(IVWOClient).FullName, userId, campaignKey, apiName, variation.Name);
                 }
                 else
                 {
