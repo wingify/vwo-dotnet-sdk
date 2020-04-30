@@ -198,9 +198,9 @@ namespace VWOSdk.Tests
 
 
         [InlineData("DEV_TEST_8", "Varun", true, "Variation-1")]
-        [InlineData("DEV_TEST_8", "You", true, "Variation-1")]
+        [InlineData("DEV_TEST_8", "You", true, "Control")]
         [InlineData("DEV_TEST_8", "Faizan", true, "Control")]
-        [InlineData("DEV_TEST_8", "Rohit", true, "Variation-1")]
+        [InlineData("DEV_TEST_8", "Rohit", true, "Control")]
         [InlineData("DEV_TEST_8", "Bob", true, "Variation-1")]
         [InlineData("DEV_TEST_8", "Ashley", true, "Variation-1")]
         [InlineData("DEV_TEST_8", "Gimmy", true, "Variation-3")]

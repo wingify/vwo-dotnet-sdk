@@ -34,9 +34,9 @@ namespace VWOSdk
             this.operandEvaluator = new OperandEvaluator();
         }
 
-        public bool evaluate(string userId, string campaignKey, Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargettingVariable)
+        public bool evaluate(string userId, string campaignKey, Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables)
         {
-            var result = this.evaluateSegment(segments, customVariables, variationTargettingVariable);
+            var result = this.evaluateSegment(segments, customVariables);
             if (result)
             {
                 LogInfoMessage.UserPassedPreSegmentation(typeof(SegmentEvaluator).FullName, userId, campaignKey, customVariables);
@@ -81,7 +81,7 @@ namespace VWOSdk
             }
         }
 
-        private bool evaluateSegment(Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargettingVariable)
+        private bool evaluateSegment(Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables)
         {
             if (segments.Count == 0)
             {
@@ -92,12 +92,12 @@ namespace VWOSdk
             switch (segmentOperator)
             {
                 case Constants.OperatorTypes.NOT:
-                    return !this.evaluateSegment(subSegments, customVariables, variationTargettingVariable);
+                    return !this.evaluateSegment(subSegments, customVariables);
                 case Constants.OperatorTypes.AND:
                     foreach (var subSegment in subSegments)
                     {
                         var segment = ToDictionary(subSegment);
-                        if (!this.evaluateSegment(segment, customVariables, variationTargettingVariable))
+                        if (!this.evaluateSegment(segment, customVariables))
                         {
                             return false;
                         }
@@ -107,7 +107,7 @@ namespace VWOSdk
                     foreach (var subSegment in subSegments)
                     {
                         var segment = ToDictionary(subSegment);
-                        if (this.evaluateSegment(segment, customVariables, variationTargettingVariable))
+                        if (this.evaluateSegment(segment, customVariables))
                         {
                             return true;
                         }
@@ -116,7 +116,7 @@ namespace VWOSdk
                 case Constants.OperandTypes.CUSTOM_VARIABLE:
                     return this.operandEvaluator.EvaluateOperand(subSegments, customVariables);
                 case Constants.OperandTypes.USER:
-                    return this.operandEvaluator.EvaluateUser(subSegments, variationTargettingVariable);
+                    return this.operandEvaluator.EvaluateUser(subSegments, customVariables);
                 default:
                     return true;
             }

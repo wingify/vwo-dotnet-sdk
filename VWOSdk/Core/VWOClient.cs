@@ -17,6 +17,7 @@
 #pragma warning restore 1587
 
 using System.Collections.Generic;
+using System;
 
 namespace VWOSdk
 {
@@ -400,7 +401,7 @@ namespace VWOSdk
                         {
                             variationTargettingVariable = new Dictionary<string, dynamic>();
                         }
-                        if (!this._segmentEvaluator.evaluate(userId, campaignKey, campaign.Segments, customVariables, variationTargettingVariable))
+                        if (!this._segmentEvaluator.evaluate(userId, campaignKey, campaign.Segments, customVariables ))
                         {
                             return new UserAllocationInfo();
                         }
@@ -430,6 +431,17 @@ namespace VWOSdk
                     variationTargettingVariable = new Dictionary<string, dynamic>();
                     variationTargettingVariable.Add("_vwo_user_id", userId);
                 }
+                else
+                {
+                    if (variationTargettingVariable.ContainsKey("_vwo_user_id"))
+                    {
+                        variationTargettingVariable["_vwo_user_id"] = userId;
+                    }
+                    else
+                    {
+                        variationTargettingVariable.Add("_vwo_user_id", userId);
+                    }
+                }
                 List<Variation> whiteListedVariations = this.GetWhiteListedVariationsList(userId, campaign, campaignKey, customVariables, variationTargettingVariable);
 
                 return this._variationAllocator.TargettedVariation(userId, whiteListedVariations);
@@ -449,7 +461,7 @@ namespace VWOSdk
                 }
                 else
                 {
-                    status = this._segmentEvaluator.evaluate(userId, campaignKey, variation.Segments, customVariables, variationTargettingVariable);
+                    status = this._segmentEvaluator.evaluate(userId, campaignKey, variation.Segments, variationTargettingVariable);
                 }
                 if (status)
                 {
@@ -458,7 +470,7 @@ namespace VWOSdk
             }
             return result;
         }
-        
+
         private UserAllocationInfo GetControlVariation(BucketedCampaign campaign, Variation variation)
         {
             return new UserAllocationInfo(variation, campaign);

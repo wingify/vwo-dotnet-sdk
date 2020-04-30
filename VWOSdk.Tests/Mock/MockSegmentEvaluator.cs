@@ -30,7 +30,7 @@ namespace VWOSdk.Tests
 
         internal static void SetupResolve(Mock<ISegmentEvaluator> mockSegmentEvaluator, bool returnValue)
         {
-            mockSegmentEvaluator.Setup(mock => mock.evaluate(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>(), It.IsAny<Dictionary<string, dynamic>>(), It.IsAny<Dictionary<string, dynamic>>()))
+            mockSegmentEvaluator.Setup(mock => mock.evaluate(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>(), It.IsAny<Dictionary<string, dynamic>>()))
                 .Returns(returnValue);
         }
     }
