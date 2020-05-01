@@ -44,12 +44,7 @@ namespace VWOSdk
 
         public static T CloneJson<T>(this T source)
         {
-            // Don't serialize a null object, simply return the default for that object
-            if (Object.ReferenceEquals(source, null))
-            {
-                return default(T);
-            }
-
+          
             // initialize inner objects individually
             // for example in default constructor some list property initialized with some values,
             // but in 'source' these items are cleaned -
