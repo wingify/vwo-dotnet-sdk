@@ -430,17 +430,17 @@ namespace VWOSdk
                 if (variationTargettingVariable == null)
                 {
                     variationTargettingVariable = new Dictionary<string, dynamic>();
-                    variationTargettingVariable.Add("_vwo_user_id", userId);
+                    variationTargettingVariable.Add("_vwoUserId", userId);
                 }
                 else
                 {
-                    if (variationTargettingVariable.ContainsKey("_vwo_user_id"))
+                    if (variationTargettingVariable.ContainsKey("_vwoUserId"))
                     {
-                        variationTargettingVariable["_vwo_user_id"] = userId;
+                        variationTargettingVariable["_vwoUserId"] = userId;
                     }
                     else
                     {
-                        variationTargettingVariable.Add("_vwo_user_id", userId);
+                        variationTargettingVariable.Add("_vwoUserId", userId);
                     }
                 }
                 List<Variation> whiteListedVariations = this.GetWhiteListedVariationsList(apiName, userId, campaign, campaignKey, customVariables, variationTargettingVariable);
