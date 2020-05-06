@@ -65,12 +65,12 @@ namespace VWOSdk
             }
         }
 
-        public bool EvaluateUser(string operandData, Dictionary<string, dynamic> variationTargettingVariable)
+        public bool EvaluateUser(string operandData, Dictionary<string, dynamic> variationTargetingVariables)
         {
             String[] strlist = operandData.Split(',');
             foreach (String s in strlist)
             {
-                if (s.Trim() == variationTargettingVariable["_vwo_user_id"])
+                if (s.Trim() == variationTargetingVariables["_vwoUserId"])
                 {
                     return true;
                 }

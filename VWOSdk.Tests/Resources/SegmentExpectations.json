@@ -7400,7 +7400,7 @@
                 }]
             },
             "variation_targeting_variables": {
-                "_vwo_user_id": "user_1"
+                "_vwoUserId": "user_1"
             },
             "expectation": true
         },
@@ -7411,7 +7411,7 @@
                 }]
             },
             "variation_targeting_variables": {
-                "_vwo_user_id": "user_2"
+                "_vwoUserId": "user_2"
             },
             "expectation": false
         },
@@ -7422,7 +7422,7 @@
                 }]
             },
             "variation_targeting_variables": {
-                "_vwo_user_id": "user_1"
+                "_vwoUserId": "user_1"
             },
             "expectation": true
         },
@@ -7433,7 +7433,7 @@
                 }]
             },
             "variation_targeting_variables": {
-                "_vwo_user_id": "user_5"
+                "_vwoUserId": "user_5"
             },
             "expectation": false
         },
@@ -7448,7 +7448,7 @@
                 }]
             },
             "variation_targeting_variables": {
-                "_vwo_user_id": "user_4"
+                "_vwoUserId": "user_4"
             },
             "expectation": true
         },
@@ -7463,7 +7463,7 @@
                 }]
             },
             "variation_targeting_variables": {
-                "_vwo_user_id": "user_1"
+                "_vwoUserId": "user_1"
             },
             "expectation": false
         },
@@ -7478,7 +7478,7 @@
                 }]
             },
             "variation_targeting_variables": {
-                "_vwo_user_id": "user_4"
+                "_vwoUserId": "user_4"
             },
             "expectation": true
         },
@@ -7493,7 +7493,7 @@
                 }]
             },
             "variation_targeting_variables": {
-                "_vwo_user_id": "user_2"
+                "_vwoUserId": "user_2"
             },
             "expectation": false
         },
@@ -7508,7 +7508,7 @@
                 }]
             },
             "variation_targeting_variables": {
-                "_vwo_user_id": "user_4"
+                "_vwoUserId": "user_4"
             },
             "expectation": true
         },
@@ -7523,7 +7523,7 @@
                 }]
             },
             "variation_targeting_variables": {
-                "_vwo_user_id": "user_1"
+                "_vwoUserId": "user_1"
             },
             "expectation": false
         },
@@ -7538,7 +7538,7 @@
                 }]
             },
             "variation_targeting_variables": {
-                "_vwo_user_id": "user_4"
+                "_vwoUserId": "user_4"
             },
             "expectation": true
         },
@@ -7553,7 +7553,7 @@
                 }]
             },
             "variation_targeting_variables": {
-                "_vwo_user_id": "user_2"
+                "_vwoUserId": "user_2"
             },
             "expectation": false
         },
@@ -7568,7 +7568,7 @@
                 }]
             },
             "variation_targeting_variables": {
-                "_vwo_user_id": "user_4"
+                "_vwoUserId": "user_4"
             },
             "expectation": true
         },
@@ -7583,7 +7583,7 @@
                 }]
             },
             "variation_targeting_variables": {
-                "_vwo_user_id": "space   user"
+                "_vwoUserId": "space   user"
             },
             "expectation": false
         },
@@ -7598,7 +7598,7 @@
                 }]
             },
             "variation_targeting_variables": {
-                "_vwo_user_id": "user_4"
+                "_vwoUserId": "user_4"
             },
             "expectation": true
         },
@@ -7613,7 +7613,7 @@
                 }]
             },
             "variation_targeting_variables": {
-                "_vwo_user_id": "space     user"
+                "_vwoUserId": "space     user"
             },
             "expectation": false
         }

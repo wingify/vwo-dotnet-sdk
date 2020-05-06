@@ -18,6 +18,7 @@
 
 using System;
 using System.Text;
+using System.Collections.Generic;
 
 namespace VWOSdk
 {
@@ -37,7 +38,7 @@ namespace VWOSdk
             byte[] hash = this._murmur32.ComputeHash(Encoding.UTF8.GetBytes(userId));
             hashValue = BitConverter.ToUInt32(hash, 0);
             var bucketValue = Compute(hashValue, maxVal, multiplier);
-            LogDebugMessage.UserHashBucketValue(file, userId, hashValue, bucketValue);
+            LogInfoMessage.UserHashBucketValue(file, userId, hashValue, bucketValue);
             return bucketValue;
         }
 

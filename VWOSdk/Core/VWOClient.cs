@@ -17,6 +17,7 @@
 #pragma warning restore 1587
 
 using System.Collections.Generic;
+using System;
 
 namespace VWOSdk
 {
@@ -56,7 +57,7 @@ namespace VWOSdk
         {
             if (options == null) options = new Dictionary<string, dynamic>();
             Dictionary<string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
-            Dictionary<string, dynamic> variationTargettingVariable = options.ContainsKey("variationTargettingVariable") ? options["variationTargettingVariable"] : null;
+            Dictionary<string, dynamic> variationTargetingVariables = options.ContainsKey("variationTargetingVariables") ? options["variationTargetingVariables"] : null;
             if (this._validator.Activate(campaignKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignKey);
@@ -70,7 +71,7 @@ namespace VWOSdk
                     LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignKey, campaign.Type, nameof(Activate));
                     return null;
                 }
-                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargettingVariable, apiName: nameof(Activate));
+                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargetingVariables, apiName: nameof(Activate));
                 if (assignedVariation.Variation != null)
                 {
                     var trackUserRequest = ServerSideVerb.TrackUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode);
@@ -94,7 +95,7 @@ namespace VWOSdk
         {
             if (options == null) options = new Dictionary<string, dynamic>();
             Dictionary<string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
-            Dictionary<string, dynamic> variationTargettingVariable = options.ContainsKey("variationTargettingVariable") ? options["variationTargettingVariable"] : null;
+            Dictionary<string, dynamic> variationTargetingVariables = options.ContainsKey("variationTargetingVariables") ? options["variationTargetingVariables"] : null;
             if (this._validator.GetVariation(campaignKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignKey);
@@ -110,7 +111,7 @@ namespace VWOSdk
                     return null;
                 }
 
-                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargettingVariable, apiName: nameof(GetVariation));
+                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargetingVariables, apiName: nameof(GetVariation));
                 if (assignedVariation.Variation != null)
                 {
                     return assignedVariation.Variation.Name;
@@ -143,7 +144,7 @@ namespace VWOSdk
             if (options == null) options = new Dictionary<string, dynamic>();
             string revenueValue = options.ContainsKey("revenueValue") ? options["revenueValue"].ToString() : null;
             Dictionary<string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
-            Dictionary<string, dynamic> variationTargettingVariable = options.ContainsKey("variationTargettingVariable") ? options["variationTargettingVariable"] : null;
+            Dictionary<string, dynamic> variationTargetingVariables = options.ContainsKey("variationTargetingVariables") ? options["variationTargetingVariables"] : null;
 
             if (this._validator.Track(campaignKey, userId, goalIdentifier, revenueValue, options))
             {
@@ -160,7 +161,7 @@ namespace VWOSdk
                     return false;
                 }
 
-                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargettingVariable, goalIdentifier: goalIdentifier, apiName: nameof(Track));
+                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargetingVariables, goalIdentifier: goalIdentifier, apiName: nameof(Track));
                 var variationName = assignedVariation.Variation?.Name;
                 var selectedGoalIdentifier = assignedVariation.Goal?.Identifier;
                 if (string.IsNullOrEmpty(variationName) == false)
@@ -209,7 +210,7 @@ namespace VWOSdk
         {
             if (options == null) options = new Dictionary<string, dynamic>();
             Dictionary<string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
-            Dictionary<string, dynamic> variationTargettingVariable = options.ContainsKey("variationTargettingVariable") ? options["variationTargettingVariable"] : null;
+            Dictionary<string, dynamic> variationTargetingVariables = options.ContainsKey("variationTargetingVariables") ? options["variationTargetingVariables"] : null;
             if (this._validator.IsFeatureEnabled(campaignKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignKey);
@@ -224,7 +225,7 @@ namespace VWOSdk
                     return false;
                 }
 
-                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargettingVariable, apiName: nameof(IsFeatureEnabled));
+                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargetingVariables, apiName: nameof(IsFeatureEnabled));
                 if (campaign.Type == Constants.CampaignTypes.FEATURE_TEST)
                 {
                     if (assignedVariation.Variation != null)
@@ -267,7 +268,7 @@ namespace VWOSdk
         {
             if (options == null) options = new Dictionary<string, dynamic>();
             Dictionary<string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
-            Dictionary<string, dynamic> variationTargettingVariable = options.ContainsKey("variationTargettingVariable") ? options["variationTargettingVariable"] : null;
+            Dictionary<string, dynamic> variationTargetingVariables = options.ContainsKey("variationTargetingVariables") ? options["variationTargetingVariables"] : null;
             var variables = new List<Dictionary<string, dynamic>>();
             var variable = new Dictionary<string, dynamic>();
 
@@ -286,7 +287,7 @@ namespace VWOSdk
                     return null;
                 }
 
-                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargettingVariable, apiName: nameof(GetFeatureVariableValue));
+                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargetingVariables, apiName: nameof(GetFeatureVariableValue));
                 if (campaign.Type == Constants.CampaignTypes.FEATURE_ROLLOUT)
                 {
                     variables = campaign.Variables;
@@ -365,13 +366,13 @@ namespace VWOSdk
         /// <param name="apiName"></param>
         /// <param name="campaign"></param>
         /// <param name="customVariables"></param>
-        /// <param name="variationTargettingVariable"></param>
+        /// <param name="variationTargetingVariables"></param>
         /// <returns>
         /// If Variation is allocated, returns UserAssignedInfo with valid details, else return Empty UserAssignedInfo.
         /// </returns>
-        private UserAllocationInfo AllocateVariation(string campaignKey, string userId, BucketedCampaign campaign, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargettingVariable, string apiName = null)
+        private UserAllocationInfo AllocateVariation(string campaignKey, string userId, BucketedCampaign campaign, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargetingVariables, string apiName = null)
         {
-            Variation TargettedVariation = this.FindTargetedVariation(campaign, campaignKey, userId, customVariables, variationTargettingVariable);
+            Variation TargettedVariation = this.FindTargetedVariation(apiName, campaign, campaignKey, userId, customVariables, variationTargetingVariables);
             if (TargettedVariation != null)
             {
                 return new UserAllocationInfo(TargettedVariation, campaign);
@@ -391,16 +392,17 @@ namespace VWOSdk
                 {
                     if (campaign.Segments.Count > 0)
                     {
+                        string segmentationType = Constants.SegmentationType.PRE_SEGMENTATION;
                         if (customVariables == null)
                         {
                             LogInfoMessage.NoCustomVariables(typeof(IVWOClient).FullName, userId, campaignKey, apiName);
                             customVariables = new Dictionary<string, dynamic>();
                         }
-                        if (variationTargettingVariable == null)
+                        if (variationTargetingVariables == null)
                         {
-                            variationTargettingVariable = new Dictionary<string, dynamic>();
+                            variationTargetingVariables = new Dictionary<string, dynamic>();
                         }
-                        if (!this._segmentEvaluator.evaluate(userId, campaignKey, campaign.Segments, customVariables, variationTargettingVariable))
+                        if (!this._segmentEvaluator.evaluate(userId, campaignKey, segmentationType, campaign.Segments, customVariables ))
                         {
                             return new UserAllocationInfo();
                         }
@@ -421,44 +423,67 @@ namespace VWOSdk
             return new UserAllocationInfo();
         }
 
-        private Variation FindTargetedVariation(BucketedCampaign campaign, string campaignKey, string userId, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargettingVariable)
+        private Variation FindTargetedVariation(string apiName, BucketedCampaign campaign, string campaignKey, string userId, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargetingVariables)
         {
             if (campaign.IsForcedVariationEnabled)
             {
-                if (variationTargettingVariable == null)
+                if (variationTargetingVariables == null)
                 {
-                    variationTargettingVariable = new Dictionary<string, dynamic>();
-                    variationTargettingVariable.Add("_vwo_user_id", userId);
+                    variationTargetingVariables = new Dictionary<string, dynamic>();
+                    variationTargetingVariables.Add("_vwoUserId", userId);
                 }
-                List<Variation> whiteListedVariations = this.GetWhiteListedVariationsList(userId, campaign, campaignKey, customVariables, variationTargettingVariable);
+                else
+                {
+                    if (variationTargetingVariables.ContainsKey("_vwoUserId"))
+                    {
+                        variationTargetingVariables["_vwoUserId"] = userId;
+                    }
+                    else
+                    {
+                        variationTargetingVariables.Add("_vwoUserId", userId);
+                    }
+                }
+                List<Variation> whiteListedVariations = this.GetWhiteListedVariationsList(apiName, userId, campaign, campaignKey, customVariables, variationTargetingVariables);
 
-                return this._variationAllocator.TargettedVariation(userId, whiteListedVariations);
+                string status = Constants.WhitelistingStatus.FAILED;
+                string variationString = " ";
+                Variation variation = this._variationAllocator.TargettedVariation(userId, whiteListedVariations);
+                if (variation != null)
+                {
+                    status = Constants.WhitelistingStatus.PASSED;
+                    variationString = $"and variation: {variation.Name} is assigned";
+                }
+                LogInfoMessage.WhitelistingStatus(typeof(IVWOClient).FullName, userId, campaignKey, apiName, variationString, status);
+                return variation;
             }
+            LogInfoMessage.SkippingWhitelisting(typeof(IVWOClient).FullName, userId, campaignKey, apiName);
             return null;
         }
 
-        private List<Variation> GetWhiteListedVariationsList(string userId, BucketedCampaign campaign, string campaignKey, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargettingVariable)
+        private List<Variation> GetWhiteListedVariationsList(string apiName, string userId, BucketedCampaign campaign, string campaignKey, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargetingVariables)
         {
             List<Variation> result = new List<Variation> { };
             foreach (var variation in campaign.Variations.All())
             {
-                bool status;
+                string status = Constants.SegmentationStatus.FAILED;
+                string segmentationType  = Constants.SegmentationType.WHITELISTING;
                 if (variation.Segments.Count == 0)
                 {
-                    status = false;
+                    LogDebugMessage.SkippingSegmentation(typeof(IVWOClient).FullName, userId, campaignKey, apiName, variation.Name);
                 }
                 else
                 {
-                    status = this._segmentEvaluator.evaluate(userId, campaignKey, variation.Segments, customVariables, variationTargettingVariable);
+                    if (this._segmentEvaluator.evaluate(userId, campaignKey, segmentationType, variation.Segments, variationTargetingVariables))
+                    {
+                        status = Constants.SegmentationStatus.PASSED;
+                        result.Add(variation);
+                    }
+                    LogDebugMessage.SegmentationStatus(typeof(IVWOClient).FullName, userId, campaignKey, apiName, variation.Name, status);
                 }
-                if (status)
-                {
-                    result.Add(variation);
-                }
+
             }
             return result;
         }
-        
         private UserAllocationInfo GetControlVariation(BucketedCampaign campaign, Variation variation)
         {
             return new UserAllocationInfo(variation, campaign);
@@ -478,14 +503,14 @@ namespace VWOSdk
         /// <param name="goalIdentifier"></param>
         /// <param name="campaign"></param>
         /// <param name="customVariables"></param>
-        /// <param name="variationTargettingVariable"></param>
+        /// <param name="variationTargetingVariables"></param>
         /// <param name="apiName"></param>
         /// <returns>
         /// If Variation is allocated and goal with given identifier is found, return UserAssignedInfo with valid information, otherwise, Empty UserAssignedInfo object.
         /// </returns>
-        private UserAllocationInfo AllocateVariation(string campaignKey, string userId, BucketedCampaign campaign, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargettingVariable, string goalIdentifier, string apiName)
+        private UserAllocationInfo AllocateVariation(string campaignKey, string userId, BucketedCampaign campaign, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargetingVariables, string goalIdentifier, string apiName)
         {
-            var userAllocationInfo = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargettingVariable, apiName);
+            var userAllocationInfo = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargetingVariables, apiName);
             if (userAllocationInfo.Variation != null)
             {
                 if (userAllocationInfo.Campaign.Goals.TryGetValue(goalIdentifier, out Goal goal))

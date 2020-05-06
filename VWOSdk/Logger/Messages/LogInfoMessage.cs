@@ -39,6 +39,10 @@ namespace VWOSdk
         {
             Log.Info($"({file}): Saving into UserStorageService for userId:{userId} successful");
         }
+        public static void UserHashBucketValue(string file, string userId, double hashValue, double bucketValue)
+        {
+            Log.Debug($"({file}): userId:{userId} having hash:{hashValue} got bucketValue:{bucketValue}");
+        }
         public static void GotStoredVariation(string file, string variationName, string campaignKey, string userId)
         {
             Log.Info($"({file}): Got stored variation:{variationName} of campaign:{campaignKey} for userId:{userId} from UserStorageService");
@@ -72,7 +76,15 @@ namespace VWOSdk
             Log.Info($"({file}): In API: {apiName}, Skipping pre-segmentation for UserId:{userId} as no valid segments found in campaing:{campaignKey}");
         }
 
-        public static void FeatureEnabledForUser(string file, string campaignKey, string userId, string apiName) 
+        public static void SkippingWhitelisting(string file , string userId, string campaignKey, string apiName) {
+            Log.Info($"({file}): In API: {apiName}, Skipping Whitelisting for UserId:{userId} in campaing:{campaignKey}");
+        }
+
+        public static void WhitelistingStatus(string file , string userId, string campaignKey, string apiName, string variationString, string status) {
+            Log.Info($"({file}): In API: {apiName}, Whitelisting for UserId:{userId} in campaing:{campaignKey} is: {status} {variationString}");
+        }
+
+        public static void FeatureEnabledForUser(string file, string campaignKey, string userId, string apiName)
         {
             Log.Info($"({file}): In API: {apiName} Feature having Campaign:{campaignKey} for user ID:{userId} is enabled");
         }

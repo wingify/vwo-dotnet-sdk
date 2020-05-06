@@ -74,7 +74,7 @@ namespace VWOSdk
                 whiteListedVariationsList = GetVariationAllocationRanges(whiteListedVariations);
                 double maxVal = Constants.Variation.MAX_TRAFFIC_VALUE;
                 double multiplier = 1;
-                var bucketValue = this._userHasher.ComputeBucketValue(userId, maxVal, multiplier);
+                var bucketValue = this._userHasher.ComputeBucketValue(userId, Constants.Campaign.MAX_TRAFFIC_PERCENT, multiplier);
                 targettedVariation = whiteListedVariationsList.Find(bucketValue);
             }
             return targettedVariation;
@@ -113,27 +113,29 @@ namespace VWOSdk
         public List<Variation> ScaleVariations(List<Variation> variations)
         {
             double weightSum = 0.0;
+            List<Variation> clonedWhiteListedVariations = new List<Variation> {};
             foreach (var variation in variations)
             {
                 weightSum += variation.Weight;
+                clonedWhiteListedVariations.Add(variation.CloneJson());
             }
 
             if (weightSum == 0)
             {
                 double normalizedWeight = 100.0 / variations.Count;
-                foreach (var variation in variations)
+                foreach (var variation in clonedWhiteListedVariations)
                 {
                     variation.Weight = normalizedWeight;
                 }
             }
             else
             {
-                foreach (var variation in variations)
+                foreach (var variation in clonedWhiteListedVariations)
                 {
                     variation.Weight = (variation.Weight / weightSum) * 100;
                 }
             }
-            return variations;
+            return clonedWhiteListedVariations;
         }
 
         public Variation GetSavedVariation(BucketedCampaign campaign, string variationName)

@@ -9,7 +9,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Changed
 
-- variationTargettingVariable argument support added in APIs: `activate`, `getVariation`, `track`, `isFeatureEnabled`, and `getFeatureVariableValue`.
+- variationTargetingVariables argument support added in APIs: `activate`, `getVariation`, `track`, `isFeatureEnabled`, and `getFeatureVariableValue`.
 
 #### Before
 
@@ -33,9 +33,9 @@ Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
         {
             {"price", 100.1}
         },
-        "variationTargettingVariable", new Dictionary<string, dynamic>()
+        "variationTargetingVariables", new Dictionary<string, dynamic>()
         {
-            {"_vwo_user_id", "User"}
+            {"_vwoUserId", "User"}
         }
     }
 };
