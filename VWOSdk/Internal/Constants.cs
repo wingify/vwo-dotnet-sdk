@@ -50,6 +50,24 @@ namespace VWOSdk
             internal static readonly string RUNNING = "RUNNING";
         }
 
+        public static class SegmentationType
+        {
+            internal static readonly string WHITELISTING = "whitelisting";
+            internal static readonly string PRE_SEGMENTATION = "pre-segmentation";
+        }
+
+        public static class SegmentationStatus
+        {
+            internal static readonly string PASSED = "PASSED";
+            internal static readonly string FAILED = "FAILED";
+        }
+
+        public static class WhitelistingStatus
+        {
+            internal static readonly string PASSED = "PASSED";
+            internal static readonly string FAILED = "FAILED";
+        }
+
         public static class CampaignTypes
         {
             internal static readonly string VISUAL_AB = "VISUAL_AB";

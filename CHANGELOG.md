@@ -35,7 +35,7 @@ Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
         },
         "variationTargettingVariable", new Dictionary<string, dynamic>()
         {
-            {"_vwo_user_id", "User"}
+            {"_vwoUserId", "User"}
         }
     }
 };
