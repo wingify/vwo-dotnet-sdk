@@ -402,6 +402,7 @@ namespace VWOSdk
                         {
                             variationTargettingVariable = new Dictionary<string, dynamic>();
                         }
+
                         if (!this._segmentEvaluator.evaluate(userId, campaignKey, segmentationType, campaign.Segments, customVariables ))
                         {
                             return new UserAllocationInfo();
