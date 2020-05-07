@@ -5,11 +5,19 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.6.0] - 2020-05-07
+
+### Added
+Forced Variation capabilites
+- Introduced `Forced Variation` to force certain users into specific variation. Forcing can be based on User IDs or custom variables defined.
+### Changed
+- All existing APIs to handle custom-targeting-variables as an option for forcing variation
+- Code refactored to support Whitelisting.
+
 ## [1.5.2] - 2020-04-30
 
 ### Changed
-
-- variationTargetingVariables argument support added in APIs: `activate`, `getVariation`, `track`, `isFeatureEnabled`, and `getFeatureVariableValue`.
+- variationTargetingVariables argument support added in APIs: `activate`, `getVariationName`, `track`, `isFeatureEnabled`, and `getFeatureVariableValue`.
 
 #### Before
 
@@ -35,7 +43,7 @@ Dictionary<string, dynamic> options = new Dictionary<string, dynamic>()
         },
         "variationTargetingVariables", new Dictionary<string, dynamic>()
         {
-            {"_vwoUserId", "User"}
+            {"team", "qa-internal"}
         }
     }
 };
