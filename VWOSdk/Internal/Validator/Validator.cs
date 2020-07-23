@@ -95,7 +95,7 @@ namespace VWOSdk
 
         private bool Validate(IReadOnlyList<Campaign> campaigns)
         {
-            var result = NotNull(campaigns) && NotEmpty(campaigns);
+            var result = NotNull(campaigns);
             foreach(var campaign in campaigns)
             {
                 result = result && Validate(campaign);
