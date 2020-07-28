@@ -127,9 +127,9 @@ namespace VWOSdk.Tests
             return MockSegmentEvaluator.Get();
         }
 
-        internal static void SetupResolve(Mock<ICampaignAllocator> mockCampaignResolver, BucketedCampaign allocatedCampaign, BucketedCampaign getCampaign = null)
+        internal static void SetupResolve(Mock<ICampaignAllocator> mockCampaignResolver, BucketedCampaign allocatedCampaign, BucketedCampaign getCampaign = null, BucketedCampaign otherAllocateCampaignReturnValue = null)
         {
-            MockCampaignAllocator.SetupResolve(mockCampaignResolver, allocatedCampaign, getCampaign);
+            MockCampaignAllocator.SetupResolve(mockCampaignResolver, allocatedCampaign, getCampaign, otherAllocateCampaignReturnValue);
         }
 
         internal static void SetupResolve(Mock<ISegmentEvaluator> mockSegmentEvaluator, bool returnValue)

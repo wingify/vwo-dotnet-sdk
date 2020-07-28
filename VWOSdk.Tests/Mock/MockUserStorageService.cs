@@ -31,7 +31,10 @@ namespace VWOSdk.Tests
         internal static void SetupGet(Mock<IUserStorageService> mockUserStorageService, UserStorageMap returnValue)
         {
             mockUserStorageService.Setup(mock => mock.Get(It.IsAny<string>(), It.IsAny<string>()))
-                .Returns(returnValue);
+                .Returns((string userId, string campaignKey) => {
+                    returnValue.CampaignKey = campaignKey;
+                    return returnValue;
+                });
         }
 
         internal static void SetupSet(Mock<IUserStorageService> mockUserStorageService, Exception exception)

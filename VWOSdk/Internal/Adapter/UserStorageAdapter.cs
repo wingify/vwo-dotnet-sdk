@@ -47,7 +47,6 @@ namespace VWOSdk
             }
 
             UserStorageMap userMap = TryGetUserMap(userId, campaignKey);
-
             if (userMap == null || string.IsNullOrEmpty(userMap.CampaignKey)
                 || string.IsNullOrEmpty(userMap.VariationName) || string.IsNullOrEmpty(userMap.UserId)
                 || string.Equals(userMap.UserId, userId) == false || string.Equals(userMap.CampaignKey, campaignKey) == false)
@@ -55,7 +54,6 @@ namespace VWOSdk
                 LogDebugMessage.NoStoredVariation(file, userId, campaignKey);
                 return null;
             }
-
             LogInfoMessage.GotStoredVariation(file, userMap.VariationName, campaignKey, userId);
             return userMap;
         }
@@ -80,7 +78,7 @@ namespace VWOSdk
             return null;
         }
 
-        internal void SetUserMap(string userId, string campaignKey, string variationName)
+        internal void SetUserMap(string userId, string campaignKey, string variationName, string goalIdentifier = null)
         {
             if (this._userStorageService == null)
             {
@@ -90,8 +88,8 @@ namespace VWOSdk
 
             try
             {
+                this._userStorageService.Set(new UserStorageMap(userId, campaignKey, variationName, goalIdentifier));
                 LogInfoMessage.SavingDataUserStorageService(file, userId);
-                this._userStorageService.Set(new UserStorageMap(userId, campaignKey, variationName));
                 return;
             }
             catch (Exception ex)

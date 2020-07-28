@@ -23,6 +23,7 @@ namespace VWOSdk
     internal class Constants
     {
         internal static readonly string PLATFORM = "server";
+        internal static readonly string GOAL_IDENTIFIER_SEPERATOR = "_vwo_";
 
         internal static class Campaign
         {
@@ -135,6 +136,17 @@ namespace VWOSdk
             internal const string DOUBLE = "double";
             internal const string BOOLEAN = "boolean";
 
+        }
+
+        public static class GoalTypes
+        {
+            internal const string REVENUE = "REVENUE_TRACKING";
+            internal const string CUSTOM = "CUSTOM_GOAL";
+            internal const string ALL = "ALL";
+
+            internal static List<string> VALUES =  new List<string>() {
+                "REVENUE_TRACKING", "CUSTOM_GOAL", "ALL"
+            };
         }
     }
 }

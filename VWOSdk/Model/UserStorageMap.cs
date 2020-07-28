@@ -25,15 +25,17 @@ namespace VWOSdk
 
         }
 
-        public UserStorageMap(string userId, string campaignKey, string variationName)
+        public UserStorageMap(string userId, string campaignKey, string variationName, string goalIdentifier = null)
         {
             this.UserId = userId;
             this.CampaignKey = campaignKey;
             this.VariationName = variationName;
+            this.GoalIdentifier = goalIdentifier;
         }
 
         public string UserId { get; set; }
         public string CampaignKey { get; set; }
         public string VariationName { get; set; }
+        public string GoalIdentifier { get; set; }
     }
 }

@@ -72,6 +72,32 @@ namespace VWOSdk
         /// <summary>
         /// Identifies whether the user becomes a part of feature rollout/test or not.
         /// </summary>
+        /// <param name="campaignKeys">Campaigns key to uniquely identify a server-side campaigns.</param>
+        /// <param name="userId">User ID which uniquely identifies each user.</param>
+        /// <param name="options">Dictionary for passing extra parameters to activate</param>
+        /// <returns>
+        /// /// A boolean value based on whether the impression was made to the VWO server.
+        /// True, if an impression event is successfully being made to the VWO server for report generation.
+        /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
+        /// </returns>
+
+        Dictionary <string, bool> Track(List <string> campaignKeys, string userId, string goalIdentifier, Dictionary<string, dynamic> options = null);
+        /// <summary>
+        /// Identifies whether the user becomes a part of feature rollout/test or not.
+        /// </summary>
+        /// <param name="userId">User ID which uniquely identifies each user.</param>
+        /// <param name="options">Dictionary for passing extra parameters to activate</param>
+        /// <returns>
+        /// /// A boolean value based on whether the impression was made to the VWO server.
+        /// True, if an impression event is successfully being made to the VWO server for report generation.
+        /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
+        /// </returns>
+
+        Dictionary <string, bool> Track(string userId, string goalIdentifier, Dictionary<string, dynamic> options = null);
+
+        /// <summary>
+        /// Identifies whether the user becomes a part of feature rollout/test or not.
+        /// </summary>
         /// <param name="campaignKey">Campaign key to uniquely identify a server-side campaign.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="options">Dictionary for passing extra parameters to activate</param>

@@ -80,6 +80,12 @@ string variationName = vwoClient.GetVariationName(campaignKey, userId, options);
 // For CUSTOM CONVERSION Goal
 bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier);
 
+// For Goal Conversion in Multiple Campaign
+Dictionary<string, bool> result = vwoClient.Track(List <string>() { campaignKey1 campaignKey2 }, userId, goalIdentifier);
+
+// For Goal Conversion in All Possible Campaigns
+Dictionary<string, bool> result = vwoClient.Track(userId, goalIdentifier);
+
 // Without Revenue Value and Custom Variable
 Dictionary<string, dynamic> options = new Dictionary<string, dynamic>(){};
 bool isSuccessful = vwoClient.Track(campaignKey, userId, goalIdentifier, options);
@@ -221,6 +227,13 @@ var settingsFile = VWO.GetSettings(VWOConfig.AccountId, VWOConfig.SdkKey);
 
 //  Provide UserStorageService instance while vwoClient Instantiation.
 var vwoClient = VWO.Launch(settingsFile, userStorageService: new UserStorageService());
+
+//  Set specific goalType to Track
+//  Available GoalTypes - GoalTypes.REVENUE, GoalTypes.CUSTOM, GoalTypes.ALL (Default)
+var vwoClient = VWO.Launch(settingsFile, goalTypeToTrack: Constants.GoalTypes.REVENUE);
+
+//  Set if a return user should be tracked, default false
+var vwoClient = VWO.Launch(settingsFile, shouldTrackReturningUser: true);
 ```
 
 ## Documentation

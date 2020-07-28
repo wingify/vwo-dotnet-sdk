@@ -5,9 +5,27 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.8.0] - 2020-07-28
+
+### Changed
+
+- Update track API to handle duplicate and unique conversions and corresponding changes in `Launch` API
+- Update track API to track a goal globally across campaigns with the same `goalIdentififer` and corresponding changes in `Launch` API
+
+```c#
+// it will track goal having `goalIdentifier` of campaign having `campaignKey` for the user having `userId` as id.
+vwoClientInstance.Track(campaignKey, userId, goalIdentifier, options);
+// it will track goal having `goalIdentifier` of campaigns having `campaignKey1` and `campaignKey2` for the user having `userId` as id.
+vwoClientInstance.Track(new List<string>() { campaignKey1, campaignKey2 }, userId, goalIdentifier, options);
+// it will track goal having `goalIdentifier` of all the campaigns
+vwoClientInstance.Track(userId, goalIdentifier, options);
+//Read more about configuration and usage - https://developers.vwo.com/reference#server-side-sdk-track
+```
+
 ## [1.6.1] - 2020-07-23
 
 ### Changed
+
 - When there is no campaign running, `GetSettingsFile` API does not output correct result. This is now handled by validating it.
 
 ## [1.6.0] - 2020-05-07

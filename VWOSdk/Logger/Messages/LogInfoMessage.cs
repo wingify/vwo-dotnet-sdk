@@ -106,5 +106,9 @@ namespace VWOSdk
         public static void UserFailedPreSegmentation(string file, string userId, string campaignKey, Dictionary<string, dynamic> customVariables) {
             Log.Info($"({file}): UserId:{userId} of campaign:{campaignKey} with custom variables{DictionaryHelper.StringifyCustomVariables(customVariables)} failed pre segmentation");
         }
+
+        public static void GoalAlreadyTracked(string file, string userId, string campaignKey, string goalIdentifier) {
+            Log.Info($"({file}): Goal:{goalIdentifier} of campaign:{campaignKey} for UserId:{userId} has already been tracked earlier. Skipping now.");
+        }
     }
 }

@@ -31,6 +31,8 @@ namespace VWOSdk.Tests
         {
             mockVariationResolver.Setup(mock => mock.Allocate(It.IsAny<UserStorageMap>(), It.IsAny<BucketedCampaign>(), It.IsAny<string>()))
                 .Returns(variation);
+             mockVariationResolver.Setup(mock => mock.GetSavedVariation(It.IsAny<BucketedCampaign>(), It.IsAny<string>()))
+                .Returns(variation);
         }
     }
 }

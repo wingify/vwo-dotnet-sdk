@@ -123,5 +123,8 @@ namespace VWOSdk
             Log.Error($"({file}): In API: {apiName}, the length of tagValue:{tagValue} and userID: {userId} can not be greater than 255");
         }
 
+        public static void NoCampaignForGoalFound(string file, string goalIdentifier) {
+            Log.Error($"({file}): No campaign found for goalIdentifier:{goalIdentifier}. Please verify from VWO app.");
+        }
     }
 }
