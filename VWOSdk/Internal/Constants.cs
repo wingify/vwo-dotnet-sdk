@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019-2020 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2021 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -41,9 +41,12 @@ namespace VWOSdk
             internal static readonly string BASE_URL = "https://dev.visualwebsiteoptimizer.com";
             internal static readonly string SERVER_SIDE = "server-side";
             internal static readonly string ACCOUNT_SETTINGS = "settings";
+            internal static readonly string WEBHOOK_SETTINGS_URL = "pull";
             internal static readonly string TRACK_USER = "track-user";
             internal static readonly string TRACK_GOAL = "track-goal";
             internal static readonly string PUSH_TAGS = "push";
+            internal static readonly string BATCH_EVENTS = "batch-events";
+
         }
 
         public static class CampaignStatus
@@ -148,5 +151,6 @@ namespace VWOSdk
                 "REVENUE_TRACKING", "CUSTOM_GOAL", "ALL"
             };
         }
+
     }
 }

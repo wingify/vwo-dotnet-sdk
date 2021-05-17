@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019-2020 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2021 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -26,9 +26,12 @@ namespace VWOSdk
         private static readonly string Host = Constants.Endpoints.BASE_URL;
         private static readonly string Verb = Constants.Endpoints.SERVER_SIDE;
         private static readonly string SettingsVerb = Constants.Endpoints.ACCOUNT_SETTINGS;
+
+        private static readonly string WebhookSettingsVerb = Constants.Endpoints.WEBHOOK_SETTINGS_URL;
         private static readonly string TrackUserVerb = Constants.Endpoints.TRACK_USER;
         private static readonly string TrackGoalVerb = Constants.Endpoints.TRACK_GOAL;
         private static readonly string PushTagsVerb = Constants.Endpoints.PUSH_TAGS;
+        private static readonly string BatchEventVerb = Constants.Endpoints.BATCH_EVENTS;
         private static readonly string file = typeof(ServerSideVerb).FullName;
         private static readonly string sdkVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
@@ -42,7 +45,16 @@ namespace VWOSdk
 
             return settingsRequest;
         }
+        internal static ApiRequest SettingsPullRequest(long accountId, string sdkKey)
+        {
+            var settingsRequest = new ApiRequest(Method.GET)
+            {
+                Uri = new Uri($"{Host}/{Verb}/{WebhookSettingsVerb}?{GetQueryParamertersForSetting(accountId, sdkKey)}"),
+            };
+            settingsRequest.WithCaller(AppContext.ApiCaller);
 
+            return settingsRequest;
+        }
         internal static ApiRequest TrackUser(long accountId, int campaignId, int variationId, string userId, bool isDevelopmentMode)
         {
             string queryParams = GetQueryParamertersForTrackUser(accountId, campaignId, variationId, userId);
@@ -55,6 +67,35 @@ namespace VWOSdk
             return trackUserRequest;
         }
 
+        //Event Batching
+        internal static ApiRequest EventBatching(long accountId, bool isDevelopmentMode
+            )
+        {
+            string queryParams = GetQueryParamertersForEventBatching(accountId);
+            var trackUserRequest = new ApiRequest(Method.POST, isDevelopmentMode)
+            {
+                Uri = new Uri($"{Host}/{Verb}/{BatchEventVerb}?{queryParams}"),
+            };
+
+            LogDebugMessage.ImpressionForBatchEvent(file, queryParams);
+            return trackUserRequest;
+        }
+        private static string GetQueryParamertersForEventBatching(long accountId)
+        {
+            return $"{withMinifiedAccountIdQuery(accountId)}" +
+
+                $"&{GetBatchSdkQuery()}";
+        }
+        private static string GetBatchSdkQuery()
+        {
+            return $"sd=netstandard2.0&sv={sdkVersion}";
+        }
+        private static string withMinifiedAccountIdQuery(long accountId)
+        {
+            return $"a={accountId}";
+        }
+
+        // End
         internal static ApiRequest TrackGoal(int accountId, int campaignId, int variationId, string userId, int goalId, string revenueValue, bool isDevelopmentMode)
         {
             string queryParams = GetQueryParamertersForTrackGoal(accountId, campaignId, variationId, userId, goalId, revenueValue);

@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019-2020 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2021 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -58,10 +58,12 @@ namespace VWOSdk
         //    Log.Error($"({file}): \"track\" API has corrupted configuration");
         //}
 
-        public static void InvalidApi(string file, string userId, string campaignKey, string campaignType, string apiName) {
+        public static void InvalidApi(string file, string userId, string campaignKey, string campaignType, string apiName)
+        {
             Log.Error($"({file}): {apiName} API is not valid for user ID: {userId} in campaign ID: {campaignKey} having campaign type: {campaignType}.");
         }
-        public static void VariableNotFound(string file,string variableKey, string campaignKey, string campaignType, string userId, string apiName) {
+        public static void VariableNotFound(string file, string variableKey, string campaignKey, string campaignType, string userId, string apiName)
+        {
             Log.Error($"({file}): In API: {apiName} Variable: {variableKey} not found for campaign: {campaignKey} and type: {campaignType} for user ID: {userId}.");
         }
 
@@ -99,6 +101,10 @@ namespace VWOSdk
         {
             Log.Error($"({file}): Impression event could not be sent to VWO - {endPoint}");
         }
+        public static void BulkNotProcessed(string file)
+        {
+            Log.Error($"({file}): Batch events couldn't be received by VWO. Calling Flush Callback with error and data.");
+        }
 
         internal static void TrackApiRevenueNotPassedForRevenueGoal(string file, string goalIdentifier, string campaignKey, string userId)
         {
@@ -110,21 +116,33 @@ namespace VWOSdk
             Log.Error($"({file}): Goal:{goalIdentifier} not found for campaign:{campaignKey} and userId:{userId}");
         }
 
+       
         public static void CustomLoggerMisconfigured(string file)
         {
             Log.Error($"({file}): custom logger is provided but seems to have misconfigured. please check the api docs. using default logger.");
         }
 
-        public static void TagKeyLengthExceeded(string file, string tagKey, string userId,  string apiName) {
+        public static void TagKeyLengthExceeded(string file, string tagKey, string userId, string apiName)
+        {
             Log.Error($"({file}): In API: {apiName}, the length of tagKey:{tagKey} and userID: {userId} can not be greater than 255");
         }
 
-        public static void TagValueLengthExceeded(string file, string tagValue, string userId, string apiName) {
+        public static void TagValueLengthExceeded(string file, string tagValue, string userId, string apiName)
+        {
             Log.Error($"({file}): In API: {apiName}, the length of tagValue:{tagValue} and userID: {userId} can not be greater than 255");
         }
 
-        public static void NoCampaignForGoalFound(string file, string goalIdentifier) {
+        public static void NoCampaignForGoalFound(string file, string goalIdentifier)
+        {
             Log.Error($"({file}): No campaign found for goalIdentifier:{goalIdentifier}. Please verify from VWO app.");
         }
+        public static void UnableToDisplayHttpRequest(string file, string error)
+        {
+            Log.Error($"({file}): Exception while executing http request.Error Details: {error}");
+        }
+
+
     }
+
+
 }

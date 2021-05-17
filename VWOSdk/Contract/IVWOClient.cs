@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019-2020 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2021 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -20,6 +20,10 @@ using System.Collections.Generic;
 
 namespace VWOSdk
 {
+
+    /// <summary>
+    /// VWOClient interface.
+    /// </summary>
     public interface IVWOClient
     {
         /// <summary>
@@ -75,25 +79,28 @@ namespace VWOSdk
         /// <param name="campaignKeys">Campaigns key to uniquely identify a server-side campaigns.</param>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="options">Dictionary for passing extra parameters to activate</param>
+        /// <param name="goalIdentifier">Identifier which uniquely identifies goal</param>
+
         /// <returns>
         /// /// A boolean value based on whether the impression was made to the VWO server.
         /// True, if an impression event is successfully being made to the VWO server for report generation.
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
 
-        Dictionary <string, bool> Track(List <string> campaignKeys, string userId, string goalIdentifier, Dictionary<string, dynamic> options = null);
+        Dictionary<string, bool> Track(List <string> campaignKeys, string userId, string goalIdentifier, Dictionary<string, dynamic> options = null);
         /// <summary>
         /// Identifies whether the user becomes a part of feature rollout/test or not.
         /// </summary>
         /// <param name="userId">User ID which uniquely identifies each user.</param>
         /// <param name="options">Dictionary for passing extra parameters to activate</param>
+        /// <param name="goalIdentifier">Identifier which uniquely identifies goal</param>
         /// <returns>
         /// /// A boolean value based on whether the impression was made to the VWO server.
         /// True, if an impression event is successfully being made to the VWO server for report generation.
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
 
-        Dictionary <string, bool> Track(string userId, string goalIdentifier, Dictionary<string, dynamic> options = null);
+        Dictionary<string, bool> Track(string userId, string goalIdentifier, Dictionary<string, dynamic> options = null);
 
         /// <summary>
         /// Identifies whether the user becomes a part of feature rollout/test or not.
@@ -132,5 +139,22 @@ namespace VWOSdk
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
         bool Push(string tagKey, dynamic tagValue, string userId);
+        /// <summary>
+        /// Makes a call to our server to flush Events
+        ///<returns>
+        /// A boolean value based on whether the impression was made to the VWO server.
+        /// True, if an impression event is successfully being made to the VWO server.
+        /// False, when unexpected error comes and no impression call is made to the VWO server.
+        /// </returns>
+        bool FlushEvents();
+
+        /// <summary>
+        /// Used for Unit Test
+        /// </summary>
+        /// <returns>
+        /// BatchEventQueue Object.
+        /// </returns>
+       BatchEventQueue getBatchEventQueue();
+
     }
 }

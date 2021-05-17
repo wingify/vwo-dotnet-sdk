@@ -5,6 +5,34 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.11.0] - 2020-05-07
+
+### Added
+
+- Webhooks support
+  - New API `GetAndUpdateSettingsFile` to fetch and update settings-file in case of webhook-trigger
+
+- Added support for batching of events sent to VWO server
+  - Intoduced `batchData` config in launch API for setting when to send batched events
+  - Added `FlushEvents` API to manually flush the batch events queue whne batchEvents config is passed. Note: batchData config i.e. `EventsPerRequest` and `RequestTimeInterval` won't be considered while manually flushing
+
+```csharp
+
+Settings settingsFile = VWO.GetSettingsFile(accountId, sdkKey);
+
+BatchEventData batchData = new BatchEventData();
+
+batchData.EventsPerRequest = 100;
+batchData.RequestTimeInterval = 86400;
+batchData.FlushCallback = new FlushCallback();
+
+IVWOClient vwoClientInstance = VWO.Launch(settingsFile, batchData = batchData);
+```
+
+### Changed
+
+- `userStorageData` key can be passed in options parameter for utilizing already fetched storage data. It also helps in implementing the asynchronous nature of the User Storage Service's get method. For more info read [this](https://developers.vwo.com/reference#fullstack-is-user-storage-service-synchronous-or-asynchronous).
+
 ## [1.8.0] - 2020-07-28
 
 ### Changed
@@ -26,7 +54,7 @@ vwoClientInstance.Track(userId, goalIdentifier, options);
 
 ### Changed
 
-- When there is no campaign running, `GetSettingsFile` API does not output correct result. This is now handled by validating it.
+- When there is no campaign running, `GetSettingsFileFile` API does not output correct result. This is now handled by validating it.
 
 ## [1.6.0] - 2020-05-07
 

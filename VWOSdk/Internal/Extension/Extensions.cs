@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019-2020 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2021 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -30,13 +30,17 @@ namespace VWOSdk
         private static Dictionary<Method, HttpMethod> HttpMethodMap = new Dictionary<Method, HttpMethod>
         {
             { Method.GET, HttpMethod.Get },
+             { Method.POST, HttpMethod.Post },
         };
 
         public static HttpMethod GetHttpMethod(this Method method)
         {
             return HttpMethodMap[method];
         }
-
+        public static HttpMethod PostHttpMethod(this Method method)
+        {
+            return HttpMethodMap[method];
+        }
         public static bool IsLogTypeEnabled(this LogLevel specifiedLogLevel, LogLevel logLevel)
         {
             return logLevel <= specifiedLogLevel;
@@ -44,7 +48,7 @@ namespace VWOSdk
 
         public static T CloneJson<T>(this T source)
         {
-          
+
             // initialize inner objects individually
             // for example in default constructor some list property initialized with some values,
             // but in 'source' these items are cleaned -

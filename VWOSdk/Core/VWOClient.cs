@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019-2020 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2021 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -18,7 +18,6 @@
 
 using System.Collections.Generic;
 using System;
-
 namespace VWOSdk
 {
     public partial class VWO : IVWOClient
@@ -32,8 +31,12 @@ namespace VWOSdk
         private readonly bool _isDevelopmentMode;
         private readonly string _goalTypeToTrack;
         private readonly bool _shouldTrackReturningUser;
-
-        internal VWO(AccountSettings settings, IValidator validator, IUserStorageService userStorageService, ICampaignAllocator campaignAllocator, ISegmentEvaluator segmentEvaluator, IVariationAllocator variationAllocator, bool isDevelopmentMode, string goalTypeToTrack = Constants.GoalTypes.ALL, bool shouldTrackReturningUser = false)
+        private readonly BatchEventData _BatchEventData;
+        private readonly BatchEventQueue _BatchEventQueue;
+        internal VWO(AccountSettings settings, IValidator validator, IUserStorageService userStorageService,
+            ICampaignAllocator campaignAllocator, ISegmentEvaluator segmentEvaluator,
+            IVariationAllocator variationAllocator, bool isDevelopmentMode, BatchEventData batchEventData,
+            string goalTypeToTrack = Constants.GoalTypes.ALL, bool shouldTrackReturningUser = false)
         {
             this._settings = settings;
             this._validator = validator;
@@ -44,6 +47,13 @@ namespace VWOSdk
             this._segmentEvaluator = segmentEvaluator;
             this._goalTypeToTrack = goalTypeToTrack;
             this._shouldTrackReturningUser = shouldTrackReturningUser;
+            this._BatchEventData = batchEventData;
+            if (batchEventData != null)
+            {
+                this._BatchEventQueue = new BatchEventQueue(batchEventData, settings.SdkKey, this._settings.AccountId, isDevelopmentMode);
+
+            }
+
         }
 
         #region IVWOClient Methods
@@ -60,7 +70,9 @@ namespace VWOSdk
         public string Activate(string campaignKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
+
             Dictionary<string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
+            Dictionary<string, dynamic> userStorageData = options.ContainsKey("userStorageData") ? options["userStorageData"] : null;
             Dictionary<string, dynamic> variationTargetingVariables = options.ContainsKey("variationTargetingVariables") ? options["variationTargetingVariables"] : null;
             if (this._validator.Activate(campaignKey, userId, options))
             {
@@ -75,11 +87,22 @@ namespace VWOSdk
                     LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignKey, campaign.Type, nameof(Activate));
                     return null;
                 }
-                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargetingVariables, apiName: nameof(Activate));
+                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables,
+                    variationTargetingVariables, apiName: nameof(Activate), userStorageData);
                 if (assignedVariation.Variation != null)
                 {
-                    var trackUserRequest = ServerSideVerb.TrackUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode);
-                    trackUserRequest.ExecuteAsync();
+                    if (this._BatchEventData != null)
+                    {
+                        LogDebugMessage.EventBatchingActivated(typeof(IVWOClient).FullName, nameof(Activate));
+                        this._BatchEventQueue.addInQueue(HttpRequestBuilder.EventForTrackingUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode));
+                    }
+                    else
+                    {
+                        LogDebugMessage.EventBatchingNotActivated(typeof(IVWOClient).FullName, nameof(Activate));
+                        var trackUserRequest = ServerSideVerb.TrackUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode);
+                        trackUserRequest.ExecuteAsync();
+                    }
+
                     return assignedVariation.Variation.Name;
                 }
             }
@@ -98,6 +121,9 @@ namespace VWOSdk
         public string GetVariation(string campaignKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
+
+            Dictionary<string, dynamic> userStorageData = options.ContainsKey("userStorageData") ? options["userStorageData"] : null;
+
             Dictionary<string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
             Dictionary<string, dynamic> variationTargetingVariables = options.ContainsKey("variationTargetingVariables") ? options["variationTargetingVariables"] : null;
             if (this._validator.GetVariation(campaignKey, userId, options))
@@ -115,7 +141,9 @@ namespace VWOSdk
                     return null;
                 }
 
-                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargetingVariables, apiName: nameof(GetVariation));
+                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargetingVariables,
+                apiName: nameof(GetVariation), userStorageData);
+
                 if (assignedVariation.Variation != null)
                 {
                     return assignedVariation.Variation.Name;
@@ -150,6 +178,9 @@ namespace VWOSdk
             Dictionary<string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
             Dictionary<string, dynamic> variationTargetingVariables = options.ContainsKey("variationTargetingVariables") ? options["variationTargetingVariables"] : null;
             string goalTypeToTrack = options.ContainsKey("goalTypeToTrack") ? options["goalTypeToTrack"] : null;
+
+            Dictionary<string, dynamic> userStorageData = options.ContainsKey("userStorageData") ? options["userStorageData"] : null;
+
             bool shouldTrackReturningUser = options.ContainsKey("shouldTrackReturningUser") ? options["shouldTrackReturningUser"] : this._shouldTrackReturningUser;
 
             if (this._validator.Track(campaignKey, userId, goalIdentifier, revenueValue, options))
@@ -167,17 +198,23 @@ namespace VWOSdk
                     LogErrorMessage.InvalidApi(typeof(IVWOClient).FullName, userId, campaignKey, campaign.Type, nameof(Track));
                     return false;
                 }
-                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargetingVariables, goalIdentifier: goalIdentifier, apiName: nameof(Track));
+
+                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables,
+                         variationTargetingVariables, goalIdentifier: goalIdentifier, apiName: nameof(Track), userStorageData);
+
                 var variationName = assignedVariation.Variation?.Name;
                 var selectedGoalIdentifier = assignedVariation.Goal?.Identifier;
                 if (string.IsNullOrEmpty(variationName) == false)
                 {
                     if (string.IsNullOrEmpty(selectedGoalIdentifier) == false)
                     {
-                        if (goalTypeToTrack != assignedVariation.Goal.Type && goalTypeToTrack != Constants.GoalTypes.ALL) {
+                        if (goalTypeToTrack != assignedVariation.Goal.Type && goalTypeToTrack != Constants.GoalTypes.ALL)
+                        {
                             return false;
                         }
-                        if (!this.isGoalTriggerRequired(campaignKey, userId, goalIdentifier, variationName, shouldTrackReturningUser)) {
+
+                        if (!this.isGoalTriggerRequired(campaignKey, userId, goalIdentifier, variationName, shouldTrackReturningUser, userStorageData))
+                        {
                             return false;
                         }
                         bool sendImpression = true;
@@ -193,8 +230,21 @@ namespace VWOSdk
 
                         if (sendImpression)
                         {
-                            var trackGoalRequest = ServerSideVerb.TrackGoal(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, assignedVariation.Goal.Id, revenueValue, this._isDevelopmentMode);
-                            trackGoalRequest.ExecuteAsync();
+                            if (this._BatchEventData != null)
+                            {
+                                LogDebugMessage.EventBatchingActivated(typeof(IVWOClient).FullName, nameof(Track));
+                                this._BatchEventQueue.addInQueue(HttpRequestBuilder.EventForTrackingGoal(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id,
+                                userId, assignedVariation.Goal.Id, revenueValue, this._isDevelopmentMode));
+                            }
+                            else
+                            {
+                                LogDebugMessage.EventBatchingNotActivated(typeof(IVWOClient).FullName, nameof(Track));
+                                var trackGoalRequest = ServerSideVerb.TrackGoal(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, assignedVariation.Goal.Id, revenueValue, this._isDevelopmentMode);
+                                trackGoalRequest.ExecuteAsync();
+                            }
+
+                            LogDebugMessage.TrackApiGoalFound(file, goalIdentifier, campaignKey, userId);
+
                             return true;
                         }
                     }
@@ -219,10 +269,11 @@ namespace VWOSdk
         /// True, if an impression event is successfully being made to the VWO server for report generation.
         /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
         /// </returns>
-        public Dictionary<string, bool> Track(List <string> campaignKeys, string userId, string goalIdentifier, Dictionary<string, dynamic> options = null)
+        public Dictionary<string, bool> Track(List<string> campaignKeys, string userId, string goalIdentifier, Dictionary<string, dynamic> options = null)
         {
             Dictionary<string, bool> result = new Dictionary<string, bool>();
-            foreach (string campaignKey in campaignKeys) {
+            foreach (string campaignKey in campaignKeys)
+            {
                 result[campaignKey] = this.Track(campaignKey, userId, goalIdentifier, options);
             }
             return result;
@@ -248,15 +299,19 @@ namespace VWOSdk
 
             Dictionary<string, bool> result = new Dictionary<string, bool>();
             bool campaignFound = false;
-            foreach (BucketedCampaign campaign in this._settings.Campaigns) {
-                foreach(KeyValuePair<string, Goal> goal in campaign.Goals) {
-                    if (goal.Key != null && goalIdentifier == goal.Value.Identifier && (goalTypeToTrack == Constants.GoalTypes.ALL || goalTypeToTrack == goal.Value.Type)) {
+            foreach (BucketedCampaign campaign in this._settings.Campaigns)
+            {
+                foreach (KeyValuePair<string, Goal> goal in campaign.Goals)
+                {
+                    if (goal.Key != null && goalIdentifier == goal.Value.Identifier && (goalTypeToTrack == Constants.GoalTypes.ALL || goalTypeToTrack == goal.Value.Type))
+                    {
                         campaignFound = true;
                         result[campaign.Key] = this.Track(campaign.Key, userId, goalIdentifier, options);
                     }
                 }
             }
-            if (!campaignFound) {
+            if (!campaignFound)
+            {
                 LogErrorMessage.NoCampaignForGoalFound(file, goalIdentifier);
                 return null;
             }
@@ -277,6 +332,9 @@ namespace VWOSdk
         public bool IsFeatureEnabled(string campaignKey, string userId, Dictionary<string, dynamic> options = null)
         {
             if (options == null) options = new Dictionary<string, dynamic>();
+
+            Dictionary<string, dynamic> userStorageData = options.ContainsKey("userStorageData") ? options["userStorageData"] : null;
+
             Dictionary<string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
             Dictionary<string, dynamic> variationTargetingVariables = options.ContainsKey("variationTargetingVariables") ? options["variationTargetingVariables"] : null;
             if (this._validator.IsFeatureEnabled(campaignKey, userId, options))
@@ -293,17 +351,28 @@ namespace VWOSdk
                     return false;
                 }
 
-                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargetingVariables, apiName: nameof(IsFeatureEnabled));
+                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargetingVariables, apiName: nameof(IsFeatureEnabled), userStorageData);
+
                 if (campaign.Type == Constants.CampaignTypes.FEATURE_TEST)
                 {
                     if (assignedVariation.Variation != null)
                     {
-                        var trackUserRequest = ServerSideVerb.TrackUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode);
-                        trackUserRequest.ExecuteAsync();
                         var result = assignedVariation.Variation.IsFeatureEnabled;
 
                         if (result)
                         {
+
+                            if (this._BatchEventData != null)
+                            {
+                                LogDebugMessage.EventBatchingActivated(typeof(IVWOClient).FullName, nameof(IsFeatureEnabled));
+                                this._BatchEventQueue.addInQueue(HttpRequestBuilder.EventForTrackingUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode));
+                            }
+                            else
+                            {
+                                LogDebugMessage.EventBatchingNotActivated(typeof(IVWOClient).FullName, nameof(IsFeatureEnabled));
+                                var trackUserRequest = ServerSideVerb.TrackUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode);
+                                trackUserRequest.ExecuteAsync();
+                            }
                             LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, campaignKey, userId, nameof(IsFeatureEnabled));
                         }
                         else
@@ -339,6 +408,7 @@ namespace VWOSdk
             Dictionary<string, dynamic> variationTargetingVariables = options.ContainsKey("variationTargetingVariables") ? options["variationTargetingVariables"] : null;
             var variables = new List<Dictionary<string, dynamic>>();
             var variable = new Dictionary<string, dynamic>();
+            Dictionary<string, dynamic> userStorageData = options.ContainsKey("userStorageData") ? options["userStorageData"] : null;
 
             if (this._validator.GetFeatureVariableValue(campaignKey, variableKey, userId, options))
             {
@@ -355,7 +425,9 @@ namespace VWOSdk
                     return null;
                 }
 
-                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargetingVariables, apiName: nameof(GetFeatureVariableValue));
+                var assignedVariation = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargetingVariables,
+                     apiName: nameof(GetFeatureVariableValue), userStorageData);
+
                 if (campaign.Type == Constants.CampaignTypes.FEATURE_ROLLOUT)
                 {
                     variables = campaign.Variables;
@@ -415,13 +487,41 @@ namespace VWOSdk
                     LogErrorMessage.TagValueLengthExceeded(typeof(IVWOClient).FullName, tagValue, userId, nameof(Push));
                     return false;
                 }
-                var pushRequest = ServerSideVerb.PushTags(this._settings, tagKey, tagValue, userId, this._isDevelopmentMode);
-                pushRequest.ExecuteAsync();
+                if (this._BatchEventData != null)
+                {
+
+                    LogDebugMessage.EventBatchingActivated(typeof(IVWOClient).FullName,nameof(Push));
+                    this._BatchEventQueue.addInQueue(HttpRequestBuilder.EventForPushTags(this._settings.AccountId, tagKey, tagValue, userId, this._isDevelopmentMode));
+
+                }
+                else
+                {
+                    LogDebugMessage.EventBatchingNotActivated(typeof(IVWOClient).FullName, nameof(Push));
+                    var pushRequest = ServerSideVerb.PushTags(this._settings, tagKey, tagValue, userId, this._isDevelopmentMode);
+                    pushRequest.ExecuteAsync();
+                }
                 return true;
             }
             return false;
         }
 
+        /// <summary>
+        /// Makes a call to our server to flush Events
+        /// <returns>
+        /// A boolean value based on whether the impression was made to the VWO server.
+        /// True, if an impression event is successfully being made to the VWO server.
+        /// False, when unexpected error comes and no impression call is made to the VWO server.
+        /// </returns>
+        public bool FlushEvents()
+        {
+            bool response = false;
+            if (_BatchEventQueue !=null)
+            {
+                response = _BatchEventQueue.flush(true);
+
+            }
+            return response;
+        }
 
         #endregion IVWOClient Methods
 
@@ -435,18 +535,21 @@ namespace VWOSdk
         /// <param name="campaign"></param>
         /// <param name="customVariables"></param>
         /// <param name="variationTargetingVariables"></param>
+        /// <param name="userStorageData"></param>
         /// <returns>
         /// If Variation is allocated, returns UserAssignedInfo with valid details, else return Empty UserAssignedInfo.
         /// </returns>
-        private UserAllocationInfo AllocateVariation(string campaignKey, string userId, BucketedCampaign campaign, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargetingVariables, string apiName = null)
+
+        private UserAllocationInfo AllocateVariation(string campaignKey, string userId, BucketedCampaign campaign,
+        Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargetingVariables, string apiName = null,
+        Dictionary<string, dynamic> userStorageData = null)
         {
             Variation TargettedVariation = this.FindTargetedVariation(apiName, campaign, campaignKey, userId, customVariables, variationTargetingVariables);
             if (TargettedVariation != null)
             {
                 return new UserAllocationInfo(TargettedVariation, campaign);
             }
-
-            UserStorageMap userStorageMap = this._userStorageService.GetUserMap(campaignKey, userId);
+            UserStorageMap userStorageMap = this._userStorageService.GetUserMap(campaignKey, userId, userStorageData);
             BucketedCampaign selectedCampaign = this._campaignAllocator.Allocate(this._settings, userStorageMap, campaignKey, userId, apiName);
             if (userStorageMap != null && userStorageMap.VariationName != null)
             {
@@ -470,7 +573,7 @@ namespace VWOSdk
                         {
                             variationTargetingVariables = new Dictionary<string, dynamic>();
                         }
-                        if (!this._segmentEvaluator.evaluate(userId, campaignKey, segmentationType, campaign.Segments, customVariables ))
+                        if (!this._segmentEvaluator.evaluate(userId, campaignKey, segmentationType, campaign.Segments, customVariables))
                         {
                             return new UserAllocationInfo();
                         }
@@ -534,7 +637,7 @@ namespace VWOSdk
             foreach (var variation in campaign.Variations.All())
             {
                 string status = Constants.SegmentationStatus.FAILED;
-                string segmentationType  = Constants.SegmentationType.WHITELISTING;
+                string segmentationType = Constants.SegmentationType.WHITELISTING;
                 if (variation.Segments.Count == 0)
                 {
                     LogDebugMessage.SkippingSegmentation(typeof(IVWOClient).FullName, userId, campaignKey, apiName, variation.Name);
@@ -573,12 +676,16 @@ namespace VWOSdk
         /// <param name="customVariables"></param>
         /// <param name="variationTargetingVariables"></param>
         /// <param name="apiName"></param>
+        /// <param name="userStorageData"></param>
         /// <returns>
         /// If Variation is allocated and goal with given identifier is found, return UserAssignedInfo with valid information, otherwise, Empty UserAssignedInfo object.
         /// </returns>
-        private UserAllocationInfo AllocateVariation(string campaignKey, string userId, BucketedCampaign campaign, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargetingVariables, string goalIdentifier, string apiName)
+
+        private UserAllocationInfo AllocateVariation(string campaignKey, string userId, BucketedCampaign campaign,
+        Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargetingVariables, string goalIdentifier, string apiName,
+        Dictionary<string, dynamic> userStorageData = null)
         {
-            var userAllocationInfo = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargetingVariables, apiName);
+            var userAllocationInfo = this.AllocateVariation(campaignKey, userId, campaign, customVariables, variationTargetingVariables, apiName, userStorageData);
             if (userAllocationInfo.Variation != null)
             {
                 if (userAllocationInfo.Campaign.Goals.TryGetValue(goalIdentifier, out Goal goal))
@@ -593,21 +700,28 @@ namespace VWOSdk
             return userAllocationInfo;
         }
 
-        private bool isGoalTriggerRequired(string campaignKey, string userId, string goalIdentifier, string variationName, bool shouldTrackReturningUser)
+        private bool isGoalTriggerRequired(string campaignKey, string userId, string goalIdentifier, string variationName, bool shouldTrackReturningUser,
+                   Dictionary<string, dynamic> userStorageData = null)
         {
-            UserStorageMap userMap = this._userStorageService.GetUserMap(campaignKey, userId);
+            UserStorageMap userMap = this._userStorageService.GetUserMap(campaignKey, userId, userStorageData);
             if (userMap == null) return true;
             string storedGoalIdentifier = null;
-            if (userMap.GoalIdentifier != null) {
+            if (userMap.GoalIdentifier != null)
+            {
                 storedGoalIdentifier = userMap.GoalIdentifier;
                 string[] identifiers = storedGoalIdentifier.Split(new string[] { Constants.GOAL_IDENTIFIER_SEPERATOR }, StringSplitOptions.None);
-                if (!((IList<string>)identifiers).Contains(goalIdentifier)) {
+                if (!((IList<string>)identifiers).Contains(goalIdentifier))
+                {
                     storedGoalIdentifier = storedGoalIdentifier + Constants.GOAL_IDENTIFIER_SEPERATOR + goalIdentifier;
-                } else if (!shouldTrackReturningUser) {
+                }
+                else if (!shouldTrackReturningUser)
+                {
                     LogInfoMessage.GoalAlreadyTracked(file, userId, campaignKey, goalIdentifier);
                     return false;
                 }
-            } else {
+            }
+            else
+            {
                 storedGoalIdentifier = goalIdentifier;
             }
             this._userStorageService.SetUserMap(userId, campaignKey, variationName, storedGoalIdentifier);
@@ -615,5 +729,16 @@ namespace VWOSdk
         }
 
         #endregion private Methods
+
+        /// <summary>
+        /// Used for Unit Test
+        /// </summary>
+        /// <returns>
+        /// BatchEventQueue Object.
+        /// </returns>
+        public BatchEventQueue getBatchEventQueue()
+        {
+            return this._BatchEventQueue;
+        }
     }
 }

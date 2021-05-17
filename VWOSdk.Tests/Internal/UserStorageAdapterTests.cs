@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019-2020 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2021 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -34,7 +34,7 @@ namespace VWOSdk.Tests
             var mockUserStorageService = Mock.GetUserStorageService();
             Mock.SetupGet(mockUserStorageService, GetUserStorageMap());
             UserStorageAdapter userStorageServiceAdapter = new UserStorageAdapter(mockUserStorageService.Object);
-            var result = userStorageServiceAdapter.GetUserMap(MockCampaignKey, MockUserId);
+            var result = userStorageServiceAdapter.GetUserMap(MockCampaignKey, MockUserId,null);
             Assert.NotNull(result);
             Assert.Equal(MockUserId, result.UserId);
             Assert.Equal(MockCampaignKey, result.CampaignKey);
@@ -47,7 +47,7 @@ namespace VWOSdk.Tests
             var mockUserStorageService = Mock.GetUserStorageService();
             Mock.SetupGet(mockUserStorageService, returnValue: null);
             UserStorageAdapter userStorageServiceAdapter = new UserStorageAdapter(mockUserStorageService.Object);
-            var result = userStorageServiceAdapter.GetUserMap(MockCampaignKey, MockUserId);
+            var result = userStorageServiceAdapter.GetUserMap(MockCampaignKey, MockUserId, null);
             Assert.Null(result);
         }
 
@@ -57,7 +57,7 @@ namespace VWOSdk.Tests
             var mockUserStorageService = Mock.GetUserStorageService();
             Mock.SetupGet(mockUserStorageService, new Exception("Test Method Exception"));
             UserStorageAdapter userStorageServiceAdapter = new UserStorageAdapter(mockUserStorageService.Object);
-            var result = userStorageServiceAdapter.GetUserMap(MockCampaignKey, MockUserId);
+            var result = userStorageServiceAdapter.GetUserMap(MockCampaignKey, MockUserId, null);
             Assert.Null(result);
 
             mockUserStorageService.Verify(mock => mock.Get(It.IsAny<string>(), It.IsAny<string>()), Times.Once);

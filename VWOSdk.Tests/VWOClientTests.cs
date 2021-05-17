@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019-2020 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2021 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -16,8 +16,10 @@
  */
 #pragma warning restore 1587
 
-using System.Collections.Generic;
 using Moq;
+using System.Collections.Generic;
+using System.Text.Json;
+using System.Threading;
 using Xunit;
 
 namespace VWOSdk.Tests
@@ -25,11 +27,13 @@ namespace VWOSdk.Tests
     public class VWOClientTests
     {
         private readonly string MockCampaignKey = "MockCampaignKey";
-         private readonly string MockCampaignKey1 = "MockCampaignKey1";
+        private readonly string MockCampaignKey1 = "MockCampaignKey1";
         private readonly string MockUserId = "MockUserId";
         private readonly string MockTagKey = "MockTagKey";
         private readonly string MockTagValue = "MockTagValue";
         private readonly string MockVariableKey = "MockVariableKey";
+
+
         private readonly Dictionary<string, dynamic> MockTrackCustomVariables = new Dictionary<string, dynamic>() {
             {"revenueValue", 0.321}
         };
@@ -38,7 +42,7 @@ namespace VWOSdk.Tests
             {"goalTypeToTrack", Constants.GoalTypes.CUSTOM}
         };
 
-        private readonly Dictionary<string, dynamic> MockTrackShouldTrackReturningUser= new Dictionary<string, dynamic>() {
+        private readonly Dictionary<string, dynamic> MockTrackShouldTrackReturningUser = new Dictionary<string, dynamic>() {
             {"revenueValue", 1},
             {"shouldTrackReturningUser", true }
         };
@@ -1334,7 +1338,8 @@ namespace VWOSdk.Tests
             var selectedVariation = GetVariation();
             Mock.SetupResolve(mockVariationResolver, selectedVariation);
 
-            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver,
+                segmentEvaluator: new SegmentEvaluator());
             var result = vwoClient.GetFeatureVariableValue(MockCampaignKey, MockVariableKey, MockUserId);
             Assert.Equal(result, "test");
 
@@ -1639,7 +1644,8 @@ namespace VWOSdk.Tests
             var selectedVariation = GetVariation();
             Mock.SetupResolve(mockVariationResolver, selectedVariation);
 
-            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
+            var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver,
+                mockVariationResolver: mockVariationResolver, segmentEvaluator: new SegmentEvaluator());
             var result = vwoClient.IsFeatureEnabled(MockCampaignKey, MockUserId, MockOptionsStartWith);
             Assert.True(result);
 
@@ -2211,7 +2217,7 @@ namespace VWOSdk.Tests
             var result = vwoClient.IsFeatureEnabled("x", MockUserId);
             Assert.True(result);
 
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Once);
         }
 
         // Unique Goal Conversion + Multiple Campaign Key Test cases
@@ -2399,6 +2405,164 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.AtLeastOnce);
         }
 
+
+        #region Event Batching
+        internal class FlushCallback : IFlushInterface
+        {
+            public void onFlush(string error, object events)
+            {
+                var jsonBytes = events.ToString();
+                var jsonDoc = JsonDocument.Parse(jsonBytes);
+                var root = jsonDoc.RootElement;
+                var myEventList = root.GetProperty("ev");
+                var count = myEventList.GetArrayLength();
+                Assert.Equal(1, count);
+            }
+        }
+
+        [Fact]
+        public void Activate_EventBatching_Queue_Size_Tests()
+        {
+            // "Event Batching: enqueue should queue an event, flushEvents should flush queue"
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign();
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+            BatchEventData batchData = new BatchEventData();
+            batchData.EventsPerRequest = 4;
+            batchData.RequestTimeInterval = 20;
+            batchData.FlushCallback = new FlushCallback(); //Callback
+            var vwoClient = GetVwoClient(null, mockValidator: mockValidator,
+                mockCampaignResolver: mockCampaignResolver,
+                mockVariationResolver: mockVariationResolver, null, null, batchData);
+            var result = vwoClient.Activate(MockCampaignKey, MockUserId);
+            Assert.NotNull(result);
+            Assert.Equal(MockVariationName, result);
+            Assert.NotNull(result);
+            Assert.Equal(1, vwoClient.getBatchEventQueue().BatchQueueCount());
+            vwoClient.getBatchEventQueue().flush(true);
+            Assert.Equal(0, vwoClient.getBatchEventQueue().BatchQueueCount());
+
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
+            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
+
+        }
+
+        [Fact]
+        public void FlushQueueOnMaxEventsTest()
+        {
+            //"Event Batching: queue should be flushed if eventsPerRequest is reached"
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign();
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+            BatchEventData batchData = new BatchEventData();
+            batchData.EventsPerRequest = 2;
+            batchData.RequestTimeInterval = 20;
+            batchData.FlushCallback = new FlushCallback(); //Callback
+
+            var vwoClient = GetVwoClient(null, mockValidator: mockValidator,
+                mockCampaignResolver: mockCampaignResolver,
+                mockVariationResolver: mockVariationResolver, null, null, batchData);
+
+            var result1 = vwoClient.Activate(MockCampaignKey, MockUserId);
+
+            Assert.NotNull(result1);
+
+
+            Assert.Equal(1, vwoClient.getBatchEventQueue().BatchQueueCount());
+
+            var result2 = vwoClient.Track(MockCampaignKey, MockUserId, MockGoalIdentifier, MockOptionsLower);
+            Assert.True(result2);
+            Thread.Sleep(2000);
+            Assert.Equal(0, vwoClient.getBatchEventQueue().BatchQueueCount());
+
+
+        }
+
+        [Fact]
+        public void FlushQueueOnTimerExpiredTest()
+        {
+
+            //"Event Batching: queue should be flushed if requestTimeInterval is reached"
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign();
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+            BatchEventData batchData = new BatchEventData();
+            batchData.EventsPerRequest = 5;
+            batchData.RequestTimeInterval = 10;
+            batchData.FlushCallback = new FlushCallback(); //Callback
+
+            var vwoClient = GetVwoClient(null, mockValidator: mockValidator,
+                mockCampaignResolver: mockCampaignResolver,
+                mockVariationResolver: mockVariationResolver, null, null, batchData);
+            var result1 = vwoClient.Activate(MockCampaignKey, MockUserId);
+
+            Assert.NotNull(result1);
+            Assert.Equal(1, vwoClient.getBatchEventQueue().BatchQueueCount());
+
+            var result2 = vwoClient.Track(MockCampaignKey, MockUserId, MockGoalIdentifier, MockOptionsLower);
+            Assert.True(result2);
+            Assert.Equal(2, vwoClient.getBatchEventQueue().BatchQueueCount());
+            Thread.Sleep(12000);
+            Assert.Equal(0, vwoClient.getBatchEventQueue().BatchQueueCount());
+
+        }
+
+        [Fact]
+        public void FlushEventsAPITest()
+        {
+
+            //"Event Batching: enqueue should queue an event, flushEvents should flush queue"
+            var mockApiCaller = Mock.GetApiCaller<Settings>();
+            AppContext.Configure(mockApiCaller.Object);
+            var mockValidator = Mock.GetValidator();
+            var mockCampaignResolver = Mock.GetCampaignAllocator();
+            var selectedCampaign = GetCampaign();
+            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign);
+            var mockVariationResolver = Mock.GetVariationResolver();
+            var selectedVariation = GetVariation();
+            Mock.SetupResolve(mockVariationResolver, selectedVariation);
+            BatchEventData batchData = new BatchEventData();
+            batchData.EventsPerRequest = 5;
+            batchData.RequestTimeInterval = 10;
+            batchData.FlushCallback = new FlushCallback(); //Callback
+
+            var vwoClient = GetVwoClient(null, mockValidator: mockValidator,
+                mockCampaignResolver: mockCampaignResolver,
+                mockVariationResolver: mockVariationResolver, null, null, batchData);
+            var result1 = vwoClient.Activate(MockCampaignKey, MockUserId);
+            Assert.NotNull(result1);
+            Assert.Equal(1, vwoClient.getBatchEventQueue().BatchQueueCount());
+
+            bool isQueueFlushed = vwoClient.FlushEvents();
+            Assert.True(isQueueFlushed);
+
+            Assert.Equal(0, vwoClient.getBatchEventQueue().BatchQueueCount());
+        }
+
+
+
+        #endregion
+
+
+
         private bool VerifyTrackUserVerb(ApiRequest apiRequest)
         {
             if (apiRequest != null)
@@ -2412,7 +2576,10 @@ namespace VWOSdk.Tests
             return false;
         }
 
-        private IVWOClient GetVwoClient(string settingType = null, Mock<IValidator> mockValidator = null, Mock<ICampaignAllocator> mockCampaignResolver = null, Mock<IVariationAllocator> mockVariationResolver = null, ISegmentEvaluator segmentEvaluator = null, Mock<IUserStorageService> mockUserStorageService = null)
+        private IVWOClient GetVwoClient(string settingType = null, Mock<IValidator> mockValidator = null,
+            Mock<ICampaignAllocator> mockCampaignResolver = null, Mock<IVariationAllocator> mockVariationResolver = null,
+            ISegmentEvaluator segmentEvaluator = null, Mock<IUserStorageService> mockUserStorageService = null,
+            BatchEventData EventBatching = null)
         {
             mockValidator = mockValidator ?? Mock.GetValidator();
             if (mockCampaignResolver == null)
@@ -2434,9 +2601,13 @@ namespace VWOSdk.Tests
                 segmentEvaluator = mockSegmentEvaluator.Object;
             }
 
-            var mockUserStorageServiceObject = mockUserStorageService == null ? null: mockUserStorageService.Object;
+            var mockUserStorageServiceObject = mockUserStorageService == null ? null : mockUserStorageService.Object;
 
-            return new VWO(GetSettings(settingType), mockValidator.Object, mockUserStorageServiceObject, mockCampaignResolver.Object, segmentEvaluator, mockVariationResolver.Object, true);
+            var mockEventBatching = EventBatching == null ? null : EventBatching;
+            //changed
+            //  BatchEventData batchData = VWOCore.Controllers.EventBatchDataProvider.BatchEventData();
+            return new VWO(GetSettings(settingType), mockValidator.Object, mockUserStorageServiceObject, mockCampaignResolver.Object,
+                segmentEvaluator, mockVariationResolver.Object, false, mockEventBatching);
         }
 
         private AccountSettings GetSettings(string settingType = null)
@@ -2447,17 +2618,20 @@ namespace VWOSdk.Tests
         private List<BucketedCampaign> GetCampaigns(string settingType = null, string status = "running")
         {
             var result = new List<BucketedCampaign>();
-            if (settingType == "NonExistentGoalType") {
+            if (settingType == "NonExistentGoalType")
+            {
                 result.Add(GetCampaign(campaignKey: MockCampaignKey, status: status, goalType: "NON_EXISTENT_GOAL_TYPE"));
                 result.Add(GetCampaign(campaignKey: MockCampaignKey1, status: status, goalType: "NON_EXISTENT_GOAL_TYPE"));
                 return result;
             }
-            if (settingType == "GoalTypeCustom") {
+            if (settingType == "GoalTypeCustom")
+            {
                 result.Add(GetCampaign(campaignKey: MockCampaignKey, status: status, goalType: Constants.GoalTypes.CUSTOM));
                 result.Add(GetCampaign(campaignKey: MockCampaignKey1, status: status, goalType: Constants.GoalTypes.CUSTOM));
                 return result;
             }
-            if (settingType == "GoalTypeRevenue") {
+            if (settingType == "GoalTypeRevenue")
+            {
                 result.Add(GetCampaign(campaignKey: MockCampaignKey, status: status, goalType: Constants.GoalTypes.REVENUE));
                 result.Add(GetCampaign(campaignKey: MockCampaignKey1, status: status, goalType: Constants.GoalTypes.REVENUE));
                 return result;

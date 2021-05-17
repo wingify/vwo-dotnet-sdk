@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019-2020 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2021 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -35,6 +35,11 @@ namespace VWOSdk
         {
             Log.Info($"({file}): Looked into UserStorageService for userId:{userId} and campaign test key: {campaignKey} successful");
         }
+        public static void ReturnUserStorageData(string file, string userId, string campaignKey)
+        {
+            Log.Info($"({file}): Looked into UserStorageData for userId:{userId} and campaign test key: {campaignKey} successful");
+        }
+       
         public static void SavingDataUserStorageService(string file, string userId)
         {
             Log.Info($"({file}): Saving into UserStorageService for userId:{userId} successful");
@@ -63,24 +68,29 @@ namespace VWOSdk
         {
             Log.Info($"({file}): Impression event - {endPoint} was successfully received by VWO.");
         }
+  
         public static void RetryFailedImpressionAfterDelay(string file, string endPoint, string retryTimeout)
         {
             Log.Info($"({file}): Failed impression event for {endPoint} will be retried after {retryTimeout} milliseconds delay");
         }
 
-        public static void NoCustomVariables(string file , string userId, string campaignKey, string apiName) {
+        public static void NoCustomVariables(string file, string userId, string campaignKey, string apiName)
+        {
             Log.Info($"({file}): In API: {apiName}, for UserId:{userId} preSegments/customVariables are not passed for campaign:{campaignKey} and campaign has pre-segmentation");
         }
 
-        public static void SkippingPreSegmentation(string file , string userId, string campaignKey, string apiName) {
+        public static void SkippingPreSegmentation(string file, string userId, string campaignKey, string apiName)
+        {
             Log.Info($"({file}): In API: {apiName}, Skipping pre-segmentation for UserId:{userId} as no valid segments found in campaing:{campaignKey}");
         }
 
-        public static void SkippingWhitelisting(string file , string userId, string campaignKey, string apiName) {
+        public static void SkippingWhitelisting(string file, string userId, string campaignKey, string apiName)
+        {
             Log.Info($"({file}): In API: {apiName}, Skipping Whitelisting for UserId:{userId} in campaing:{campaignKey}");
         }
 
-        public static void WhitelistingStatus(string file , string userId, string campaignKey, string apiName, string variationString, string status) {
+        public static void WhitelistingStatus(string file, string userId, string campaignKey, string apiName, string variationString, string status)
+        {
             Log.Info($"({file}): In API: {apiName}, Whitelisting for UserId:{userId} in campaing:{campaignKey} is: {status} {variationString}");
         }
 
@@ -99,16 +109,26 @@ namespace VWOSdk
             Log.Info($"({file}): In API: {apiName} Value for variable:{variableKey} of campaign:{campaignKey} and campaign type: {campaignType} is: {variableValue} for user:{userId}");
         }
 
-        public static void UserPassedPreSegmentation(string file, string userId, string campaignKey, Dictionary<string, dynamic> customVariables) {
+        public static void UserPassedPreSegmentation(string file, string userId, string campaignKey, Dictionary<string, dynamic> customVariables)
+        {
             Log.Info($"({file}): UserId:{userId} of campaign:{campaignKey} with custom variables{DictionaryHelper.StringifyCustomVariables(customVariables)} passed pre segmentation");
         }
 
-        public static void UserFailedPreSegmentation(string file, string userId, string campaignKey, Dictionary<string, dynamic> customVariables) {
+        public static void UserFailedPreSegmentation(string file, string userId, string campaignKey, Dictionary<string, dynamic> customVariables)
+        {
             Log.Info($"({file}): UserId:{userId} of campaign:{campaignKey} with custom variables{DictionaryHelper.StringifyCustomVariables(customVariables)} failed pre segmentation");
         }
 
-        public static void GoalAlreadyTracked(string file, string userId, string campaignKey, string goalIdentifier) {
+        public static void GoalAlreadyTracked(string file, string userId, string campaignKey, string goalIdentifier)
+        {
             Log.Info($"({file}): Goal:{goalIdentifier} of campaign:{campaignKey} for UserId:{userId} has already been tracked earlier. Skipping now.");
         }
+        public static void ImpressionSuccessQueue(string file)
+        {
+            Log.Info($"({file}): Impression event was successfully pushed in queue");
+
+        }
     }
+
 }
+

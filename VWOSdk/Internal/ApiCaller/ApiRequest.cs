@@ -1,6 +1,6 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019-2020 Wingify Software Pvt. Ltd.
+ * Copyright 2019-2021 Wingify Software Pvt. Ltd.
  *
  * Licensed under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
@@ -22,7 +22,8 @@ namespace VWOSdk
 {
     internal enum Method
     {
-        GET = 0
+        GET = 0,
+        POST = 1 //add this for Batch event post
     }
 
     internal class ApiRequest
@@ -38,7 +39,6 @@ namespace VWOSdk
         public Method Method { get; private set; }
         public Uri Uri { get; set; }
         public IApiCaller ApiCaller { get; private set; }
-
         public ApiRequest WithCaller(IApiCaller apiCaller)
         {
             this.ApiCaller = apiCaller;
@@ -59,5 +59,6 @@ namespace VWOSdk
             return this.ApiCaller.Execute<T>(this);
 
         }
+
     }
 }

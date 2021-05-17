@@ -1,4 +1,4 @@
-#pragma warning disable 1587
+﻿#pragma warning disable 1587
 /**
  * Copyright 2019-2021 Wingify Software Pvt. Ltd.
  *
@@ -16,13 +16,12 @@
  */
 #pragma warning restore 1587
 
-using System.Collections.Generic;
-
 namespace VWOSdk
 {
-    internal interface ISegmentEvaluator
+    //Eventbatch flash interface
+    public interface IFlushInterface
     {
-        bool evaluate(string userId, string campaignKey, string segmentationType, Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables );
-        dynamic getTypeCastedFeatureValue(dynamic value, string variableType);
+        void onFlush(string error, object events);
+      
     }
 }

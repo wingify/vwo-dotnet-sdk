@@ -24,7 +24,7 @@ PM> Install-Package VWO.Sdk
 ```c#
 using VWOSdk;
 
-Settings settingsFile = VWO.GetSettings(accountId, sdkKey);     //  Fetch settingsFile from VWO.
+Settings settingsFile = VWO.GetSettingsFile(accountId, sdkKey);     //  Fetch settingsFile from VWO.
 IVWOClient vwoClient = VWO.Launch(settingsFile);           //  Create VWO Client to user APIs.
 ```
 
@@ -223,7 +223,7 @@ public class UserStorageService : IUserStorageService
 }
 
 
-var settingsFile = VWO.GetSettings(VWOConfig.AccountId, VWOConfig.SdkKey);
+var settingsFile = VWO.GetSettingsFile(VWOConfig.AccountId, VWOConfig.SdkKey);
 
 //  Provide UserStorageService instance while vwoClient Instantiation.
 var vwoClient = VWO.Launch(settingsFile, userStorageService: new UserStorageService());
@@ -284,4 +284,4 @@ Please go through our [contributing guidelines](https://github.com/wingify/vwo-d
 
 [Apache License, Version 2.0](https://github.com/wingify/vwo-dotnet-sdk/blob/master/LICENSE)
 
-Copyright 2019-2020 Wingify Software Pvt. Ltd.
+Copyright 2019-2021 Wingify Software Pvt. Ltd.
