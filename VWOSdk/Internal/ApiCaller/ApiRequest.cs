@@ -26,6 +26,7 @@ namespace VWOSdk
         POST = 1 //add this for Batch event post
     }
 
+    
     internal class ApiRequest
     {
         private readonly bool _isDevelopmentMode;
@@ -38,13 +39,13 @@ namespace VWOSdk
 
         public Method Method { get; private set; }
         public Uri Uri { get; set; }
+        public Uri logUri { get; set; }
         public IApiCaller ApiCaller { get; private set; }
         public ApiRequest WithCaller(IApiCaller apiCaller)
         {
             this.ApiCaller = apiCaller;
             return this;
         }
-
         public void ExecuteAsync()
         {
             if (this._isDevelopmentMode)

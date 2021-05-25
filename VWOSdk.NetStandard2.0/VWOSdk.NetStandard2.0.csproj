@@ -9,7 +9,7 @@
 		<OutputType>Library</OutputType>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<PackageId>VWO.Sdk</PackageId>
-		<Version>1.11.0</Version>
+		<Version>1.14.0</Version>
 		<Authors>VWO devs</Authors>
 		<Company>Wingify</Company>
 		<Product>VWO</Product>
@@ -69,6 +69,8 @@
 		<Compile Include="..\VWOSdk\Model\UserStorageMap.cs" Link="Model\UserStorageMap.cs" />
 		<Compile Include="..\VWOSdk\Model\Variation.cs" Link="Model\Variation.cs" />
 		<Compile Include="..\VWOSdk\VWO.cs" Link="VWO.cs" />
+		<Compile Include="..\VWOSdk\Internal\Integration\HookManager.cs" Link="Internal\Integration\HookManager.cs" />
+		<Compile Include="..\VWOSdk\Internal\Integration\IntegrationEventListener.cs" Link="Internal\Integration\IntegrationEventListener.cs" />
 		<Compile Include="..\VWOSdk\Internal\Batch\Contract\IFlushInterface.cs" Link="Internal\Batch\Contract\IFlushInterface.cs" />
 		<Compile Include="..\VWOSdk\Internal\Batch\Core\BatchEventQueue.cs" Link="Internal\Batch\Core\BatchEventQueue.cs" />
 		<Compile Include="..\VWOSdk\Internal\Batch\Model\BatchEventData.cs" Link="Internal\Batch\Model\BatchEventData.cs" />
@@ -98,6 +100,7 @@
 		<Folder Include="Internal\Validator\" />
 		<Folder Include="Logger\Messages\" />
 		<Folder Include="Model\" />
+		<Folder Include="Internal\Integration\" />
 	</ItemGroup>
 
 </Project>

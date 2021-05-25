@@ -150,5 +150,38 @@ namespace VWOSdk
             Log.Debug($"({file}): Goal:{goalIdentifier} found for campaign:{campaignKey} and userId:{userId}");
         }
 
+        public static void CampaignNotActivated(string file, string api, string campaignKey, string userId)
+        {
+            Log.Debug($"({file}): Campaign:{campaignKey} for User ID:{userId} is not yet activated for API:{api}. Use activate API to activate A/B test or isFeatureEnabled API to activate Feature Test.");
+        }
+        public static void InitIntegrationMapForGoal(string file, string api, string campaignKey, string userId)
+        {
+            Log.Debug($"({file}): InitIntegrationMap called for Goal  Campaign:{campaignKey} for User ID:{userId} for API:{api}.");
+        }
+        public static void InitIntegrationMapForVariation(string file, string api, string campaignKey, string userId)
+        {
+            Log.Debug($"({file}): InitIntegrationMap called for Campaign:{campaignKey} for User ID:{userId} for API:{api}.");
+        }
+        public static void ExecuteIntegrationsCallbackTargettedVariation(string file, string api, string campaignKey, string userId)
+        {
+            Log.Debug($"({file}): Execute Integrations Callback for Targetted Variation for Campaign:{campaignKey} for User ID:{userId} for API:{api}.");
+        }
+        public static void ExecuteIntegrationsCallbackAlreadyTracked(string file, string api, string campaignKey, string userId)
+        {
+            Log.Debug($"({file}): Execute Integrations Callback for Already Tracked or Saved Variation for Campaign:{campaignKey} for User ID:{userId} for API:{api}.");
+        }
+        public static void ExecuteIntegrationsCallbackNewVariation(string file, string api, string campaignKey, string userId)
+        {
+            Log.Debug($"({file}): Execute Integrations Callback for Assigned Variation for Campaign:{campaignKey} for User ID:{userId} for API:{api}.");
+        }
+        public static void DuplicateCall(string file, string function)
+        {
+            Log.Debug($"({file}): Duplicate Call for Variation for {function}");
+        }
+        public static void VariationNotFound(string file, string campaignKey, string userId)
+        {
+            Log.Debug($"({file}): Variation not found for campaign:{campaignKey} and userId:{userId}");
+        }
+
     }
 }

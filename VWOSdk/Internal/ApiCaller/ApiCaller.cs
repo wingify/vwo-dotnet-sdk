@@ -51,14 +51,14 @@ namespace VWOSdk
                 if (httpResponseMessage.IsSuccessStatusCode)
                 {
                     var response = await httpResponseMessage.Content.ReadAsByteArrayAsync();
-                    LogInfoMessage.ImpressionSuccess(file, apiRequest.Uri.ToString());
+                    LogInfoMessage.ImpressionSuccess(file, apiRequest.logUri?.ToString());
                     return response;
                 }
-                LogErrorMessage.ImpressionFailed(file, apiRequest.Uri?.ToString());
+                LogErrorMessage.ImpressionFailed(file, apiRequest.logUri?.ToString());
             }
             catch (Exception exception)
             {
-                LogErrorMessage.ImpressionFailed(file, apiRequest.Uri?.ToString());
+                LogErrorMessage.ImpressionFailed(file, apiRequest.logUri?.ToString());
             }
             finally
             {

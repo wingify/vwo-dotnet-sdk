@@ -39,7 +39,7 @@ namespace VWOSdk
         {
             Log.Info($"({file}): Looked into UserStorageData for userId:{userId} and campaign test key: {campaignKey} successful");
         }
-       
+
         public static void SavingDataUserStorageService(string file, string userId)
         {
             Log.Info($"({file}): Saving into UserStorageService for userId:{userId} successful");
@@ -68,7 +68,7 @@ namespace VWOSdk
         {
             Log.Info($"({file}): Impression event - {endPoint} was successfully received by VWO.");
         }
-  
+
         public static void RetryFailedImpressionAfterDelay(string file, string endPoint, string retryTimeout)
         {
             Log.Info($"({file}): Failed impression event for {endPoint} will be retried after {retryTimeout} milliseconds delay");
@@ -128,7 +128,21 @@ namespace VWOSdk
             Log.Info($"({file}): Impression event was successfully pushed in queue");
 
         }
+        public static void UserAlreadyTracked(string file, string userId, string campaignKey,string apiName)
+        {
+
+            Log.Info($"({file}): User ID:{userId} for Campaign:{campaignKey} has already been tracked earlier for {apiName} API. Skipping now.");
+
+        }
+        public static void CampaignNotActivated(string file, string reason, string campaignKey, string userId)
+        {
+            Log.Info($"({file}): Activate the campaign:{campaignKey} for User ID:{userId} to {reason}");
+        }
+        public static void NoDataUserStorageService(string file,string campaignKey, string userId)
+        {
+            Log.Info($"({file}): Unable to fetch data from user storage for{campaignKey} for User ID:{userId}.");
+        }
+
     }
 
 }
-

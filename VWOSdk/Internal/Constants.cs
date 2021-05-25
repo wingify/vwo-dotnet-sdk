@@ -24,7 +24,7 @@ namespace VWOSdk
     {
         internal static readonly string PLATFORM = "server";
         internal static readonly string GOAL_IDENTIFIER_SEPERATOR = "_vwo_";
-
+        internal static readonly string DECISION_TYPES = "CAMPAIGN_DECISION";
         internal static class Campaign
         {
             internal static readonly string STATUS_RUNNING = "RUNNING";
@@ -77,6 +77,10 @@ namespace VWOSdk
             internal static readonly string VISUAL_AB = "VISUAL_AB";
             internal static readonly string FEATURE_TEST = "FEATURE_TEST";
             internal static readonly string FEATURE_ROLLOUT = "FEATURE_ROLLOUT";
+            internal static readonly string ACTIVATE = "Activate";
+            internal static readonly string IS_FEATURE_ENABLED = "IsFeatureEnabled";
+            internal static readonly string TRACK = "Track";
+
         }
 
         public static class PushApi
@@ -151,6 +155,5 @@ namespace VWOSdk
                 "REVENUE_TRACKING", "CUSTOM_GOAL", "ALL"
             };
         }
-
     }
 }

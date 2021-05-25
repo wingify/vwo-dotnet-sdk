@@ -5,6 +5,40 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.14.0] - 2020-05-26
+
+### Added
+
+- Expose lifecycle hook events. This feature allows sending VWO data to third party integrations.
+
+```csharp
+internal class HookCallback : IntegrationEventListener
+{
+    public void onEvent(Dictionary<string, dynamic> properties)
+    {
+        string payLoad = JsonConvert.SerializeObject(properties);
+        CustomLogger logger = new CustomLogger();
+        logger.WriteLog(LogLevel.DEBUG, "onEvent call from SDK: " + payLoad);
+
+    }
+}
+
+VWO.Launch(SettingsFile, integrations: new HookManager() { HookCallback = new HookCallback() });
+```
+
+### Changed
+
+- Send environment token in every network call initiated from SDK to the VWO server. This will help in viewing campaign reports on the basis of environment.
+
+- If User Storage Service is provided, do not track same visitor multiple times. You can pass `shouldTrackReturningUser` as true in case you prefer to track duplicate visitors.
+
+```csharp
+VWOClient = VWO.Launch(SettingsFile, userStorageService: new UserStorageService(),
+                shouldTrackReturningUser: true);
+```
+
+- Introduce `integrations` param in `Launch` API to enable receiving hooks for the third party integrations.
+
 ## [1.11.0] - 2020-05-07
 
 ### Added

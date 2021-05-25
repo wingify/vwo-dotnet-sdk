@@ -360,3 +360,4 @@ coverage.json
 coverage.hits
 
 VWOSdk.DemoApp/
+/.editorconfig.inferred

@@ -26,7 +26,7 @@ namespace VWOSdk
         private static readonly ISegmentEvaluator SegmentEvaluator;
         private static ISettingsProcessor SettingsProcessor;
         private static readonly string file = typeof(VWO).FullName;
-   
+
         /// <summary>
         /// Static Constructor to init default dependencies on application load.
         /// </summary>
@@ -131,12 +131,13 @@ namespace VWOSdk
         /// <param name="userStorageService">UserStorageService to Get and Save User-assigned variations.</param>
         /// <param name="goalTypeToTrack">Specify which goalType to track.</param>
         /// <param name="shouldTrackReturningUser">Should track returning user or not.</param>
+        /// <param name="integrations">Integration Event Listener onEvent callback</param>
         /// <returns>
         /// IVWOClient instance to call Activate, GetVariation and Track apis for given user and goal.
         /// </returns>
-
         public static IVWOClient Launch(Settings settingFile, bool isDevelopmentMode = false, IUserStorageService userStorageService = null,
-           BatchEventData batchData = null, string goalTypeToTrack = Constants.GoalTypes.ALL, bool shouldTrackReturningUser = false)
+           BatchEventData batchData = null, string goalTypeToTrack = Constants.GoalTypes.ALL,
+           bool shouldTrackReturningUser = false, HookManager integrations = null)
         {
             if (Validator.SettingsFile(settingFile))
             {
@@ -150,9 +151,9 @@ namespace VWOSdk
 
                 if (isDevelopmentMode)
                     LogDebugMessage.SetDevelopmentMode(file);
-
+                //integration
                 var vwoClient = new VWO(accountSettings, Validator, userStorageService, CampaignAllocator, SegmentEvaluator,
-                    VariationAllocator, isDevelopmentMode, batchData, goalTypeToTrack, shouldTrackReturningUser);
+                    VariationAllocator, isDevelopmentMode, batchData, goalTypeToTrack, shouldTrackReturningUser, integrations);
                 LogDebugMessage.SdkInitialized(file);
                 return vwoClient;
             }

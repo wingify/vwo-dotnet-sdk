@@ -87,7 +87,7 @@ namespace VWOSdk.Tests
         {
             var apiRequest = new ApiRequest(Method.GET)
             {
-                Uri = new Uri("http://r.in/api/users/2"),
+                Uri = new Uri("http://r.in/api/users/2"),             
             };
             IApiCaller apiCaller = GetApiCaller();
             var response = AsyncHelper.RunSync(() => apiCaller.ExecuteAsync(apiRequest));

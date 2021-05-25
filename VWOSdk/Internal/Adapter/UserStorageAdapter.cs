@@ -38,15 +38,15 @@ namespace VWOSdk
         /// <param name="userStorageData"></param>
         /// <returns>
         /// Returns userStorageMap if validation is success, else null.
-        /// </returns>     
-        internal UserStorageMap GetUserMap(string campaignKey, string userId, Dictionary<string, dynamic> userStorageData)
+        /// </returns>
+        internal UserStorageMap GetUserMap(string campaignKey, string userId, Dictionary<string, dynamic> userStorageData=null)
         {
             if (this._userStorageService == null)
             {
                 LogDebugMessage.NoUserStorageServiceGet(file);
                 return null;
             }
-          
+
             UserStorageMap userMap = TryGetUserMap(userId, campaignKey, userStorageData);
             if (userMap == null || string.IsNullOrEmpty(userMap.CampaignKey)
                 || string.IsNullOrEmpty(userMap.VariationName) || string.IsNullOrEmpty(userMap.UserId)
@@ -65,11 +65,11 @@ namespace VWOSdk
         /// <param name="campaignKey"></param>
         /// <param name="userStorageData"></param>
         /// <returns></returns>
-        private UserStorageMap TryGetUserMap(string userId, string campaignKey, Dictionary<string, dynamic> userStorageData)
+        private UserStorageMap TryGetUserMap(string userId, string campaignKey, Dictionary<string, dynamic> userStorageData=null)
         {
             try
             {
-                LogInfoMessage.LookingUpUserStorageService(file, userId, campaignKey);               
+                LogInfoMessage.LookingUpUserStorageService(file, userId, campaignKey);
                 if (userStorageData != null)
                 {
                     if (userStorageData.ContainsKey("userId") && userStorageData.ContainsKey("campaignKey") && userStorageData.ContainsKey("variationName"))
@@ -84,19 +84,19 @@ namespace VWOSdk
                         }
                         else
                         {
-                           
+
                             return this._userStorageService.Get(userId, campaignKey);
                         }
-                    }                   
+                    }
                     else
                     {
-                       
+
                         return this._userStorageService.Get(userId, campaignKey);
                     }
                 }
                 else
                 {
-                  
+
                     return this._userStorageService.Get(userId, campaignKey);
                 }
             }
@@ -117,7 +117,7 @@ namespace VWOSdk
 
             try
             {
-               
+
                 this._userStorageService.Set(new UserStorageMap(userId, campaignKey, variationName, goalIdentifier));
                 LogInfoMessage.SavingDataUserStorageService(file, userId);
                 return;

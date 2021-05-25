@@ -216,7 +216,6 @@ namespace VWOSdk.Tests
             Assert.NotNull(settings);
             Assert.Equal(123456, settings.AccountId);
             Assert.Equal("sampleSdkKey", settings.SdkKey);
-
             var vwoClient = VWO.Launch(settings, isDevelopmentMode: true);
             var getVariationResponse = vwoClient.GetVariation(campaignKey, userId);
             if (expectedPartOfCampaign)
@@ -230,7 +229,6 @@ namespace VWOSdk.Tests
                 Assert.Null(expectedVariationName);
                 Assert.Null(getVariationResponse);
             }
-
             var activateResponse = vwoClient.Activate(campaignKey, userId);
             if (expectedPartOfCampaign)
             {
@@ -243,7 +241,6 @@ namespace VWOSdk.Tests
                 Assert.Null(expectedVariationName);
                 Assert.Null(activateResponse);
             }
-
             var trackResponse = vwoClient.Track(campaignKey, userId, "CUSTOM");
             Assert.Equal(expectedPartOfCampaign, trackResponse);
         }

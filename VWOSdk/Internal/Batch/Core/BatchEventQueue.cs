@@ -210,7 +210,7 @@ namespace VWOSdk
         private async Task<bool> sendPostCall()
         {
             string PayLoad = HttpRequestBuilder.GetJsonString(this.batchQueue);
-            var ApiRequest = ServerSideVerb.EventBatching(this.accountId, this.isDevelopmentMode);
+            var ApiRequest = ServerSideVerb.EventBatching(this.accountId, this.isDevelopmentMode, this.apikey);
             HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Add("Authorization", this.apikey);
@@ -227,7 +227,7 @@ namespace VWOSdk
                     {
                         flushCallback.onFlush(null, PayLoad);
                     }
-                    LogInfoMessage.ImpressionSuccess(file, ApiRequest.Uri.ToString());
+                    LogInfoMessage.ImpressionSuccess(file, ApiRequest.logUri?.ToString());
                     return true;
                 }
                 else if (response.StatusCode == System.Net.HttpStatusCode.RequestEntityTooLarge)
@@ -236,8 +236,8 @@ namespace VWOSdk
                     {
                         flushCallback.onFlush("Payload size too large", PayLoad);
                     }
-                    LogDebugMessage.BatchEventLimitExceeded(file, ApiRequest.Uri?.ToString(), this.accountId.ToString(), eventsPerRequest.ToString());
-                    LogErrorMessage.ImpressionFailed(file, ApiRequest.Uri?.ToString());
+                    LogDebugMessage.BatchEventLimitExceeded(file, ApiRequest.logUri?.ToString(), this.accountId.ToString(), eventsPerRequest.ToString());
+                    LogErrorMessage.ImpressionFailed(file, ApiRequest.logUri?.ToString());
 
                     return false;
                 }
@@ -248,13 +248,13 @@ namespace VWOSdk
                         flushCallback.onFlush("Account id not found, no request app id found, or invalid API key", PayLoad);
                     }
                     LogErrorMessage.BulkNotProcessed(file);
-                    LogErrorMessage.ImpressionFailed(file, ApiRequest.Uri?.ToString());
+                    LogErrorMessage.ImpressionFailed(file, ApiRequest.logUri?.ToString());
                     return false;
                 }
                 else
                 {
                     LogErrorMessage.BulkNotProcessed(file);
-                    LogErrorMessage.ImpressionFailed(file, ApiRequest.Uri?.ToString());
+                    LogErrorMessage.ImpressionFailed(file, ApiRequest.logUri?.ToString());
                     if (flushCallback != null)
                     {
                         flushCallback.onFlush("Invalid call", PayLoad);

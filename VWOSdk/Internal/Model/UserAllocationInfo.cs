@@ -24,14 +24,16 @@ namespace VWOSdk
         {
         }
 
-        public UserAllocationInfo(Variation variation, BucketedCampaign campaign)
+
+        public UserAllocationInfo(Variation variation, BucketedCampaign campaign, bool duplicateCall = false)
         {
             this.Variation = variation;
             this.Campaign = campaign;
+            this.DuplicateCall = duplicateCall;
         }
-
         public Goal Goal { get; set; }
         public Variation Variation { get; set; }
+        public bool DuplicateCall { get; set; }
         public BucketedCampaign Campaign { get; set; }
     }
 }

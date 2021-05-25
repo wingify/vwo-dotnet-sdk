@@ -118,6 +118,31 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Messages", "Messages", "{0F
 		VWOSdk\Logger\Messages\LogWarningMessage.cs = VWOSdk\Logger\Messages\LogWarningMessage.cs
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Batch", "Batch", "{EEF5B6EB-6EF0-42A0-80DD-92C7EBA7177D}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Contract", "Contract", "{D833ECFF-FF8F-4C8B-A4E7-CFDA35588EC7}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Internal\Batch\Contract\IFlushInterface.cs = VWOSdk\Internal\Batch\Contract\IFlushInterface.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Core", "Core", "{686E8F40-9582-46F1-AC01-60EA734EC4FA}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Internal\Batch\Core\BatchEventQueue.cs = VWOSdk\Internal\Batch\Core\BatchEventQueue.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Model", "Model", "{5A438A2D-85E2-4DBB-AAD7-927DF0708573}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Internal\Batch\Model\BatchEventData.cs = VWOSdk\Internal\Batch\Model\BatchEventData.cs
+		VWOSdk\Internal\Batch\Model\BuildQueryParams.cs = VWOSdk\Internal\Batch\Model\BuildQueryParams.cs
+		VWOSdk\Internal\Batch\Model\HttpRequestBuilder.cs = VWOSdk\Internal\Batch\Model\HttpRequestBuilder.cs
+	EndProjectSection
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "integration", "integration", "{C5C1C470-1A08-4260-8624-628C0CF3EAA8}"
+	ProjectSection(SolutionItems) = preProject
+		VWOSdk\Internal\integration\HookManager.cs = VWOSdk\Internal\integration\HookManager.cs
+		VWOSdk\Internal\integration\IntegrationEventListener.cs = VWOSdk\Internal\integration\IntegrationEventListener.cs
+	EndProjectSection
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -153,6 +178,11 @@ Global
 		{24BA6D73-DCBA-47C4-AE09-2343B6A07AA9} = {928E8F43-4BA9-485F-850C-E41D69A5E3D5}
 		{F8250854-614D-4327-A051-9046FAB459F2} = {928E8F43-4BA9-485F-850C-E41D69A5E3D5}
 		{0FF99BC4-91B0-4E52-B8A7-DE7D5A16609F} = {5A6B6B8E-8C1E-4EDB-A8EB-76D7BF8B94E8}
+		{EEF5B6EB-6EF0-42A0-80DD-92C7EBA7177D} = {928E8F43-4BA9-485F-850C-E41D69A5E3D5}
+		{D833ECFF-FF8F-4C8B-A4E7-CFDA35588EC7} = {EEF5B6EB-6EF0-42A0-80DD-92C7EBA7177D}
+		{686E8F40-9582-46F1-AC01-60EA734EC4FA} = {EEF5B6EB-6EF0-42A0-80DD-92C7EBA7177D}
+		{5A438A2D-85E2-4DBB-AAD7-927DF0708573} = {EEF5B6EB-6EF0-42A0-80DD-92C7EBA7177D}
+		{C5C1C470-1A08-4260-8624-628C0CF3EAA8} = {928E8F43-4BA9-485F-850C-E41D69A5E3D5}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {5B99551F-3DD7-4543-A35D-8111AD62B9B1}

@@ -2339,8 +2339,12 @@ namespace VWOSdk.Tests
             var mockVariationResolver = Mock.GetVariationResolver();
             Mock.SetupResolve(mockVariationResolver, GetVariation());
 
-            var vwoClient = GetVwoClient(settingType: "MultipleCampaignForTrack", mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, mockUserStorageService: mockUserStorageService);
-            var result = vwoClient.Track(new List<string>() { MockCampaignKey, MockCampaignKey1 }, MockUserId, MockGoalIdentifier, MockTrackCustomVariables);
+            var vwoClient = GetVwoClient(settingType: "MultipleCampaignForTrack", mockValidator: mockValidator,
+                mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver,
+                mockUserStorageService: mockUserStorageService);
+
+            var result = vwoClient.Track(new List<string>() { MockCampaignKey, MockCampaignKey1 }, MockUserId, MockGoalIdentifier,
+                MockTrackCustomVariables);
             Assert.True(result[MockCampaignKey]);
             Assert.True(result[MockCampaignKey1]);
 
@@ -2354,10 +2358,8 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.AtLeastOnce);
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.AtLeastOnce);
         }
-
-
         [Fact]
-        public void Track_Should_Not_Fire_Twice_When_ShouldTrackReturningUser_Is_True()
+        public void Track_Should_Fire_Twice_When_ShouldTrackReturningUser_Is_True()
         {
             var mockApiCaller = Mock.GetApiCaller<Settings>();
             AppContext.Configure(mockApiCaller.Object);
@@ -2369,16 +2371,18 @@ namespace VWOSdk.Tests
             var mockVariationResolver = Mock.GetVariationResolver();
             Mock.SetupResolve(mockVariationResolver, GetVariation());
 
-            var vwoClient = GetVwoClient(settingType: "MultipleCampaignForTrack", mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
-            var result = vwoClient.Track(new List<string>() { MockCampaignKey, MockCampaignKey1 }, MockUserId, MockGoalIdentifier, MockTrackShouldTrackReturningUser);
+            var vwoClient = GetVwoClient(settingType: "MultipleCampaignForTrack", mockValidator: mockValidator,
+                mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
+            var result = vwoClient.Track(new List<string>() { MockCampaignKey, MockCampaignKey1 }, MockUserId,
+                MockGoalIdentifier, MockTrackShouldTrackReturningUser);
             Assert.True(result[MockCampaignKey]);
             Assert.True(result[MockCampaignKey1]);
 
             // As ShouldTrackReturningUser is true, should fire again.
-            var resultRevenue = vwoClient.Track(new List<string>() { MockCampaignKey, MockCampaignKey1 }, MockUserId, MockGoalIdentifier, MockTrackShouldTrackReturningUser);
+            var resultRevenue = vwoClient.Track(new List<string>() { MockCampaignKey, MockCampaignKey1 }, MockUserId,
+                MockGoalIdentifier, MockTrackShouldTrackReturningUser);
             Assert.True(resultRevenue[MockCampaignKey]);
             Assert.True(resultRevenue[MockCampaignKey1]);
-
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.AtLeastOnce);
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.AtLeastOnce);
         }
@@ -2397,7 +2401,8 @@ namespace VWOSdk.Tests
             Mock.SetupResolve(mockVariationResolver, GetVariation());
 
             var vwoClient = GetVwoClient(settingType: "NonExistentGoalType", mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
-            var result = vwoClient.Track(new List<string>() { MockCampaignKey, MockCampaignKey1 }, MockUserId, MockGoalIdentifier, MockTrackOptionsCustomGoal);
+            var result = vwoClient.Track(new List<string>() { MockCampaignKey, MockCampaignKey1 }, MockUserId, MockGoalIdentifier,
+                MockTrackOptionsCustomGoal);
             Assert.False(result[MockCampaignKey]);
             Assert.False(result[MockCampaignKey1]);
 
