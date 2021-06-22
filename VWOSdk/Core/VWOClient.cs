@@ -700,6 +700,7 @@ namespace VWOSdk
             integrationsMap = new Dictionary<string, dynamic>();
             integrationsMap.Add("campaignId", campaign.Id);
             integrationsMap.Add("campaignKey", campaign.Key);
+            integrationsMap.Add("campaignName", campaign.Name);
             integrationsMap.Add("campaignType", campaign.Type);
             integrationsMap.Add("customVariables", customVariables == null ? new Dictionary<string, dynamic>() : customVariables);
             integrationsMap.Add("event", Constants.DECISION_TYPES);

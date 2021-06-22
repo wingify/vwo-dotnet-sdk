@@ -22,7 +22,7 @@ namespace VWOSdk
 {
     internal class BucketedCampaign : Campaign
     {
-        public BucketedCampaign(int id, double PercentTraffic, string Key, string Status, string Type, bool IsForcedVariationEnabled, Dictionary<string, dynamic> Segments = null, List<Dictionary<string, dynamic>> Variables = null) : base(id, PercentTraffic, Key, Status, Type, null, null, IsForcedVariationEnabled, Segments, Variables)
+        public BucketedCampaign(int id, string Name, double PercentTraffic, string Key, string Status, string Type, bool IsForcedVariationEnabled, Dictionary<string, dynamic> Segments = null, List<Dictionary<string, dynamic>> Variables = null) : base(id, Name, PercentTraffic, Key, Status, Type, null, null, IsForcedVariationEnabled, Segments, Variables)
         {
 
         }

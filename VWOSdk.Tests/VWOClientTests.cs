@@ -2652,7 +2652,7 @@ namespace VWOSdk.Tests
         private BucketedCampaign GetCampaign(string campaignKey = null, string variationName = null, string status = "RUNNING", string goalIdentifier = null, string campaignType = null, Dictionary<string, dynamic> segments = null, List<Dictionary<string, dynamic>> mockVariables = null, string goalType = null)
         {
             campaignKey = campaignKey ?? MockCampaignKey;
-            return new BucketedCampaign(-1, 100, campaignKey, status, campaignType != null ? campaignType : Constants.CampaignTypes.VISUAL_AB, false, segments, mockVariables)
+            return new BucketedCampaign(-1, "test", 100, campaignKey, status, campaignType != null ? campaignType : Constants.CampaignTypes.VISUAL_AB, false, segments, mockVariables)
             {
                 Variations = GetVariations(variationName, mockVariables),
                 Goals = GetGoals(goalIdentifier, goalType)
