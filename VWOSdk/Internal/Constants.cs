@@ -132,7 +132,8 @@ namespace VWOSdk
                 {"string", "String"},
                 {"integer", "Int"},
                 {"double", "Double"},
-                {"boolean", "Bool"}
+                {"boolean", "Bool"},
+                {"json", "Json"}
             };
         }
 
@@ -142,7 +143,7 @@ namespace VWOSdk
             internal const string INTEGER = "integer";
             internal const string DOUBLE = "double";
             internal const string BOOLEAN = "boolean";
-
+            internal const string JSON = "json";
         }
 
         public static class GoalTypes

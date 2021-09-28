@@ -43,15 +43,16 @@ namespace VWOSdk
         private bool isDevelopmentMode;
         private bool isBatchProcessing = false;
         private static readonly string file = typeof(BatchEventQueue).FullName;
-
+        private Dictionary<string, int> _usageStats=new Dictionary<string, int>();
         /// <summary>
         /// Init variables in BatchEventQueue.
         /// </summary>
         /// <param name="batchEvents">BatchEventsData instance</param>
         /// <param name="apikey">VWO application apikey</param>
         /// <param name="accountId">VWO application accountId</param>
-        /// <param name="isDevelopmentMode">isDevelopmentMode Boolean value specifying development mode is on ir off</param>
-        internal BatchEventQueue(BatchEventData batchEvents, string apikey, int accountId, bool isDevelopmentMode)
+        /// <param name="isDevelopmentMode">isDevelopmentMode Boolean value specifying development mode is on or off</param>
+        /// <param name="usageStats">Sending stats which are used for launching the SDK like storage service, logger, and integrations, etc.</param>
+        internal BatchEventQueue(BatchEventData batchEvents, string apikey, int accountId, bool isDevelopmentMode, Dictionary<string, int> usageStats)
         {
             if (batchEvents != null)
             {
@@ -98,6 +99,7 @@ namespace VWOSdk
             this.accountId = accountId;
             this.isDevelopmentMode = isDevelopmentMode;
             this.apikey = apikey;
+            this._usageStats = usageStats;
         }
         /// <summary>
         /// Insert the event in the queue and flush if the queue is full.
@@ -137,7 +139,7 @@ namespace VWOSdk
         /// <returns>Boolean value specifying flush was successful or not.</returns>
         public bool flush(bool manual)
         {
-            var batchMetadata= HttpRequestBuilder.GetJsonString(this.batchQueue);
+            var batchMetadata = HttpRequestBuilder.GetJsonString(this.batchQueue);
             if (batchQueue.Count == 0)
             {
                 LogDebugMessage.EventQueueEmpty(file);
@@ -210,7 +212,7 @@ namespace VWOSdk
         private async Task<bool> sendPostCall()
         {
             string PayLoad = HttpRequestBuilder.GetJsonString(this.batchQueue);
-            var ApiRequest = ServerSideVerb.EventBatching(this.accountId, this.isDevelopmentMode, this.apikey);
+            var ApiRequest = ServerSideVerb.EventBatching(this.accountId, this.isDevelopmentMode, this.apikey, this._usageStats);
             HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Add("Authorization", this.apikey);

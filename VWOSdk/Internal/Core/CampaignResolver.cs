@@ -104,7 +104,7 @@ namespace VWOSdk
         private BucketedCampaign AllocateByTrafficAllocation(string userId, BucketedCampaign requestedCampaign)
         {
             var selectedCampaign = requestedCampaign;
-            var userHash = this._userHasher.ComputeBucketValue(userId, Constants.Campaign.MAX_TRAFFIC_PERCENT, 1);
+            var userHash = requestedCampaign.IsBucketingSeedEnabled == true ? this._userHasher.ComputeBucketValue(CampaignHelper.getBucketingSeed(userId, requestedCampaign, null), userId, Constants.Campaign.MAX_TRAFFIC_PERCENT, 1) : this._userHasher.ComputeBucketValue(userId, Constants.Campaign.MAX_TRAFFIC_PERCENT, 1);          
             if (requestedCampaign.PercentTraffic < userHash)
             {
                 selectedCampaign = null;

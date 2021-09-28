@@ -37,6 +37,10 @@ namespace VWOSdk.Tests
         {
             MockUserHasher.SetupComputeBucketValue(mockUserHasher, returnVal, outHashValue);
         }
+        internal static void SetupSeedComputeBucketValue(Mock<IBucketService> mockUserHasher, int returnVal, double outHashValue)
+        {
+            MockUserHasher.SetupSeedComputeBucketValue(mockUserHasher, returnVal, outHashValue);
+        }
 
         internal static Mock<IUserStorageService> GetUserStorageService()
         {

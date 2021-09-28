@@ -16,14 +16,29 @@
  */
 #pragma warning restore 1587
 
+using System.Text;
 using System.Collections.Generic;
 
 namespace VWOSdk
 {
-    internal interface ISegmentEvaluator
+    internal class CampaignHelper
     {
-        bool evaluate(string userId, string campaignKey, string segmentationType, Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables );
-        dynamic getTypeCastedFeatureValue(dynamic value, string variableType);
-        bool IsValidJson(string value);
+        public static string getBucketingSeed(string userId, Campaign campaign, int? groupId)
+        {
+            if (groupId != null)
+            {
+                return groupId + "_" + userId;
+            }
+
+            if (campaign != null && campaign.IsBucketingSeedEnabled)
+            {
+                return campaign.Id + "_" + userId;
+            }
+            else
+            {
+                return userId;
+            }
+        }
+       
     }
 }

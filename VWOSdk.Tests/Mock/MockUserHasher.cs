@@ -40,5 +40,17 @@ namespace VWOSdk.Tests
             mockUserHasher.Setup(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>(), out outHashValue))
                 .Returns<string, double, double, double>((userid, maxVal, multiplier, hashvalue) => mockUserHasher.Object.ComputeBucketValue(userid, maxVal, multiplier));
         }
+        internal static void SetupSeedCompute(Mock<IBucketService> mockUserHasher, int returnVal)
+        {
+            mockUserHasher.Setup(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()))
+                .Returns(returnVal);
+        }
+
+        internal static void SetupSeedComputeBucketValue(Mock<IBucketService> mockUserHasher, int returnVal, double outHashValue)
+        {
+            SetupSeedCompute(mockUserHasher, returnVal);
+            mockUserHasher.Setup(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>(), out outHashValue))
+                .Returns<string,string, double, double, double>((bucketingSeed,userid, maxVal, multiplier, hashvalue) => mockUserHasher.Object.ComputeBucketValue(bucketingSeed,userid, maxVal, multiplier));
+        }
     }
 }

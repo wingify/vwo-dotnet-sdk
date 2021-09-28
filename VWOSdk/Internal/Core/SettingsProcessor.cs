@@ -50,7 +50,7 @@ namespace VWOSdk
 
         private BucketedCampaign Process(Campaign campaign)
         {
-            return new BucketedCampaign(campaign.Id, campaign.Name, campaign.PercentTraffic, campaign.Key, campaign.Status, campaign.Type, campaign.IsForcedVariationEnabled, campaign.Segments, campaign.Variables)
+            return new BucketedCampaign(campaign.Id, campaign.Name, campaign.PercentTraffic, campaign.Key, campaign.Status, campaign.Type, campaign.IsForcedVariationEnabled,campaign.IsBucketingSeedEnabled, campaign.Segments, campaign.Variables)
             {
                 Goals = ToDictionary(campaign.Goals, (goal) => goal.Identifier),
                 Variations = Bucket(campaign.Variations, campaign.Key)
@@ -64,7 +64,8 @@ namespace VWOSdk
             {
                 foreach (var item in enumerable)
                 {
-                    result[keySelector(item)] = item;
+                    if (keySelector(item) != null)
+                        result[keySelector(item)] = item;
                 }
             }
             return result;

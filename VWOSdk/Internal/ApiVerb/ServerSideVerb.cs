@@ -17,6 +17,7 @@
 #pragma warning restore 1587
 
 using System;
+using System.Collections.Generic;
 using System.Reflection;
 
 namespace VWOSdk
@@ -55,9 +56,9 @@ namespace VWOSdk
 
             return settingsRequest;
         }
-        internal static ApiRequest TrackUser(long accountId, int campaignId, int variationId, string userId, bool isDevelopmentMode, string sdkKey)
+        internal static ApiRequest TrackUser(long accountId, int campaignId, int variationId, string userId, bool isDevelopmentMode, string sdkKey, Dictionary<string, int> usageStats)
         {
-            string queryParams = GetQueryParamertersForTrackUser(accountId, campaignId, variationId, userId);
+            string queryParams = GetQueryParamertersForTrackUser(accountId, campaignId, variationId, userId, usageStats);
             var trackUserRequest = new ApiRequest(Method.GET, isDevelopmentMode)
             {
                 Uri = new Uri($"{Host}/{Verb}/{TrackUserVerb}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
@@ -69,9 +70,9 @@ namespace VWOSdk
         }
 
         //Event Batching
-        internal static ApiRequest EventBatching(long accountId, bool isDevelopmentMode, string sdkKey)
+        internal static ApiRequest EventBatching(long accountId, bool isDevelopmentMode, string sdkKey, Dictionary<string, int> usageStats)
         {
-            string queryParams = GetQueryParamertersForEventBatching(accountId);
+            string queryParams = GetQueryParamertersForEventBatching(accountId, usageStats);
             var trackUserRequest = new ApiRequest(Method.POST, isDevelopmentMode)
             {
                 Uri = new Uri($"{Host}/{Verb}/{BatchEventVerb}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
@@ -81,10 +82,24 @@ namespace VWOSdk
             LogDebugMessage.ImpressionForBatchEvent(file, queryParams);
             return trackUserRequest;
         }
-        private static string GetQueryParamertersForEventBatching(long accountId)
+        private static string GetQueryParamertersForEventBatching(long accountId, Dictionary<string, int> usageStats)
         {
-            return $"{withMinifiedAccountIdQuery(accountId)}" +
-                $"&{GetBatchSdkQuery()}";
+            return $"{withMinifiedAccountIdQuery(accountId)}" + $"{GetUsageStatsQuery(usageStats)}" + $"&{GetBatchSdkQuery()}";
+        }
+        private static string GetUsageStatsQuery(Dictionary<string, int> usageStats)
+        {
+            string QueryStats = "";
+            if (usageStats != null && usageStats.Count != 0)
+            {
+                var listStats = new List<string>();
+                foreach (var item in usageStats)
+                {
+                    listStats.Add(item.Key + "=" + item.Value);
+                }
+                listStats.Add("_l=1");
+                QueryStats = "&" + string.Join("&", listStats);
+            }
+            return QueryStats;
         }
         private static string GetBatchSdkQuery()
         {
@@ -97,20 +112,21 @@ namespace VWOSdk
 
         // End
         internal static ApiRequest TrackGoal(int accountId, int campaignId, int variationId, string userId, int goalId,
-            string revenueValue, bool isDevelopmentMode,string sdkKey)
+            string revenueValue, bool isDevelopmentMode, string sdkKey)
         {
             string queryParams = GetQueryParamertersForTrackGoal(accountId, campaignId, variationId, userId, goalId, revenueValue);
             var trackUserRequest = new ApiRequest(Method.GET, isDevelopmentMode)
             {
                 Uri = new Uri($"{Host}/{Verb}/{TrackGoalVerb}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
-                logUri= new Uri($"{Host}/{Verb}/{TrackGoalVerb}?{queryParams}"),
+                logUri = new Uri($"{Host}/{Verb}/{TrackGoalVerb}?{queryParams}"),
             };
             trackUserRequest.WithCaller(AppContext.ApiCaller);
             LogDebugMessage.ImpressionForTrackGoal(file, queryParams);
             return trackUserRequest;
         }
 
-        internal static ApiRequest PushTags(AccountSettings settings, string tagKey, string tagValue, string userId, bool isDevelopmentMode,string sdkKey) {
+        internal static ApiRequest PushTags(AccountSettings settings, string tagKey, string tagValue, string userId, bool isDevelopmentMode, string sdkKey)
+        {
             string queryParams = GetQueryParamertersForPushTag(settings, tagKey, tagValue, userId);
             var trackPushRequest = new ApiRequest(Method.GET, isDevelopmentMode)
             {
@@ -132,7 +148,6 @@ namespace VWOSdk
                 $"&{GetRandomQuery()}" +
                 $"&{GetUnixTimeStamp()}" +
                 $"&{GetUuidQuery(userId, accountId)}" +
-                $"&{GetUserIdQuery(userId)}" +
                 $"&{GetGoalIdQuery(goalId)}" +
                 $"&{GetRevenueQuery(revenueValue)}" +
                 $"&{GetSdkQuery()}";
@@ -143,8 +158,7 @@ namespace VWOSdk
                 $"&{GetPlatformQuery()}" +
                 $"&{GetRandomQuery()}" +
                 $"&{GetUnixTimeStamp()}" +
-                $"&{GetUuidQuery(userId, settings.AccountId)}" +
-                $"&{GetUserIdQuery(userId)}" +
+                $"&{GetUuidQuery(userId, settings.AccountId)}" +              
                 $"&{GetUserTagQuery(tagKey, tagValue)}" +
                 $"&{GetSdkQuery()}";
         }
@@ -171,7 +185,7 @@ namespace VWOSdk
             return $"sdk=netstandard2.0&sdk-v={sdkVersion}";
         }
 
-        private static string GetQueryParamertersForTrackUser(long accountId, int campaignId, int variationId, string userId)
+        private static string GetQueryParamertersForTrackUser(long accountId, int campaignId, int variationId, string userId, Dictionary<string, int> usageStats)
         {
             return $"{GetAccountIdQuery(accountId)}" +
                 $"&{GetExperimentIdQuery(campaignId)}" +
@@ -179,9 +193,9 @@ namespace VWOSdk
                 $"&{GetCombination(variationId)}" +
                 $"&{GetRandomQuery()}" +
                 $"&{GetUnixTimeStamp()}" +
-                $"&{GetUuidQuery(userId, accountId)}" +
-                $"&{GetUserIdQuery(userId)}" +
+                $"&{GetUuidQuery(userId, accountId)}" +             
                 $"&{GetEdQuery()}" +
+                $"{GetUsageStatsQuery(usageStats)}" +
                 $"&{GetSdkQuery()}";
 
         }

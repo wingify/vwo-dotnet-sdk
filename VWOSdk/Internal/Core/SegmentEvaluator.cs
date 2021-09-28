@@ -20,7 +20,7 @@ using Newtonsoft.Json.Linq;
 using System.Collections.Generic;
 using System.Linq;
 using System;
-
+using Newtonsoft.Json;
 namespace VWOSdk
 {
     internal class SegmentEvaluator : ISegmentEvaluator
@@ -75,6 +75,21 @@ namespace VWOSdk
                 {
                     return Convert.ToBoolean(value);
                 }
+                if (variableType == Constants.VariableTypes.JSON)
+                {
+                    var jsonFeatureValue = JsonConvert.SerializeObject(value);
+                    if (IsValidJson(jsonFeatureValue))
+                    {
+                        return value;
+                    }
+                    else
+                    {
+                        LogErrorMessage.UnableToParseJson(typeof(IVWOClient).FullName, jsonFeatureValue, variableType);                       
+                        return null;
+                    }
+
+                }
+
                 return value;
             }
             catch
@@ -83,7 +98,32 @@ namespace VWOSdk
                 return null;
             }
         }
+        public bool IsValidJson(string input)
+        {
+            input = input.Trim();
+            
+                try
+                {
+                    //parse the input into a JObject
+                    var jObject = JObject.Parse(input);
+                    foreach (var jo in jObject)
+                    {
+                        string name = jo.Key;
+                        JToken value = jo.Value;                      
+                        if (value.Type == JTokenType.Undefined)
+                        {
+                            return false;
+                        }
+                    }
+                }               
+                catch 
+                {                    
+                    return false;
+                }
+           
 
+            return true;
+        }
         private bool evaluateSegment(Dictionary<string, dynamic> segments, Dictionary<string, dynamic> customVariables)
         {
             if (segments.Count == 0)

@@ -27,11 +27,10 @@ namespace VWOSdk.Tests
         private readonly long MockAccountId = 123456;
         private readonly string MockSdkKey = "MockSdkKey";
 
-  
-      
+
+
         static VWOTests()
         {
-            VWO.Configure(new DefaultLogWriter());
             AppContext.Configure(new FileReaderApiCaller());
         }
 
@@ -39,7 +38,7 @@ namespace VWOSdk.Tests
         {
 
         }
-      
+
         [Fact]
         public void GetSettings_Should_Return_Null_When_Validation_Fails()
         {
@@ -174,12 +173,12 @@ namespace VWOSdk.Tests
             var mockSettingProcessor = Mock.GetSettingsProcessor();
             VWO.Configure(mockSettingProcessor.Object);
 
-         
+
             BatchEventData batchData = new BatchEventData();
             batchData.EventsPerRequest = 4;
             batchData.RequestTimeInterval = 20;
             batchData.FlushCallback = new FlushCallback(); //Callback
-            var vwoClient = VWO.Launch(validSettings,true,null, batchData);
+            var vwoClient = VWO.Launch(validSettings, true, null, batchData);
             Assert.NotNull(vwoClient);
             Assert.IsType<VWO>(vwoClient);
 
@@ -195,7 +194,7 @@ namespace VWOSdk.Tests
             var mockSettingProcessor = Mock.GetSettingsProcessor();
             VWO.Configure(mockSettingProcessor.Object);
 
-          
+
             var vwoClient = VWO.Launch(validSettings, true, null, null);
             Assert.NotNull(vwoClient);
             Assert.IsType<VWO>(vwoClient);
@@ -203,12 +202,12 @@ namespace VWOSdk.Tests
             mockSettingProcessor.Verify(mock => mock.ProcessAndBucket(It.IsAny<Settings>()), Times.Once);
             mockSettingProcessor.Verify(mock => mock.ProcessAndBucket(It.Is<Settings>(val => ReferenceEquals(val, validSettings))), Times.Once);
         }
-       
-      
+
+
         [Fact]
         public void Launch_EventBatching_Validation()
         {
-           // "Event Batching Queue should be undefined if batchEventsData is not passed"
+            // "Event Batching Queue should be undefined if batchEventsData is not passed"
             var validSettings = new FileReaderApiCaller().Execute<Settings>(null);
             var mockValidator = Mock.GetValidator();
             VWO.Configure(mockValidator.Object);
@@ -218,18 +217,18 @@ namespace VWOSdk.Tests
 
             var vwoClient = VWO.Launch(validSettings, true);
             Assert.NotNull(vwoClient);
-            Assert.Null(vwoClient.getBatchEventQueue()); 
+            Assert.Null(vwoClient.getBatchEventQueue());
             Assert.IsType<VWO>(vwoClient);
 
             //"Event batching Queue should be defined if batchEventsData is passed"
             BatchEventData batchData = new BatchEventData();
             batchData.EventsPerRequest = 4;
             batchData.RequestTimeInterval = 20;
-            batchData.FlushCallback = new FlushCallback(); 
+            batchData.FlushCallback = new FlushCallback();
 
             var vwoClientBatch = VWO.Launch(validSettings, true, null, batchData);
             Assert.NotNull(vwoClientBatch);
-         
+
             Assert.Equal(0, vwoClientBatch.getBatchEventQueue().BatchQueueCount());
             Assert.Equal(4, vwoClientBatch.getBatchEventQueue().eventsPerRequest);
             Assert.Equal(20, vwoClientBatch.getBatchEventQueue().requestTimeInterval);
@@ -237,12 +236,12 @@ namespace VWOSdk.Tests
             Assert.IsType<VWO>(vwoClientBatch);
 
             //"Event batching Queue should be defined if batchEventsData is passed even wrong format"
-          
+
             BatchEventData batchDataWrongFormat = new BatchEventData();
-      
+
 
             var vwoClientBatchDefault = VWO.Launch(validSettings, true, null, batchDataWrongFormat);
-            Assert.NotNull(vwoClientBatchDefault);         
+            Assert.NotNull(vwoClientBatchDefault);
             Assert.Equal(0, vwoClientBatchDefault.getBatchEventQueue().BatchQueueCount());
             Assert.Equal(100, vwoClientBatchDefault.getBatchEventQueue().eventsPerRequest);
             Assert.Equal(600, vwoClientBatchDefault.getBatchEventQueue().requestTimeInterval);
@@ -274,12 +273,12 @@ namespace VWOSdk.Tests
             Assert.IsType<VWO>(vwoClientBatchLimit);
             mockSettingProcessor.Verify(mock => mock.ProcessAndBucket(It.IsAny<Settings>()), Times.Exactly(5));
             mockSettingProcessor.Verify(mock => mock.ProcessAndBucket(It.Is<Settings>(val => ReferenceEquals(val, validSettings))), Times.Exactly(5));
-           
+
         }
         [Fact]
         public void Launch_EventBatching_Queue_Size_Tests()
         {
-           
+
 
             var validSettings = new FileReaderApiCaller().Execute<Settings>(null);
             var mockValidator = Mock.GetValidator();
@@ -292,7 +291,7 @@ namespace VWOSdk.Tests
             batchData.FlushCallback = new FlushCallback(); //Callback
             var vwoClient = VWO.Launch(validSettings, true, null, batchData);
             Assert.NotNull(vwoClient);
-            Assert.Equal(0,vwoClient.getBatchEventQueue().BatchQueueCount());
+            Assert.Equal(0, vwoClient.getBatchEventQueue().BatchQueueCount());
 
 
             mockSettingProcessor.Verify(mock => mock.ProcessAndBucket(It.IsAny<Settings>()), Times.Once);
@@ -312,13 +311,13 @@ namespace VWOSdk.Tests
             var mockSettingProcessor = Mock.GetSettingsProcessor();
             VWO.Configure(mockSettingProcessor.Object);
 
-           // BatchEventData batchData = VWOCore.Controllers.EventBatchDataProvider.BatchEventData();
+            // BatchEventData batchData = VWOCore.Controllers.EventBatchDataProvider.BatchEventData();
             BatchEventData batchData = new BatchEventData();
             batchData.EventsPerRequest = 4;
-            batchData.RequestTimeInterval = 20;       
+            batchData.RequestTimeInterval = 20;
             batchData.FlushCallback = new FlushCallback(); //Callback
             var vwoClient = VWO.Launch(inValidSettings, true, null, batchData);
-         
+
             Assert.Null(vwoClient);
 
             mockValidator.Verify(mock => mock.SettingsFile(It.IsAny<Settings>()), Times.Once);
@@ -344,7 +343,7 @@ namespace VWOSdk.Tests
             batchData.RequestTimeInterval = 20;
             batchData.FlushCallback = new FlushCallback(); //Callback
 
-            var vwoClient = VWO.Launch(inValidSettings,true,null, batchData);
+            var vwoClient = VWO.Launch(inValidSettings, true, null, batchData);
             //  var vwoClient = VWO.Launch(inValidSettings);
             Assert.Null(vwoClient);
 
@@ -358,7 +357,141 @@ namespace VWOSdk.Tests
 
         #endregion
 
+        #region Usage Stats 
 
+
+        [Fact]
+        public void withoutConfig()
+        {
+            VWO.Configure(LogLevel.ERROR);
+            VWO.Configure(logger: null);
+            var validSettings = new FileReaderApiCaller().Execute<Settings>(null);
+            var mockValidator = Mock.GetValidator();
+            VWO.Configure(mockValidator.Object);
+            var mockSettingProcessor = Mock.GetSettingsProcessor();
+            VWO.Configure(mockSettingProcessor.Object);
+            var vwoClient = VWO.Launch(validSettings);
+            var temp = VWO.getUsageStats();
+            Assert.True(VWO.getUsageStats().Count == 0);
+
+        }
+        [Fact]
+        public void withStorageServiceOnly()
+        {
+            var validSettings = new FileReaderApiCaller().Execute<Settings>(null);
+            var mockValidator = Mock.GetValidator();
+            VWO.Configure(mockValidator.Object);
+            var mockSettingProcessor = Mock.GetSettingsProcessor();
+            VWO.Configure(mockSettingProcessor.Object);
+            var mockUserStorageService = Mock.GetUserStorageService();
+            var vwoClient = VWO.Launch(validSettings, userStorageService: mockUserStorageService.Object);
+            Assert.NotNull(vwoClient);
+            Assert.False(VWO.getUsageStats() == null);
+            Assert.True(VWO.getUsageStats().TryGetValue("ss", out int is_ss));
+            Assert.Equal(1, is_ss);
+            Assert.False(VWO.getUsageStats().TryGetValue("ig", out int is_ig));
+            Assert.False(VWO.getUsageStats().TryGetValue("eb", out int is_eb));
+            Assert.False(VWO.getUsageStats().TryGetValue("tr", out int is_tr));
+            Assert.False(VWO.getUsageStats().TryGetValue("gt", out int is_gt));
+            Assert.False(VWO.getUsageStats().TryGetValue("cl", out int is_cl));
+            Assert.False(VWO.getUsageStats().TryGetValue("ll", out int is_ll));
+
+        }
+        [Fact]
+        public void alongWithCustomLogger()
+        {
+            VWO.Configure(new DefaultLogWriter());
+            var validSettings = new FileReaderApiCaller().Execute<Settings>(null);
+            var vwoClient = VWO.Launch(validSettings);
+            Assert.False(VWO.getUsageStats() == null);
+            Assert.True(VWO.getUsageStats().TryGetValue("cl", out int is_cl));
+            Assert.Equal(1, is_cl);
+        }
+        [Fact]
+        public void alongWithGoalTypeToTrack()
+        {
+            var validSettings = new FileReaderApiCaller().Execute<Settings>(null);
+            var mockValidator = Mock.GetValidator();
+            VWO.Configure(mockValidator.Object);
+            var mockSettingProcessor = Mock.GetSettingsProcessor();
+            VWO.Configure(mockSettingProcessor.Object);
+            var vwoClient = VWO.Launch(validSettings, goalTypeToTrack: "All");
+            Assert.NotNull(vwoClient);
+            Assert.False(VWO.getUsageStats() == null);
+            Assert.False(VWO.getUsageStats().TryGetValue("ss", out int is_ss));
+            Assert.False(VWO.getUsageStats().TryGetValue("ig", out int is_ig));
+            Assert.False(VWO.getUsageStats().TryGetValue("eb", out int is_eb));
+            Assert.False(VWO.getUsageStats().TryGetValue("tr", out int is_tr));
+            Assert.True(VWO.getUsageStats().TryGetValue("gt", out int is_gt));
+            Assert.Equal(1, is_gt);
+            Assert.False(VWO.getUsageStats().TryGetValue("cl", out int is_cl));
+            Assert.False(VWO.getUsageStats().TryGetValue("ll", out int is_ll));
+        }
+        [Fact]
+        public void alongWithIntegrations()
+        {
+            var validSettings = new FileReaderApiCaller().Execute<Settings>(null);
+            var mockValidator = Mock.GetValidator();
+            VWO.Configure(mockValidator.Object);
+            var mockSettingProcessor = Mock.GetSettingsProcessor();
+            VWO.Configure(mockSettingProcessor.Object);
+            var vwoClient = VWO.Launch(validSettings, integrations: new HookManager() { });
+            Assert.NotNull(vwoClient);
+            Assert.False(VWO.getUsageStats() == null);
+            Assert.False(VWO.getUsageStats().TryGetValue("ss", out int is_ss));
+            Assert.True(VWO.getUsageStats().TryGetValue("ig", out int is_ig));
+            Assert.Equal(1, is_ig);
+            Assert.False(VWO.getUsageStats().TryGetValue("eb", out int is_eb));
+            Assert.False(VWO.getUsageStats().TryGetValue("tr", out int is_tr));
+            Assert.False(VWO.getUsageStats().TryGetValue("gt", out int is_gt));
+            Assert.False(VWO.getUsageStats().TryGetValue("cl", out int is_cl));
+            Assert.False(VWO.getUsageStats().TryGetValue("ll", out int is_ll));
+        }
+        [Fact]
+        public void alongWithShouldTrackReturningUser()
+        {
+            var validSettings = new FileReaderApiCaller().Execute<Settings>(null);
+            var mockValidator = Mock.GetValidator();
+            VWO.Configure(mockValidator.Object);
+            var mockSettingProcessor = Mock.GetSettingsProcessor();
+            VWO.Configure(mockSettingProcessor.Object);
+            var vwoClient = VWO.Launch(validSettings, shouldTrackReturningUser: true);
+            Assert.NotNull(vwoClient);
+            Assert.False(VWO.getUsageStats() == null);
+            Assert.False(VWO.getUsageStats().TryGetValue("ss", out int is_ss));
+            Assert.False(VWO.getUsageStats().TryGetValue("ig", out int is_ig));
+            Assert.False(VWO.getUsageStats().TryGetValue("eb", out int is_eb));
+            Assert.False(VWO.getUsageStats().TryGetValue("gt", out int is_gt));
+            Assert.True(VWO.getUsageStats().TryGetValue("tr", out int is_tr));
+            Assert.Equal(1, is_tr);
+            Assert.False(VWO.getUsageStats().TryGetValue("cl", out int is_cl));
+            Assert.False(VWO.getUsageStats().TryGetValue("ll", out int is_ll));
+        }
+        [Fact]
+        public void alongWithEventBatching()
+        {
+            var validSettings = new FileReaderApiCaller().Execute<Settings>(null);
+            var mockValidator = Mock.GetValidator();
+            VWO.Configure(mockValidator.Object);
+            var mockSettingProcessor = Mock.GetSettingsProcessor();
+            VWO.Configure(mockSettingProcessor.Object);
+            BatchEventData batchData = new BatchEventData();
+            batchData.EventsPerRequest = 4;
+            batchData.RequestTimeInterval = 20;
+            batchData.FlushCallback = new FlushCallback(); //Callback
+            var vwoClient = VWO.Launch(validSettings, batchData: batchData);
+            Assert.NotNull(vwoClient);
+            Assert.False(VWO.getUsageStats() == null);
+            Assert.False(VWO.getUsageStats().TryGetValue("ss", out int is_ss));
+            Assert.False(VWO.getUsageStats().TryGetValue("ig", out int is_ig));
+            Assert.True(VWO.getUsageStats().TryGetValue("eb", out int is_eb));
+            Assert.Equal(1, is_eb);
+            Assert.False(VWO.getUsageStats().TryGetValue("gt", out int is_gt));
+            Assert.False(VWO.getUsageStats().TryGetValue("tr", out int is_tr));
+            Assert.False(VWO.getUsageStats().TryGetValue("cl", out int is_cl));
+            Assert.False(VWO.getUsageStats().TryGetValue("ll", out int is_ll));
+        }
+        #endregion
 
         private bool Verify(ApiRequest apiRequest)
         {

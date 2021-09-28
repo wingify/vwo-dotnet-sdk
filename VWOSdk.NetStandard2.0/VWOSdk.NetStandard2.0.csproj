@@ -9,7 +9,7 @@
 		<OutputType>Library</OutputType>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<PackageId>VWO.Sdk</PackageId>
-		<Version>1.17.0</Version>
+		<Version>1.22.0</Version>
 		<Authors>VWO devs</Authors>
 		<Company>Wingify</Company>
 		<Product>VWO</Product>
@@ -47,6 +47,7 @@
 		<Compile Include="..\VWOSdk\Internal\Extension\Extensions.cs" Link="Internal\Extension\Extensions.cs" />
 		<Compile Include="..\VWOSdk\Internal\Helper\AsyncHelper.cs" Link="Internal\Helper\AsyncHelper.cs" />
 		<Compile Include="..\VWOSdk\Internal\Helper\UuidV5Helper.cs" Link="Internal\Helper\UuidV5Helper.cs" />
+		<Compile Include="..\VWOSdk\Internal\Helper\CampaignHelper.cs" Link="Internal\Helper\CampaignHelper.cs" />
 		<Compile Include="..\VWOSdk\Internal\Helper\DictionaryHelper.cs" Link="Internal\Helper\DictionaryHelper.cs" />
 		<Compile Include="..\VWOSdk\Internal\InternalVisibleToVwoTests.cs" Link="Internal\InternalVisibleToVwoTests.cs" />
 		<Compile Include="..\VWOSdk\Internal\Model\AccountSettings.cs" Link="Internal\Model\AccountSettings.cs" />

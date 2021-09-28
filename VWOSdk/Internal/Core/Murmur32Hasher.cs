@@ -33,20 +33,32 @@ namespace VWOSdk
             this._murmur32 = Murmur.MurmurHash.Create32(seed: 1, managed: true); // returns a 128-bit algorithm using "unsafe" code with default seed
         }
 
+        public double ComputeBucketValue(string bucketingSeed, string userId, double maxVal, double multiplier, out double hashValue)
+        {
+            byte[] hash = this._murmur32.ComputeHash(Encoding.UTF8.GetBytes(bucketingSeed));
+            hashValue = BitConverter.ToUInt32(hash, 0);
+            var bucketValue = Compute(hashValue, maxVal, multiplier);
+            LogInfoMessage.UserHashBucketValue(file, bucketingSeed, userId, hashValue, bucketValue);
+            return bucketValue;
+        }
         public double ComputeBucketValue(string userId, double maxVal, double multiplier, out double hashValue)
         {
             byte[] hash = this._murmur32.ComputeHash(Encoding.UTF8.GetBytes(userId));
             hashValue = BitConverter.ToUInt32(hash, 0);
             var bucketValue = Compute(hashValue, maxVal, multiplier);
-            LogInfoMessage.UserHashBucketValue(file, userId, hashValue, bucketValue);
+            LogInfoMessage.UserHashBucketValue(file, "", userId, hashValue, bucketValue);
             return bucketValue;
         }
-
         private static double Compute(double hashValue, double maxValue, double multiplier)
         {
             double ratio = hashValue / diviser;
             double multipliedValue = (maxValue * ratio + 1) * multiplier;
             return Math.Floor(multipliedValue);
+        }
+
+        public double ComputeBucketValue(string bucketingSeed, string userId, double maxVal, double multiplier)
+        {
+            return this.ComputeBucketValue(bucketingSeed, userId, maxVal, multiplier, out double hashValue);
         }
 
         public double ComputeBucketValue(string userId, double maxVal, double multiplier)

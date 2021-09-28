@@ -38,15 +38,17 @@ namespace VWOSdk
         private readonly bool _shouldTrackReturningUser;
         private readonly BatchEventData _BatchEventData;
         private readonly BatchEventQueue _BatchEventQueue;
-        //Integration
-        private Dictionary<string, dynamic> integrationsMap;
-        private readonly HookManager _HookManager;
-
         private static readonly string sdkVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
+        //Integration
+        private Dictionary<string, dynamic> integrationsMap;      
+        private readonly HookManager _HookManager;
+        //UsageStats
+        private readonly Dictionary<string, int> _usageStats = new Dictionary<string, int>();       
         internal VWO(AccountSettings settings, IValidator validator, IUserStorageService userStorageService,
             ICampaignAllocator campaignAllocator, ISegmentEvaluator segmentEvaluator,
             IVariationAllocator variationAllocator, bool isDevelopmentMode, BatchEventData batchEventData,
-            string goalTypeToTrack = Constants.GoalTypes.ALL, bool shouldTrackReturningUser = false, HookManager hookManager = null)
+            string goalTypeToTrack = Constants.GoalTypes.ALL, bool shouldTrackReturningUser = false, HookManager hookManager = null,
+            Dictionary<string, int> usageStats=null)
         {
             this._settings = settings;
             this._validator = validator;
@@ -58,7 +60,8 @@ namespace VWOSdk
             this._goalTypeToTrack = goalTypeToTrack;
             this._shouldTrackReturningUser = shouldTrackReturningUser;
             this._BatchEventData = batchEventData;
-            this._BatchEventQueue = batchEventData != null ? new BatchEventQueue(batchEventData, settings.SdkKey, this._settings.AccountId, isDevelopmentMode) : null;
+            this._usageStats = usageStats;
+            this._BatchEventQueue = batchEventData != null ? new BatchEventQueue(batchEventData, settings.SdkKey, this._settings.AccountId, isDevelopmentMode, this._usageStats) : null;
             this._HookManager = hookManager;
         }
 
@@ -119,7 +122,7 @@ namespace VWOSdk
                     {
                         LogDebugMessage.EventBatchingNotActivated(typeof(IVWOClient).FullName, nameof(Activate));
                         var trackUserRequest = ServerSideVerb.TrackUser(this._settings.AccountId,
-                            assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey);
+                            assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey, this._usageStats);
                         trackUserRequest.ExecuteAsync();
                     }
 
@@ -371,9 +374,10 @@ namespace VWOSdk
                         LogDebugMessage.DuplicateCall(typeof(IVWOClient).FullName, nameof(IsFeatureEnabled));
                         return false;
                     }
-                    if (campaign.Type == Constants.CampaignTypes.FEATURE_TEST)
+                    if (campaign.Type == Constants.CampaignTypes.FEATURE_TEST || campaign.Type == Constants.CampaignTypes.FEATURE_ROLLOUT)
                     {
-                        var result = assignedVariation.Variation.IsFeatureEnabled;
+                        var result = campaign.Type == Constants.CampaignTypes.FEATURE_ROLLOUT ? true : assignedVariation.Variation.IsFeatureEnabled;
+
                         if (result)
                         {
                             if (this._BatchEventData != null)
@@ -385,7 +389,7 @@ namespace VWOSdk
                             {
                                 LogDebugMessage.EventBatchingNotActivated(typeof(IVWOClient).FullName, nameof(IsFeatureEnabled));
                                 var trackUserRequest = ServerSideVerb.TrackUser(this._settings.AccountId, assignedVariation.Campaign.Id,
-                                    assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey);
+                                    assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey,this._usageStats);
                                 trackUserRequest.ExecuteAsync();
                             }
                             LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, campaignKey, userId, nameof(IsFeatureEnabled));
@@ -396,6 +400,7 @@ namespace VWOSdk
                         }
                         return result;
                     }
+
                 }
                 else
                 {
@@ -585,7 +590,7 @@ namespace VWOSdk
 
                 return new UserAllocationInfo(TargettedVariation, campaign);
             }
-            UserStorageMap userStorageMap = this._userStorageService != null ?this._userStorageService.GetUserMap(campaignKey, userId, userStorageData) : null;
+            UserStorageMap userStorageMap = this._userStorageService != null ? this._userStorageService.GetUserMap(campaignKey, userId, userStorageData) : null;
             BucketedCampaign selectedCampaign = this._campaignAllocator.Allocate(this._settings, userStorageMap, campaignKey, userId, apiName);
             if (userStorageMap != null && userStorageMap.VariationName != null)
             {
@@ -715,8 +720,7 @@ namespace VWOSdk
         private bool isCampaignActivated(string apiName, string userId, Campaign campaign)
         {
             if (!apiName.Equals(Constants.CampaignTypes.ACTIVATE, StringComparison.InvariantCultureIgnoreCase)
-              && !apiName.Equals(Constants.CampaignTypes.IS_FEATURE_ENABLED, StringComparison.InvariantCultureIgnoreCase)
-              && !campaign.Type.Equals(Constants.CampaignTypes.FEATURE_ROLLOUT, StringComparison.InvariantCultureIgnoreCase))
+              && !apiName.Equals(Constants.CampaignTypes.IS_FEATURE_ENABLED, StringComparison.InvariantCultureIgnoreCase))
             {
                 LogDebugMessage.CampaignNotActivated(file, apiName, campaign.Key, userId);
                 LogInfoMessage.CampaignNotActivated(file, apiName.Equals(Constants.CampaignTypes.TRACK, StringComparison.InvariantCultureIgnoreCase) ? "track it" : "get the decision/value", campaign.Key, userId);
@@ -748,7 +752,7 @@ namespace VWOSdk
 
                 string status = Constants.WhitelistingStatus.FAILED;
                 string variationString = " ";
-                Variation variation = this._variationAllocator.TargettedVariation(userId, whiteListedVariations);
+                Variation variation = this._variationAllocator.TargettedVariation(userId, campaign, whiteListedVariations);
                 if (variation != null)
                 {
                     status = Constants.WhitelistingStatus.PASSED;

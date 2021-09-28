@@ -44,9 +44,9 @@ namespace VWOSdk
         {
             Log.Info($"({file}): Saving into UserStorageService for userId:{userId} successful");
         }
-        public static void UserHashBucketValue(string file, string userId, double hashValue, double bucketValue)
+        public static void UserHashBucketValue(string file,string bucketingSeed, string userId, double hashValue, double bucketValue)
         {
-            Log.Debug($"({file}): userId:{userId} having hash:{hashValue} got bucketValue:{bucketValue}");
+            Log.Debug($"({file}): bucketing seed:{bucketingSeed} userId:{userId} having hash:{hashValue} got bucketValue:{bucketValue}");
         }
         public static void GotStoredVariation(string file, string variationName, string campaignKey, string userId)
         {

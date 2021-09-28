@@ -1,20 +1,21 @@
 ﻿#pragma warning disable 1587
 /**
- * Copyright 2019-2021 Wingify Software Pvt. Ltd.
- *
- * Licensed under the Apache License, Version 2.0 (the "License");
- * you may not use this file except in compliance with the License.
- * You may obtain a copy of the License at
- *
- *   http://www.apache.org/licenses/LICENSE-2.0
- *
- * Unless required by applicable law or agreed to in writing, software
- * distributed under the License is distributed on an "AS IS" BASIS,
- * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
- * See the License for the specific language governing permissions and
- * limitations under the License.
- */
+* Copyright 2019-2021 Wingify Software Pvt. Ltd.
+*
+* Licensed under the Apache License, Version 2.0 (the "License");
+* you may not use this file except in compliance with the License.
+* You may obtain a copy of the License at
+*
+*   http://www.apache.org/licenses/LICENSE-2.0
+*
+* Unless required by applicable law or agreed to in writing, software
+* distributed under the License is distributed on an "AS IS" BASIS,
+* WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+* See the License for the specific language governing permissions and
+* limitations under the License.
+*/
 #pragma warning restore 1587
+using System.Collections.Generic;
 namespace VWOSdk
 {
     public partial class VWO
@@ -26,7 +27,8 @@ namespace VWOSdk
         private static readonly ISegmentEvaluator SegmentEvaluator;
         private static ISettingsProcessor SettingsProcessor;
         private static readonly string file = typeof(VWO).FullName;
-
+        private static Dictionary<string, int> _tmpUsageStats;
+        private static Dictionary<string, int> usageStats;
         /// <summary>
         /// Static Constructor to init default dependencies on application load.
         /// </summary>
@@ -46,9 +48,12 @@ namespace VWOSdk
         /// <param name="logger">Custom logger instance to log from within the sdk. Null means default logger will be used.</param>
         public static void Configure(ILogWriter logger)
         {
-            AppContext.Configure(logger);
+            if (logger != null)
+            {
+                AppContext.Configure(logger);
+                SetUsageStats("cl");
+            }
         }
-
         /// <summary>
         /// Configure LogLevel for application.
         /// </summary>
@@ -56,6 +61,9 @@ namespace VWOSdk
         public static void Configure(LogLevel logLevel)
         {
             AppContext.Configure(logLevel);
+            if (logLevel.Equals(LogLevel.ERROR))
+                return;
+            SetUsageStats("ll");
         }
 
         /// <summary>
@@ -74,7 +82,20 @@ namespace VWOSdk
         {
             SettingsProcessor = settingsProcessor;
         }
-
+        /// <summary>
+        /// This is for set usage stats. Not to be exposed publicly.
+        /// </summary>
+        /// <param name="key"></param>
+        internal static void SetUsageStats(string key)
+        {
+            if (_tmpUsageStats != null && !_tmpUsageStats.TryGetValue(key, out int val))
+                _tmpUsageStats.Add(key, 1);
+            else
+            {
+                _tmpUsageStats = new Dictionary<string, int>();
+                _tmpUsageStats.Add(key, 1);
+            }
+        }
         /// <summary>
         /// Fetch SettingsFile for provided accountId and sdkKey.
         /// </summary>
@@ -136,29 +157,56 @@ namespace VWOSdk
         /// IVWOClient instance to call Activate, GetVariation and Track apis for given user and goal.
         /// </returns>
         public static IVWOClient Launch(Settings settingFile, bool isDevelopmentMode = false, IUserStorageService userStorageService = null,
-           BatchEventData batchData = null, string goalTypeToTrack = Constants.GoalTypes.ALL,
+           BatchEventData batchData = null, string goalTypeToTrack = null,
            bool shouldTrackReturningUser = false, HookManager integrations = null)
         {
             if (Validator.SettingsFile(settingFile))
             {
-
-
                 LogDebugMessage.ValidConfiguration(file);
                 AccountSettings accountSettings = SettingsProcessor.ProcessAndBucket(settingFile);
                 LogDebugMessage.SettingsFileProcessed(file);
                 if (accountSettings == null)
                     return null;
-
+                usageStats = new Dictionary<string, int>();
+                if (_tmpUsageStats != null)
+                {
+                    usageStats = _tmpUsageStats;
+                    _tmpUsageStats = new Dictionary<string, int>();
+                }
+                if (userStorageService != null && !_tmpUsageStats.TryGetValue("ss", out int ss))
+                    usageStats.Add("ss", 1);
+                if (batchData != null && !_tmpUsageStats.TryGetValue("eb", out int eb))
+                    usageStats.Add("eb", 1);
+                if (goalTypeToTrack != null && !_tmpUsageStats.TryGetValue("gt", out int gt))
+                    usageStats.Add("gt", 1);
+                else
+                    goalTypeToTrack = Constants.GoalTypes.ALL;
+                if (shouldTrackReturningUser != false && !_tmpUsageStats.TryGetValue("tr", out int tr))
+                    usageStats.Add("tr", 1);
+                if (integrations != null && !_tmpUsageStats.TryGetValue("ig", out int ig))
+                    usageStats.Add("ig", 1);
                 if (isDevelopmentMode)
+                {
                     LogDebugMessage.SetDevelopmentMode(file);
-                //integration
+                    usageStats.Clear();
+                }
                 var vwoClient = new VWO(accountSettings, Validator, userStorageService, CampaignAllocator, SegmentEvaluator,
-                    VariationAllocator, isDevelopmentMode, batchData, goalTypeToTrack, shouldTrackReturningUser, integrations);
+                    VariationAllocator, isDevelopmentMode, batchData, goalTypeToTrack, shouldTrackReturningUser, integrations, usageStats);
                 LogDebugMessage.SdkInitialized(file);
                 return vwoClient;
             }
             LogErrorMessage.ProjectConfigCorrupted(file);
             return null;
+        }
+        /// <summary>
+        /// Get UsageStats for test cases.
+        /// </summary>        
+        /// <returns>
+        /// UsageStats for test cases.
+        /// </returns>
+        public static Dictionary<string, int> getUsageStats()
+        {
+            return usageStats;
         }
 
     }

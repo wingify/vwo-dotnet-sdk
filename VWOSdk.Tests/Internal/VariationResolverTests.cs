@@ -59,6 +59,35 @@ namespace VWOSdk.Tests
         }
 
         [Fact]
+        public void Allocate_Should_Compute_Hash_On_CampaignId_UserId_When_IsBucketingSeed_True()
+        {
+            var mockUserHasher = Mock.GetUserHasher();
+            var campaignId = 1;
+            var userId = "Varun";
+            Mock.SetupSeedComputeBucketValue(mockUserHasher, returnVal: 10, outHashValue: 1234567);
+            VariationAllocator variationResolver = GetVariationResolver(mockUserHasher);
+            UserStorageMap userStorageMap = null;
+            var selectedVariation = variationResolver.Allocate(userStorageMap, GetCampaign(MockCampaignKey, null, true, campaignId), userId);
+            Assert.NotNull(selectedVariation);
+            Assert.Equal(MockVariationName, selectedVariation.Name);
+            var BucketingSeed = campaignId.ToString() + "_" + userId;
+            mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Once);
+            mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.Is<string>((val) => BucketingSeed.Equals(BucketingSeed)), It.Is<string>((val) => userId.Equals(val)), It.Is<double>((val) => 10000 == val), It.Is<double>(val => 1 == val)), Times.Once);
+        }
+        [Fact]
+        public void Allocate_Should_Compute_Hash_On_UserId_When_IsBucketingSeed_False()
+        {
+            var mockUserHasher = Mock.GetUserHasher();
+            var campaignId = 1;
+            var userId = "Anup";
+            Mock.SetupComputeBucketValue(mockUserHasher, returnVal: 10, outHashValue: 1234567);
+            VariationAllocator variationResolver = GetVariationResolver(mockUserHasher);         
+            UserStorageMap userStorageMap = null;
+            variationResolver.Allocate(userStorageMap, GetCampaign(MockCampaignKey, null, false, campaignId), userId);        
+            mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Once);
+            mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.Is<string>((val) => userId.Equals(val)), It.Is<double>((val) => 10000 == val), It.Is<double>(val => 1 == val)), Times.Once);
+        }       
+        [Fact]
         public void Allocate_Should_Not_Compute_Hash_When_Valid_UserStorageMap_With_Valid_Variation_Is_Given()
         {
             var mockUserHasher = MockUserHasher.Get();
@@ -83,11 +112,11 @@ namespace VWOSdk.Tests
             mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Never);
         }
 
-        private BucketedCampaign GetCampaign(string campaignKey = null, string variationName = null)
+        private BucketedCampaign GetCampaign(string campaignKey = null, string variationName = null, bool isBucketingSeed = false, int campaignId = 0)
         {
             campaignKey = campaignKey ?? MockCampaignKey;
             variationName = variationName ?? MockVariationName;
-            return new BucketedCampaign(1, "test", 100, campaignKey, null, null, false)
+            return new BucketedCampaign(campaignId, "test", 100, campaignKey, null, null, false, isBucketingSeed)
             {
                 Variations = GetVariations(variationName),
             };

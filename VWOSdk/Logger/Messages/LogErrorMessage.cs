@@ -89,6 +89,10 @@ namespace VWOSdk
         {
             Log.Error($"({file}): Unable to typecast value: {value} of type: {ofType} to type: {variableType}.");
         }
+        public static void UnableToParseJson(string file, string value, string variableType)
+        {
+            Log.Error($"({file}): Unable to parse json value: {value} of type: {variableType}.");
+        }
         //public static void InvalidCampaign(string file, string method)
         //{
         //    Log.Error($"({file}): Invalid campaign passed to {method} of this file");

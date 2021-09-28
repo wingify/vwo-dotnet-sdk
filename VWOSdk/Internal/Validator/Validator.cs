@@ -16,6 +16,8 @@
  */
 #pragma warning restore 1587
 
+using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -54,7 +56,7 @@ namespace VWOSdk
         {
             var campaignKeyResult = ValidateWithLog(() => ValidateString(campaignKey), nameof(campaignKey), nameof(GetVariation));
             var customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
-            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>) , nameof(userId), nameof(GetVariation)) ;
+            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>), nameof(userId), nameof(GetVariation));
         }
 
         public bool Track(string campaignKey, string userId, string goalIdentifier, string revenueValue, Dictionary<string, dynamic> options = null)
@@ -65,26 +67,26 @@ namespace VWOSdk
             var customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
             String goalTypeToTrack = options.ContainsKey("goalTypeToTrack") ? options["goalTypeToTrack"] : null;
             result = ValidateWithLog(() => goalTypeToTrack == null || Constants.GoalTypes.VALUES.Contains(goalTypeToTrack), nameof(goalIdentifier), nameof(Track)) && result;
-            return ValidateWithLog(() => ValidateNullableFloat(revenueValue) && (customVariables == null || customVariables is Dictionary<string, dynamic>) , nameof(revenueValue), nameof(Track)) && result;
+            return ValidateWithLog(() => ValidateNullableFloat(revenueValue) && (customVariables == null || customVariables is Dictionary<string, dynamic>), nameof(revenueValue), nameof(Track)) && result;
         }
 
         public bool IsFeatureEnabled(string campaignKey, string userId, Dictionary<string, dynamic> options = null)
         {
             var campaignKeyResult = ValidateWithLog(() => ValidateString(campaignKey), nameof(campaignKey), nameof(GetVariation));
             var customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
-            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>) , nameof(userId), nameof(GetVariation)) ;
+            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>), nameof(userId), nameof(GetVariation));
         }
 
         public bool GetFeatureVariableValue(string campaignKey, string variableKey, string userId, Dictionary<string, dynamic> options = null)
         {
             var campaignKeyResult = ValidateWithLog(() => ValidateString(campaignKey), nameof(campaignKey), nameof(GetVariation));
             var customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
-            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>) , nameof(userId), nameof(GetVariation)) ;
+            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>), nameof(userId), nameof(GetVariation));
         }
 
         public bool Push(dynamic tagKey, dynamic tagValue, string userId)
         {
-            return ValidateWithLog(() => ValidateString(tagKey) && ValidateString(tagValue) && ValidateString(userId), nameof(tagKey) , nameof(Push));
+            return ValidateWithLog(() => ValidateString(tagKey) && ValidateString(tagValue) && ValidateString(userId), nameof(tagKey), nameof(Push));
         }
 
         public bool SettingsFile(Settings settingsFile)
@@ -98,7 +100,7 @@ namespace VWOSdk
         private bool Validate(IReadOnlyList<Campaign> campaigns)
         {
             var result = NotNull(campaigns);
-            foreach(var campaign in campaigns)
+            foreach (var campaign in campaigns)
             {
                 result = result && Validate(campaign);
             }
@@ -119,7 +121,7 @@ namespace VWOSdk
         private bool Validate(IReadOnlyList<Variation> variations)
         {
             var result = NotNull(variations) && NotEmpty(variations);
-            foreach(var variation in variations)
+            foreach (var variation in variations)
             {
                 result = result && Validate(variation);
             }
@@ -132,6 +134,7 @@ namespace VWOSdk
             result = result && ValidateLong(variation.Id);
             result = result && ValidateString(variation.Name);
             result = result && ValidateDouble(variation.Weight);
+            result = result && ValidateJson(variation.Variables);
             return result;
         }
 
@@ -139,7 +142,55 @@ namespace VWOSdk
         {
             return percentTraffic >= 0;
         }
+        private bool IsValidJson(string input)
+        {
+            input = input.Trim();
+           
+                try
+                {
+                    var jObject = JObject.Parse(input);
+                    foreach (var jo in jObject)
+                    {
+                        string name = jo.Key;
+                        JToken value = jo.Value;                      
+                        if (value.Type == JTokenType.Undefined)
+                        {
+                            return false;
+                        }
+                    }
+                }
+                catch
+                {
+                    return false;
+                }
+           
 
+            return true;
+        }
+        private bool ValidateJson(List<Dictionary<string, dynamic>> Variables)
+        {
+            if(Variables == null)
+            {
+                return true;
+            }
+            foreach (var item in Variables)
+            {
+                if (item.TryGetValue("type", out dynamic type))
+                {
+                    if (type == "json")
+                    {
+                        item.TryGetValue("value", out dynamic jsonText);
+                        var jsonFeatureValue = JsonConvert.SerializeObject(jsonText);
+                        if (!IsValidJson(jsonFeatureValue))
+                        {
+                            LogErrorMessage.UnableToParseJson(file, jsonText.ToString(), type);
+                            return false;
+                        }
+                    }
+                }
+            }
+            return true;
+        }
         private bool NotEmpty<T>(IEnumerable<T> iList)
         {
             return iList.Count() > 0;
