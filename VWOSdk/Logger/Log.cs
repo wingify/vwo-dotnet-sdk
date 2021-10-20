@@ -25,27 +25,27 @@ namespace VWOSdk
         private static ILogWriter Logger { get { return AppContext.Logger; } }
         private static LogLevel LogLevel { get { return AppContext.LogLevel; } }
 
-        internal static void Debug(string message)
+        internal static void Debug(string message, bool disableLogs = false)
         {
-            if (LogLevel.IsLogTypeEnabled(LogLevel.DEBUG))
+            if (LogLevel.IsLogTypeEnabled(LogLevel.DEBUG) && !disableLogs)
                 TryLog(() => Logger?.WriteLog(LogLevel.DEBUG, message));
         }
 
-        internal static void Error(string message)
+        internal static void Error(string message, bool disableLogs = false)
         {
-            if (LogLevel.IsLogTypeEnabled(LogLevel.ERROR))
+            if (LogLevel.IsLogTypeEnabled(LogLevel.ERROR) && !disableLogs)
                 TryLog(() => Logger?.WriteLog(LogLevel.ERROR, message));
         }
 
-        internal static void Info(string message)
+        internal static void Info(string message, bool disableLogs = false)
         {
-            if (LogLevel.IsLogTypeEnabled(LogLevel.INFO))
+            if (LogLevel.IsLogTypeEnabled(LogLevel.INFO) && !disableLogs)
                 TryLog(() => Logger?.WriteLog(LogLevel.INFO, message));
         }
 
-        internal static void Warning(string message)
+        internal static void Warning(string message, bool disableLogs = false)
         {
-            if (LogLevel.IsLogTypeEnabled(LogLevel.WARNING))
+            if (LogLevel.IsLogTypeEnabled(LogLevel.WARNING) && !disableLogs)
                 TryLog(() => Logger?.WriteLog(LogLevel.WARNING, message));
         }
 

@@ -112,7 +112,7 @@ namespace VWOSdk.Tests
         [Fact]
         public void Instantiate_Should_Return_Null_For_InValid_Settings_File_And_Call_Settings_Processor()
         {
-            var inValidSettings = new Settings(null, null, -2, -1);
+            var inValidSettings = new Settings(null, null, -2, -1,null,null);
             var mockValidator = Mock.GetValidator();
             Mock.SetupSettingsFile(mockValidator, false);
             VWO.Configure(mockValidator.Object);
@@ -132,7 +132,7 @@ namespace VWOSdk.Tests
         [Fact]
         public void Instantiate_Should_Return_Null_When_Settings_Processor_Returns_Null_Account_Settings()
         {
-            var inValidSettings = new Settings(null, null, -2, -1);
+            var inValidSettings = new Settings(null, null, -2, -1,null,null);
             var mockValidator = Mock.GetValidator();
             VWO.Configure(mockValidator.Object);
             var mockSettingProcessor = Mock.GetSettingsProcessor();
@@ -304,7 +304,7 @@ namespace VWOSdk.Tests
         [Fact]
         public void Instantiate_Should_Return_Null_For_InValid_Settings_File_And_Call_Settings_Processor_With_EventBatching()
         {
-            var inValidSettings = new Settings(null, null, -2, -1);
+            var inValidSettings = new Settings(null, null, -2, -1,null,null);
             var mockValidator = Mock.GetValidator();
             Mock.SetupSettingsFile(mockValidator, false);
             VWO.Configure(mockValidator.Object);
@@ -330,7 +330,7 @@ namespace VWOSdk.Tests
         [Fact]
         public void Instantiate_Should_Return_Null_When_Settings_Processor_Returns_Null_Account_Settings_With_EventBatching()
         {
-            var inValidSettings = new Settings(null, null, -2, -1);
+            var inValidSettings = new Settings(null, null, -2, -1, null, null);
             var mockValidator = Mock.GetValidator();
             VWO.Configure(mockValidator.Object);
             var mockSettingProcessor = Mock.GetSettingsProcessor();

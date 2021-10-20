@@ -63,12 +63,14 @@
 		<Compile Include="..\VWOSdk\Logger\Messages\LogErrorMessage.cs" Link="Logger\Messages\LogErrorMessage.cs" />
 		<Compile Include="..\VWOSdk\Logger\Messages\LogInfoMessage.cs" Link="Logger\Messages\LogInfoMessage.cs" />
 		<Compile Include="..\VWOSdk\Logger\Messages\LogWarningMessage.cs" Link="Logger\Messages\LogWarningMessage.cs" />
-		<Compile Include="..\VWOSdk\Model\Campaign.cs" Link="Model\Campaign.cs" />
+
 		<Compile Include="..\VWOSdk\Model\Changes.cs" Link="Model\Changes.cs" />
 		<Compile Include="..\VWOSdk\Model\Goal.cs" Link="Model\Goal.cs" />
 		<Compile Include="..\VWOSdk\Model\Settings.cs" Link="Model\Settings.cs" />
 		<Compile Include="..\VWOSdk\Model\UserStorageMap.cs" Link="Model\UserStorageMap.cs" />
 		<Compile Include="..\VWOSdk\Model\Variation.cs" Link="Model\Variation.cs" />
+		<Compile Include="..\VWOSdk\Model\Campaign.cs" Link="Model\Campaign.cs" />
+		<Compile Include="..\VWOSdk\Model\Groups.cs" Link="Model\Groups.cs" />
 		<Compile Include="..\VWOSdk\VWO.cs" Link="VWO.cs" />
 		<Compile Include="..\VWOSdk\Internal\Integration\HookManager.cs" Link="Internal\Integration\HookManager.cs" />
 		<Compile Include="..\VWOSdk\Internal\Integration\IntegrationEventListener.cs" Link="Internal\Integration\IntegrationEventListener.cs" />

@@ -173,17 +173,17 @@ namespace VWOSdk
                     usageStats = _tmpUsageStats;
                     _tmpUsageStats = new Dictionary<string, int>();
                 }
-                if (userStorageService != null && !_tmpUsageStats.TryGetValue("ss", out int ss))
+                if (userStorageService != null && !usageStats.TryGetValue("ss", out int ss))
                     usageStats.Add("ss", 1);
                 if (batchData != null && !_tmpUsageStats.TryGetValue("eb", out int eb))
                     usageStats.Add("eb", 1);
-                if (goalTypeToTrack != null && !_tmpUsageStats.TryGetValue("gt", out int gt))
+                if (goalTypeToTrack != null && !usageStats.TryGetValue("gt", out int gt))
                     usageStats.Add("gt", 1);
                 else
                     goalTypeToTrack = Constants.GoalTypes.ALL;
-                if (shouldTrackReturningUser != false && !_tmpUsageStats.TryGetValue("tr", out int tr))
+                if (shouldTrackReturningUser != false && !usageStats.TryGetValue("tr", out int tr))
                     usageStats.Add("tr", 1);
-                if (integrations != null && !_tmpUsageStats.TryGetValue("ig", out int ig))
+                if (integrations != null && !usageStats.TryGetValue("ig", out int ig))
                     usageStats.Add("ig", 1);
                 if (isDevelopmentMode)
                 {
@@ -200,13 +200,23 @@ namespace VWOSdk
         }
         /// <summary>
         /// Get UsageStats for test cases.
-        /// </summary>        
+        /// </summary>
         /// <returns>
         /// UsageStats for test cases.
         /// </returns>
         public static Dictionary<string, int> getUsageStats()
         {
             return usageStats;
+        }
+        /// <summary>
+        /// Used for Unit Test
+        /// </summary>
+        /// <returns>
+        /// BatchEventQueue Object.
+        /// </returns>
+        public BatchEventQueue getBatchEventQueue()
+        {
+            return this._BatchEventQueue;
         }
 
     }

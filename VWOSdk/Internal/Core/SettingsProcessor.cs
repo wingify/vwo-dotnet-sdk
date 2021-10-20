@@ -29,7 +29,7 @@ namespace VWOSdk
             try
             {
                 var campaigns = Process(settings.Campaigns);
-                return new AccountSettings(settings.SdkKey, campaigns, settings.AccountId, settings.Version);
+                return new AccountSettings(settings.SdkKey, campaigns,  settings.AccountId, settings.Version,settings.Groups, settings.CampaignGroups);
             }
             catch (Exception exception)
             {

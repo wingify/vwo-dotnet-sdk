@@ -54,5 +54,14 @@ namespace VWOSdk
         public bool IsBucketingSeedEnabled { get; internal set; }
         public Dictionary<string, dynamic> Segments { get; internal set; }
         public List<Dictionary<string, dynamic>> Variables { get; internal set; }
+        public Dictionary<string, dynamic> getSegments() { return this.Segments; }
+        public void setSegments(Dictionary<string, dynamic> segment)
+        {
+            this.Segments = segment;
+        }
+        public void setPercentTraffic(double PercentTraffic)
+        {
+            this.PercentTraffic = PercentTraffic;
+        }
     }
 }

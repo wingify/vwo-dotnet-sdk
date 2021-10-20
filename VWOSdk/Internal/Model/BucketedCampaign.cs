@@ -22,12 +22,27 @@ namespace VWOSdk
 {
     internal class BucketedCampaign : Campaign
     {
-        public BucketedCampaign(int id, string Name, double PercentTraffic, string Key, string Status, string Type, bool IsForcedVariationEnabled, bool IsBucketingSeedEnabled, Dictionary<string, dynamic> Segments = null, List<Dictionary<string, dynamic>> Variables = null) : base(id, Name, PercentTraffic, Key, Status, Type, null, null, IsForcedVariationEnabled,IsBucketingSeedEnabled, Segments, Variables)
+        public BucketedCampaign(int id, string Name, double PercentTraffic, string Key, string Status, string Type, bool IsForcedVariationEnabled,
+            bool IsBucketingSeedEnabled, Dictionary<string, dynamic> Segments = null, List<Dictionary<string, dynamic>> Variables = null)
+            : base(id, Name, PercentTraffic, Key, Status, Type, null, null, IsForcedVariationEnabled,IsBucketingSeedEnabled, Segments, Variables)
         {
 
         }
-
+        public BucketedCampaign clone()
+        {
+            try
+            {
+                return (BucketedCampaign)base.MemberwiseClone();
+            }
+            catch
+            {
+                return this;
+            }
+        }
         public new RangeBucket<Variation> Variations { get; set; }
         public new Dictionary<string, Goal> Goals { get; set; }
+        public new double Weight { get; set; }
+        public new double StartRange { get; set; }
+        public new double EndRange { get; set; }
     }
 }

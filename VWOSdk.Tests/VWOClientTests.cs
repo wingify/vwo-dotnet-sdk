@@ -2677,7 +2677,7 @@ namespace VWOSdk.Tests
 
         private AccountSettings GetSettings(string settingType = null)
         {
-            return new AccountSettings(MockSdkKey, GetCampaigns(settingType), 123456, 1);
+            return new AccountSettings(MockSdkKey, GetCampaigns(settingType), 123456, 1,null,null);
         }
 
         private List<BucketedCampaign> GetCampaigns(string settingType = null, string status = "running")

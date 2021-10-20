@@ -71,7 +71,18 @@ namespace VWOSdk
             BucketedCampaign requestedCampaign = settings.Campaigns.Find((campaign) => campaign.Key.Equals(campaignKey));
             return requestedCampaign;
         }
+        /// <summary>
+        /// Get UserHash For Campaign
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="groupId"></param>
+        /// <returns></returns>
+        public double GetUserHashForCampaign(string userId , int groupId)
+        {
+            double userHash = this._userHasher.ComputeBucketValue(CampaignHelper.getBucketingSeed(userId, null, groupId), userId, 10000, 1);
+            return userHash;
 
+        }
         /// <summary>
         /// Allocate Campaign based on userStorageMap, of if userStorageMap is not present based on trafficAllocation.
         /// </summary>
@@ -101,7 +112,7 @@ namespace VWOSdk
         /// <param name="userId"></param>
         /// <param name="requestedCampaign"></param>
         /// <returns></returns>
-        private BucketedCampaign AllocateByTrafficAllocation(string userId, BucketedCampaign requestedCampaign)
+        public BucketedCampaign AllocateByTrafficAllocation(string userId, BucketedCampaign requestedCampaign)
         {
             var selectedCampaign = requestedCampaign;
             var userHash = requestedCampaign.IsBucketingSeedEnabled == true ? this._userHasher.ComputeBucketValue(CampaignHelper.getBucketingSeed(userId, requestedCampaign, null), userId, Constants.Campaign.MAX_TRAFFIC_PERCENT, 1) : this._userHasher.ComputeBucketValue(userId, Constants.Campaign.MAX_TRAFFIC_PERCENT, 1);          

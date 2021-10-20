@@ -23,18 +23,36 @@ namespace VWOSdk
 {
     public class Settings
     {
+
+
         [JsonConstructor]
-        internal Settings(string sdkKey, List<Campaign> campaigns, int accountId, int version)
+        internal Settings(string sdkKey, List<Campaign> campaigns, int accountId, int version, Dictionary<string, Groups> groups, Dictionary<string, dynamic> campaignGroups)
         {
             this.SdkKey = sdkKey;
             this.Campaigns = campaigns;
             this.AccountId = accountId;
             this.Version = version;
+            this.Groups = groups;
+            this.CampaignGroups = campaignGroups;
         }
 
         public string SdkKey { get; internal set; }
-        public IReadOnlyList<Campaign> Campaigns { get; internal set; }
+        public List<Campaign> Campaigns { get; internal set; }
+        public Dictionary<string, dynamic> CampaignGroups { get; internal set; }
+        public Dictionary<string, Groups> Groups { get; internal set; }
         public int AccountId { get; internal set; }
         public int Version { get; internal set; }
+        public Dictionary<string, dynamic> getCampaignGroups()
+        {
+            return CampaignGroups;
+        }
+        public Dictionary<string, Groups> getGroups()
+        {
+            return Groups;
+        }
+        public List<Campaign> getCampaigns()
+        {
+            return Campaigns;
+        }
     }
 }

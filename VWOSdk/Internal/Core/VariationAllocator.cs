@@ -53,7 +53,7 @@ namespace VWOSdk
                 LogDebugMessage.VariationHashBucketValue(file, userId, campaign.Key, campaign.PercentTraffic, hashValue, bucketValue);
                 return selectedVariation;
             }
-
+           
             return campaign.Variations.Find(userStorageMap.VariationName, GetVariationName);
         }
 

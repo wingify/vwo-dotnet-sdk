@@ -36,14 +36,15 @@ namespace VWOSdk
         /// <param name="campaignKey"></param>
         /// <param name="userId"></param>
         /// <param name="userStorageData"></param>
+        /// <param name="disableLogs"></param>
         /// <returns>
         /// Returns userStorageMap if validation is success, else null.
         /// </returns>
-        internal UserStorageMap GetUserMap(string campaignKey, string userId, Dictionary<string, dynamic> userStorageData=null)
+        internal UserStorageMap GetUserMap(string campaignKey, string userId, Dictionary<string, dynamic> userStorageData = null, bool disableLogs = false)
         {
             if (this._userStorageService == null)
             {
-                LogDebugMessage.NoUserStorageServiceGet(file);
+                LogDebugMessage.NoUserStorageServiceGet(file, disableLogs);
                 return null;
             }
 
@@ -52,10 +53,10 @@ namespace VWOSdk
                 || string.IsNullOrEmpty(userMap.VariationName) || string.IsNullOrEmpty(userMap.UserId)
                 || string.Equals(userMap.UserId, userId) == false || string.Equals(userMap.CampaignKey, campaignKey) == false)
             {
-                LogDebugMessage.NoStoredVariation(file, userId, campaignKey);
+                LogDebugMessage.NoStoredVariation(file, userId, campaignKey, disableLogs);
                 return null;
             }
-            LogInfoMessage.GotStoredVariation(file, userMap.VariationName, campaignKey, userId);
+            LogInfoMessage.GotStoredVariation(file, userMap.VariationName, campaignKey, userId, disableLogs);
             return userMap;
         }
         /// <summary>
@@ -64,12 +65,13 @@ namespace VWOSdk
         /// <param name="userId"></param>
         /// <param name="campaignKey"></param>
         /// <param name="userStorageData"></param>
+        /// <param name="disableLogs"></param>
         /// <returns></returns>
-        private UserStorageMap TryGetUserMap(string userId, string campaignKey, Dictionary<string, dynamic> userStorageData=null)
+        private UserStorageMap TryGetUserMap(string userId, string campaignKey, Dictionary<string, dynamic> userStorageData = null, bool disableLogs = false)
         {
             try
             {
-                LogInfoMessage.LookingUpUserStorageService(file, userId, campaignKey);
+                LogInfoMessage.LookingUpUserStorageService(file, userId, campaignKey, disableLogs);
                 if (userStorageData != null)
                 {
                     if (userStorageData.ContainsKey("userId") && userStorageData.ContainsKey("campaignKey") && userStorageData.ContainsKey("variationName"))
@@ -79,7 +81,7 @@ namespace VWOSdk
                         {
                             string jsonString = JsonConvert.SerializeObject(userStorageData);
                             var allValue = JsonConvert.DeserializeObject<UserStorageMap>(jsonString);
-                            LogInfoMessage.ReturnUserStorageData(file, userStorageData["userId"], userStorageData["campaignKey"]);
+                            LogInfoMessage.ReturnUserStorageData(file, userStorageData["userId"], userStorageData["campaignKey"], disableLogs);
                             return allValue;
                         }
                         else
@@ -102,16 +104,16 @@ namespace VWOSdk
             }
             catch (Exception ex)
             {
-                LogErrorMessage.GetUserStorageServiceFailed(file, userId, campaignKey);
+                LogErrorMessage.GetUserStorageServiceFailed(file, userId, campaignKey, disableLogs);
             }
 
             return null;
         }
-        internal void SetUserMap(string userId, string campaignKey, string variationName, string goalIdentifier = null)
+        internal void SetUserMap(string userId, string campaignKey, string variationName, string goalIdentifier = null, bool disableLogs = false)
         {
             if (this._userStorageService == null)
             {
-                LogDebugMessage.NoUserStorageServiceSet(file);
+                LogDebugMessage.NoUserStorageServiceSet(file, disableLogs);
                 return;
             }
 
@@ -119,12 +121,12 @@ namespace VWOSdk
             {
 
                 this._userStorageService.Set(new UserStorageMap(userId, campaignKey, variationName, goalIdentifier));
-                LogInfoMessage.SavingDataUserStorageService(file, userId);
+                LogInfoMessage.SavingDataUserStorageService(file, userId, disableLogs);
                 return;
             }
             catch (Exception ex)
             {
-                LogErrorMessage.SetUserStorageServiceFailed(file, userId);
+                LogErrorMessage.SetUserStorageServiceFailed(file, userId, disableLogs);
             }
         }
     }

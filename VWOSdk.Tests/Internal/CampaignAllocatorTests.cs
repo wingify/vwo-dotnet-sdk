@@ -108,7 +108,7 @@ namespace VWOSdk.Tests
         private AccountSettings GetAccountSettings(string status = "RUNNING")
         {
             var campaigns = GetCampaigns(status: status);
-            return new AccountSettings(MockSdkKey, campaigns, 123456, 1);
+            return new AccountSettings(MockSdkKey, campaigns, 123456, 1,null,null);
         }
 
         private List<BucketedCampaign> GetCampaigns(string status = "RUNNING")
