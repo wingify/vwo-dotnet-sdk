@@ -151,14 +151,14 @@ namespace VWOSdk
         /// <param name="batchData">Event batching requestTimeInterval,eventsPerRequest,flushCallback value.</param>
         /// <param name="userStorageService">UserStorageService to Get and Save User-assigned variations.</param>
         /// <param name="goalTypeToTrack">Specify which goalType to track.</param>
-        /// <param name="shouldTrackReturningUser">Should track returning user or not.</param>
+
         /// <param name="integrations">Integration Event Listener onEvent callback</param>
         /// <returns>
         /// IVWOClient instance to call Activate, GetVariation and Track apis for given user and goal.
         /// </returns>
         public static IVWOClient Launch(Settings settingFile, bool isDevelopmentMode = false, IUserStorageService userStorageService = null,
            BatchEventData batchData = null, string goalTypeToTrack = null,
-           bool shouldTrackReturningUser = false, HookManager integrations = null)
+           HookManager integrations = null)
         {
             if (Validator.SettingsFile(settingFile))
             {
@@ -181,8 +181,6 @@ namespace VWOSdk
                     usageStats.Add("gt", 1);
                 else
                     goalTypeToTrack = Constants.GoalTypes.ALL;
-                if (shouldTrackReturningUser != false && !usageStats.TryGetValue("tr", out int tr))
-                    usageStats.Add("tr", 1);
                 if (integrations != null && !usageStats.TryGetValue("ig", out int ig))
                     usageStats.Add("ig", 1);
                 if (isDevelopmentMode)
@@ -191,7 +189,7 @@ namespace VWOSdk
                     usageStats.Clear();
                 }
                 var vwoClient = new VWO(accountSettings, Validator, userStorageService, CampaignAllocator, SegmentEvaluator,
-                    VariationAllocator, isDevelopmentMode, batchData, goalTypeToTrack, shouldTrackReturningUser, integrations, usageStats);
+                    VariationAllocator, isDevelopmentMode, batchData, goalTypeToTrack, integrations, usageStats);
                 LogDebugMessage.SdkInitialized(file);
                 return vwoClient;
             }

@@ -41,12 +41,6 @@ namespace VWOSdk.Tests
             {"revenueValue", 1},
             {"goalTypeToTrack", Constants.GoalTypes.CUSTOM}
         };
-
-        private readonly Dictionary<string, dynamic> MockTrackShouldTrackReturningUser = new Dictionary<string, dynamic>() {
-            {"revenueValue", 1},
-            {"shouldTrackReturningUser", true }
-        };
-
         private readonly Dictionary<string, dynamic> MockTrackOptionsRevenueGoal = new Dictionary<string, dynamic>() {
             {"revenueValue", 1},
             {"goalTypeToTrack", Constants.GoalTypes.REVENUE}
@@ -2383,70 +2377,6 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.AtLeastOnce);
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.AtLeastOnce);
         }
-
-        [Fact]
-        public void Track_Should_Not_Fire_Twice_When_ShouldTrackReturningUser_Is_False()
-        {
-            var mockApiCaller = Mock.GetApiCaller<Settings>();
-            AppContext.Configure(mockApiCaller.Object);
-            var mockUserStorageService = Mock.GetUserStorageService();
-            Mock.SetupGet(mockUserStorageService, GetUserStorageMap(goalIdentifier: "TEST"));
-            var mockValidator = Mock.GetValidator();
-            var mockCampaignResolver = Mock.GetCampaignAllocator();
-            var selectedCampaign = GetCampaign();
-            var otherCampaign = GetCampaign(campaignKey: MockCampaignKey1, goalType: Constants.GoalTypes.REVENUE);
-            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign, otherCampaign);
-            var mockVariationResolver = Mock.GetVariationResolver();
-            Mock.SetupResolve(mockVariationResolver, GetVariation());
-
-            var vwoClient = GetVwoClient(settingType: "MultipleCampaignForTrack", mockValidator: mockValidator,
-                mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver,
-                mockUserStorageService: mockUserStorageService);
-
-            var result = vwoClient.Track(new List<string>() { MockCampaignKey, MockCampaignKey1 }, MockUserId, MockGoalIdentifier,
-                MockTrackCustomVariables);
-            Assert.True(result[MockCampaignKey]);
-            Assert.True(result[MockCampaignKey1]);
-
-            Mock.SetupGet(mockUserStorageService, GetUserStorageMap(goalIdentifier: MockGoalIdentifier));
-            var vwoClientWithUserStorage = GetVwoClient(settingType: "MultipleCampaignForTrack", mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver, mockUserStorageService: mockUserStorageService);
-            // As ShouldTrackReturningUser is not set i.e False, should not fire again.
-            var resultRevenue = vwoClientWithUserStorage.Track(new List<string>() { MockCampaignKey, "MockCampaignKey2" }, MockUserId, MockGoalIdentifier, MockTrackCustomVariables);
-            Assert.False(resultRevenue[MockCampaignKey]);
-            Assert.False(resultRevenue["MockCampaignKey2"]);
-
-            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.AtLeastOnce);
-            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.AtLeastOnce);
-        }
-        [Fact]
-        public void Track_Should_Fire_Twice_When_ShouldTrackReturningUser_Is_True()
-        {
-            var mockApiCaller = Mock.GetApiCaller<Settings>();
-            AppContext.Configure(mockApiCaller.Object);
-            var mockValidator = Mock.GetValidator();
-            var mockCampaignResolver = Mock.GetCampaignAllocator();
-            var selectedCampaign = GetCampaign();
-            var otherCampaign = GetCampaign(campaignKey: MockCampaignKey1, goalType: Constants.GoalTypes.REVENUE);
-            Mock.SetupResolve(mockCampaignResolver, selectedCampaign, selectedCampaign, otherCampaign);
-            var mockVariationResolver = Mock.GetVariationResolver();
-            Mock.SetupResolve(mockVariationResolver, GetVariation());
-
-            var vwoClient = GetVwoClient(settingType: "MultipleCampaignForTrack", mockValidator: mockValidator,
-                mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
-            var result = vwoClient.Track(new List<string>() { MockCampaignKey, MockCampaignKey1 }, MockUserId,
-                MockGoalIdentifier, MockTrackShouldTrackReturningUser);
-            Assert.True(result[MockCampaignKey]);
-            Assert.True(result[MockCampaignKey1]);
-
-            // As ShouldTrackReturningUser is true, should fire again.
-            var resultRevenue = vwoClient.Track(new List<string>() { MockCampaignKey, MockCampaignKey1 }, MockUserId,
-                MockGoalIdentifier, MockTrackShouldTrackReturningUser);
-            Assert.True(resultRevenue[MockCampaignKey]);
-            Assert.True(resultRevenue[MockCampaignKey1]);
-            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.AtLeastOnce);
-            mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.AtLeastOnce);
-        }
-
         [Fact]
         public void Track_Should_Not_Fire_For_Disallowed_Goal_Type()
         {

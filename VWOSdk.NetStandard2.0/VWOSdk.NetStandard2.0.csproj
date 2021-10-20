@@ -9,7 +9,7 @@
 		<OutputType>Library</OutputType>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<PackageId>VWO.Sdk</PackageId>
-		<Version>1.22.0</Version>
+		<Version>1.23.0</Version>
 		<Authors>VWO devs</Authors>
 		<Company>Wingify</Company>
 		<Product>VWO</Product>
@@ -63,7 +63,6 @@
 		<Compile Include="..\VWOSdk\Logger\Messages\LogErrorMessage.cs" Link="Logger\Messages\LogErrorMessage.cs" />
 		<Compile Include="..\VWOSdk\Logger\Messages\LogInfoMessage.cs" Link="Logger\Messages\LogInfoMessage.cs" />
 		<Compile Include="..\VWOSdk\Logger\Messages\LogWarningMessage.cs" Link="Logger\Messages\LogWarningMessage.cs" />
-
 		<Compile Include="..\VWOSdk\Model\Changes.cs" Link="Model\Changes.cs" />
 		<Compile Include="..\VWOSdk\Model\Goal.cs" Link="Model\Goal.cs" />
 		<Compile Include="..\VWOSdk\Model\Settings.cs" Link="Model\Settings.cs" />
