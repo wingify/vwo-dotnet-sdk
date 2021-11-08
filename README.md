@@ -1,8 +1,9 @@
 # VWO .NET SDK
 
 [![NuGet](https://img.shields.io/nuget/v/VWO.Sdk.svg?style=plastic)](https://www.nuget.org/packages/VWO.Sdk/)
-[![Build Status](http://img.shields.io/travis/wingify/vwo-dotnet-sdk/master.svg?style=flat)](http://travis-ci.org/wingify/vwo-dotnet-sdk)
-[![Coverage Status](https://img.shields.io/coveralls/wingify/vwo-dotnet-sdk.svg)](https://coveralls.io/r/wingify/vwo-dotnet-sdk)
+[![CI](https://github.com/wingify/vwo-dotnet-sdk/workflows/CI/badge.svg?branch=master)](https://github.com/wingify/vwo-dotnet-sdk/actions?query=workflow%3ACI)
+
+[![codecov](https://codecov.io/gh/wingify/vwo-dotnet-sdk/branch/master/graph/badge.svg?token=813UYYMWGM)](https://codecov.io/gh/wingify/vwo-dotnet-sdk)
 [![License](https://img.shields.io/badge/License-Apache%202.0-blue.svg)](http://www.apache.org/licenses/LICENSE-2.0)
 
 This open source library allows you to A/B Test your Website at server-side.
