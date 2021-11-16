@@ -22,13 +22,12 @@ namespace VWOSdk
 {
     internal class AccountSettings : Settings
     {
-        public AccountSettings(string sdkKey, List<BucketedCampaign> campaigns, int accountId, int version, Dictionary<string, Groups> groups, Dictionary<string, dynamic> campaignGroups) : base(sdkKey, null, accountId, version,groups,campaignGroups)
+        public AccountSettings(string sdkKey, List<BucketedCampaign> campaigns, int accountId, int version, Dictionary<string, Groups> groups, Dictionary<string, dynamic> campaignGroups,bool isEventArchEnabled=false) : base(sdkKey, null, accountId, version,groups,campaignGroups, isEventArchEnabled)
         {
             this.Campaigns = campaigns;
             this.CampaignGroups = CampaignGroups;
             this.Groups = groups;
         }
-
         public new List<BucketedCampaign> Campaigns { get; set; }
         public new Dictionary<string, dynamic> CampaignGroups { get; set; }
         public new Dictionary<string, Groups> Groups { get; set; }

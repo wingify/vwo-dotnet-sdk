@@ -25,10 +25,6 @@ namespace VWOSdk
         {
             Log.Error($"({file}): config passed to Launch is not a valid object.", disableLogs);
         }
-        //public static void INVALID_CONFIGURATION(string file)
-        //{
-        //    Log.Error($"({file}): SDK configuration or account settings or both is/are not valid.", disableLogs);
-        //}
         public static void SettingsFileCorrupted(string file, bool disableLogs = false)
         {
             Log.Error($"({file}): Settings file is corrupted. Please contact VWO Support for help.", disableLogs);
@@ -37,27 +33,6 @@ namespace VWOSdk
         {
             Log.Error($"({file}): \"{apiName}\" API got bad parameters. Invalid parameter: {paramName}.", disableLogs);
         }
-        //public static void ACTIVATE_API_CONFIG_CORRUPTED(string file)
-        //{
-        //    Log.Error($"({file}): \"activate\" API has corrupted configuration", disableLogs);
-        //}
-        //public static void GET_VARIATION_API_MISSING_PARAMS(string file)
-        //{
-        //    Log.Error($"({file}): \"getVariation\" API got bad parameters. It expects campaignKey(String) as first and userId(String) as second argument", disableLogs);
-        //}
-        //public static void GET_VARIATION_API_CONFIG_CORRUPTED(string file)
-        //{
-        //    Log.Error($"({file}): \"getVariation\" API has corrupted configuration", disableLogs);
-        //}
-        //public static void TRACK_API_MISSING_PARAMS(string file)
-        //{
-        //    Log.Error($"({file}): \"track\" API got bad parameters. It expects campaignKey(String) as first, userId(String) as second and goalIdentifier(String/Number) as third argument. Fourth is revenueValue(Float/Number/String) and is required for revenue goal only.", disableLogs);
-        //}
-        //public static void TRACK_API_CONFIG_CORRUPTED(string file)
-        //{
-        //    Log.Error($"({file}): \"track\" API has corrupted configuration", disableLogs);
-        //}
-
         public static void InvalidApi(string file, string userId, string campaignKey, string campaignType, string apiName, bool disableLogs = false)
         {
             Log.Error($"({file}): {apiName} API is not valid for user ID: {userId} in campaign ID: {campaignKey} having campaign type: {campaignType}.", disableLogs);
@@ -79,7 +54,6 @@ namespace VWOSdk
         public static void GetUserStorageServiceFailed(string file, string userId, string campaignKey, bool disableLogs = false)
         {
             Log.Error($"({file}): Get method could not provide us the stored variation for User Id: {userId} and Campaign test key: {campaignKey}. Please check your User Storage Service Get implementation.", disableLogs);
-            //Log.Error($"({file}): Looking data from UserStorageService failed for userId:{userId}", disableLogs);
         }
         public static void SetUserStorageServiceFailed(string file, string userId, bool disableLogs = false)
         {
@@ -93,14 +67,6 @@ namespace VWOSdk
         {
             Log.Error($"({file}): Unable to parse json value: {value} of type: {variableType}.", disableLogs);
         }
-        //public static void InvalidCampaign(string file, string method)
-        //{
-        //    Log.Error($"({file}): Invalid campaign passed to {method} of this file", disableLogs);
-        //}
-        //public static void INVALID_USER_ID(string file, string userId, string method)
-        //{
-        //    Log.Error($"({file}): Invalid userId:{userId} passed to {method} of this file", disableLogs);
-        //}
         public static void ImpressionFailed(string file, string endPoint, bool disableLogs = false)
         {
             Log.Error($"({file}): Impression event could not be sent to VWO - {endPoint}", disableLogs);
@@ -120,11 +86,6 @@ namespace VWOSdk
             Log.Error($"({file}): Goal:{goalIdentifier} not found for campaign:{campaignKey} and userId:{userId}", disableLogs);
         }
 
-        //internal static void TrackApiGoalFound(string file, string goalIdentifier, string campaignKey, string userId)
-        //{
-        //    Log.Error($"({file}): Goal:{goalIdentifier} found for campaign:{campaignKey} and userId:{userId}", disableLogs);
-        //}
-
         public static void CustomLoggerMisconfigured(string file, bool disableLogs = false)
         {
             Log.Error($"({file}): custom logger is provided but seems to have misconfigured. please check the api docs. using default logger.", disableLogs);
@@ -135,6 +96,10 @@ namespace VWOSdk
             Log.Error($"({file}): In API: {apiName}, the length of tagKey:{tagKey} and userID: {userId} can not be greater than 255", disableLogs);
         }
 
+        public static void TagKeyValueInvalid(string file, string tagKey, string tagValue, string userId, string apiName, bool disableLogs = false)
+        {
+            Log.Error($"({file}): In API: {apiName},  tagKey:{tagKey},tagValue:{tagValue} for userID: {userId} is invalid", disableLogs);
+        }
         public static void TagValueLengthExceeded(string file, string tagValue, string userId, string apiName, bool disableLogs = false)
         {
             Log.Error($"({file}): In API: {apiName}, the length of tagValue:{tagValue} and userID: {userId} can not be greater than 255", disableLogs);

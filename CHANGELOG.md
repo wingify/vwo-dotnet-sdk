@@ -5,6 +5,78 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.25.0] - 2021-11-17
+
+### Added
+
+- Support for pushing multiple custom dimensions at once.
+  Earlier, you had to call `push` API multiple times for tracking multiple custom dimensions as follows:
+
+  ```c#
+  bool isSuccessful = vwoClient.Push("browser", "chrome", userId);
+  bool isSuccessful = vwoClient.Push("price", "20", userId);
+  ```
+
+  Now, you can pass a dictionary
+
+  ```c#
+  public static Dictionary<string, dynamic> customDimensionMap = new Dictionary<string, dynamic>()
+    {
+        {
+            "browser", "chrome"
+        },
+        {
+            "price", "10"
+        }
+
+    };
+
+  bool isSuccessful = vwoClient.Push(customDimensionMap, userId);
+  ```
+
+  Multiple asynchronous tracking calls would be initiated in this case.
+
+- Pass meta information from APIs to the User Storage Service's `set` method.
+
+    ```c#
+    Dictionary<string, dynamic> Options = new Dictionary<string, dynamic>()
+    {{
+        "metaData", new Dictionary<string, dynamic>()
+        {
+            {
+                "extrainfo", "some data"
+            }
+        }
+    }};
+
+    var variationName = vwoClient.Activate(campaignKey, userId, Options);
+    ```
+
+    Same for other APIs - `GetVariationName`, `Track`, `IsFeatureEnabled`, and `GetFeatureVariableValue`.
+
+### Changed
+
+- If Events Architecture is enabled for your VWO account, all the tracking calls being initiated from SDK would now be `POST` instead of `GET` and there would be single endpoint i.e. `/events/t`. This is done in order to bring events support and building advancded capabilities in future.
+
+- For events architecture accounts, tracking same goal across multiple campaigns will not send multiple tracking calls. Instead one single `POST` call would be made to track the same goal across multiple different campaigns running on the same environment.
+
+- Multiple custome dimension can be pushed via `push` API. For events architecture enabled account, only one single asynchronous call would be made to track multiple custom dimensions.
+
+  ```c#
+  public static Dictionary<string, dynamic> customDimensionMap = new Dictionary<string, dynamic>()
+    {
+        {
+            "browser", "chrome"
+        },
+        {
+            "price", "10"
+        }
+
+    };
+
+  bool isSuccessful = vwoClient.Push(customDimensionMap, userId);
+  ```
+
 ## [1.23.0] - 2020-10-20
 
 ### Added

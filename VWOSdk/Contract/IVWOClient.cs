@@ -140,6 +140,17 @@ namespace VWOSdk
         /// </returns>
         bool Push(string tagKey, dynamic tagValue, string userId);
         /// <summary>
+        /// Makes a call to our server to store the tag_values
+        /// </summary>
+        /// <param name="customDimensionMap">Dictionary for passing key tag pairs</param>     
+        /// <param name="userId">User ID which uniquely identifies each user.</param>
+        /// <returns>
+        /// /// A boolean value based on whether the impression was made to the VWO server.
+        /// True, if an impression event is successfully being made to the VWO server for report generation.
+        /// False, If userId provided is not part of campaign or when unexpected error comes and no impression call is made to the VWO server.
+        /// </returns>
+        bool Push(Dictionary<string, string> customDimensionMap, string userId);
+        /// <summary>
         /// Makes a call to our server to flush Events
         ///<returns>
         /// A boolean value based on whether the impression was made to the VWO server.

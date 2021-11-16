@@ -109,7 +109,7 @@ namespace VWOSdk
 
             return null;
         }
-        internal void SetUserMap(string userId, string campaignKey, string variationName, string goalIdentifier = null, bool disableLogs = false)
+        internal void SetUserMap(string userId, string campaignKey, string variationName, string goalIdentifier = null, Dictionary<string, dynamic> metaData = null, bool disableLogs = false)
         {
             if (this._userStorageService == null)
             {
@@ -120,7 +120,7 @@ namespace VWOSdk
             try
             {
 
-                this._userStorageService.Set(new UserStorageMap(userId, campaignKey, variationName, goalIdentifier));
+                this._userStorageService.Set(new UserStorageMap(userId, campaignKey, variationName, goalIdentifier, metaData));
                 LogInfoMessage.SavingDataUserStorageService(file, userId, disableLogs);
                 return;
             }

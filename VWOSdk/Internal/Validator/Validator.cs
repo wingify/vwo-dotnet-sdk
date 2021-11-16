@@ -33,6 +33,7 @@ namespace VWOSdk
         bool IsFeatureEnabled(string campaignKey, string userId, Dictionary<string, dynamic> options = null);
         bool GetFeatureVariableValue(string campaignKey, string variableKey, string userId, Dictionary<string, dynamic> options = null);
         bool Push(dynamic tagKey, dynamic tagValue, string userId);
+        bool Push(Dictionary<string, string> customDimensionMap, string userId);
         bool SettingsFile(Settings settingsFile);
     }
 
@@ -49,14 +50,18 @@ namespace VWOSdk
         {
             var campaignKeyResult = ValidateWithLog(() => ValidateString(campaignKey), nameof(campaignKey), nameof(Activate));
             var customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
-            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>), nameof(userId), nameof(Activate));
+            var metaData = options.ContainsKey("metaData") ? options["metaData"] : null;
+            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>)
+            && (metaData == null || metaData is Dictionary<string, dynamic>), nameof(userId), nameof(Activate));
         }
 
         public bool GetVariation(string campaignKey, string userId, Dictionary<string, dynamic> options = null)
         {
             var campaignKeyResult = ValidateWithLog(() => ValidateString(campaignKey), nameof(campaignKey), nameof(GetVariation));
             var customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
-            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>), nameof(userId), nameof(GetVariation));
+            var metaData = options.ContainsKey("metaData") ? options["metaData"] : null;
+            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>)
+             && (metaData == null || metaData is Dictionary<string, dynamic>), nameof(userId), nameof(GetVariation));
         }
 
         public bool Track(string campaignKey, string userId, string goalIdentifier, string revenueValue, Dictionary<string, dynamic> options = null)
@@ -65,30 +70,39 @@ namespace VWOSdk
             result = ValidateWithLog(() => ValidateString(userId), nameof(userId), nameof(Track)) && result;
             result = ValidateWithLog(() => ValidateString(goalIdentifier), nameof(goalIdentifier), nameof(Track)) && result;
             var customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
-            String goalTypeToTrack = options.ContainsKey("goalTypeToTrack") ? options["goalTypeToTrack"] : null;
+            var metaData = options.ContainsKey("metaData") ? options["metaData"] : null;
+            string goalTypeToTrack = options.ContainsKey("goalTypeToTrack") ? options["goalTypeToTrack"] : null;
             result = ValidateWithLog(() => goalTypeToTrack == null || Constants.GoalTypes.VALUES.Contains(goalTypeToTrack), nameof(goalIdentifier), nameof(Track)) && result;
-            return ValidateWithLog(() => ValidateNullableFloat(revenueValue) && (customVariables == null || customVariables is Dictionary<string, dynamic>), nameof(revenueValue), nameof(Track)) && result;
+            return ValidateWithLog(() => ValidateNullableFloat(revenueValue) && (customVariables == null || customVariables is Dictionary<string, dynamic>)
+             && (metaData == null || metaData is Dictionary<string, dynamic>), nameof(revenueValue), nameof(Track)) && result;
         }
 
         public bool IsFeatureEnabled(string campaignKey, string userId, Dictionary<string, dynamic> options = null)
         {
             var campaignKeyResult = ValidateWithLog(() => ValidateString(campaignKey), nameof(campaignKey), nameof(GetVariation));
             var customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
-            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>), nameof(userId), nameof(GetVariation));
+            var metaData = options.ContainsKey("metaData") ? options["metaData"] : null;
+            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>)
+            && (metaData == null || metaData is Dictionary<string, dynamic>), nameof(userId), nameof(GetVariation));
         }
 
         public bool GetFeatureVariableValue(string campaignKey, string variableKey, string userId, Dictionary<string, dynamic> options = null)
         {
             var campaignKeyResult = ValidateWithLog(() => ValidateString(campaignKey), nameof(campaignKey), nameof(GetVariation));
             var customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
-            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>), nameof(userId), nameof(GetVariation));
+            var metaData = options.ContainsKey("metaData") ? options["metaData"] : null;
+            return ValidateWithLog(() => ValidateString(userId) && campaignKeyResult && (customVariables == null || customVariables is Dictionary<string, dynamic>)
+            && (metaData == null || metaData is Dictionary<string, dynamic>), nameof(userId), nameof(GetVariation));
         }
 
         public bool Push(dynamic tagKey, dynamic tagValue, string userId)
         {
             return ValidateWithLog(() => ValidateString(tagKey) && ValidateString(tagValue) && ValidateString(userId), nameof(tagKey), nameof(Push));
         }
-
+        public bool Push(Dictionary<string, string> customDimensionMap, string userId)
+        {
+            return ValidateWithLog(() => customDimensionMap is Dictionary<string, string> && customDimensionMap.Count > 0 && ValidateString(userId), nameof(customDimensionMap), nameof(Push));
+        }
         public bool SettingsFile(Settings settingsFile)
         {
             var result = NotNull(settingsFile);
@@ -145,31 +159,31 @@ namespace VWOSdk
         private bool IsValidJson(string input)
         {
             input = input.Trim();
-           
-                try
+
+            try
+            {
+                var jObject = JObject.Parse(input);
+                foreach (var jo in jObject)
                 {
-                    var jObject = JObject.Parse(input);
-                    foreach (var jo in jObject)
+                    string name = jo.Key;
+                    JToken value = jo.Value;
+                    if (value.Type == JTokenType.Undefined)
                     {
-                        string name = jo.Key;
-                        JToken value = jo.Value;                      
-                        if (value.Type == JTokenType.Undefined)
-                        {
-                            return false;
-                        }
+                        return false;
                     }
                 }
-                catch
-                {
-                    return false;
-                }
-           
+            }
+            catch
+            {
+                return false;
+            }
+
 
             return true;
         }
         private bool ValidateJson(List<Dictionary<string, dynamic>> Variables)
         {
-            if(Variables == null)
+            if (Variables == null)
             {
                 return true;
             }
@@ -195,12 +209,10 @@ namespace VWOSdk
         {
             return iList.Count() > 0;
         }
-
         private bool NotNull(object obj)
         {
             return obj != null;
         }
-
         private static bool ValidateNullableFloat(string value)
         {
             if (value == null)
@@ -208,17 +220,14 @@ namespace VWOSdk
 
             return float.TryParse(value, out float floatVal);
         }
-
         private static bool ValidateString(string str)
         {
             return string.IsNullOrEmpty(str) == false;
         }
-
         private static bool ValidateLong(long value)
         {
             return value > 0;
         }
-
         private static bool ValidateWithLog(Func<bool> validationFunc, string parameterName, string apiName)
         {
             bool validationResult = validationFunc.Invoke();

@@ -7,6 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Remove="Resources\AB_TRAFFIC_50_WEIGHT_50_50 .json" />
     <None Remove="Resources\Campaign50percVariation50-50.json" />
     <None Remove="Resources\SampleGroupSettingsFile.json" />
     <None Remove="Resources\SampleSettingsFile.json" />
@@ -14,6 +15,7 @@
 
   <ItemGroup>
     <EmbeddedResource Include="Resources\Campaign50percVariation50-50.json" />
+    <EmbeddedResource Include="Resources\AB_TRAFFIC_50_WEIGHT_50_50 .json" />
     <EmbeddedResource Include="Resources\SampleGroupSettingsFile.json" />
     <EmbeddedResource Include="Resources\SampleSettingsFile.json" />
     <EmbeddedResource Include="Resources\SegmentExpectations.json" />

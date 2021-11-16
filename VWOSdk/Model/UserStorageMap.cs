@@ -15,27 +15,25 @@
  * limitations under the License.
  */
 #pragma warning restore 1587
-
+using System.Collections.Generic;
 namespace VWOSdk
 {
     public class UserStorageMap
     {
-        public UserStorageMap()
-        {
-
-        }
-
-        public UserStorageMap(string userId, string campaignKey, string variationName, string goalIdentifier = null)
+        public UserStorageMap() { }
+        public UserStorageMap(string userId, string campaignKey, string variationName, string goalIdentifier = null, Dictionary<string, dynamic> metaData = null)
         {
             this.UserId = userId;
             this.CampaignKey = campaignKey;
             this.VariationName = variationName;
             this.GoalIdentifier = goalIdentifier;
+            this.MetaData = metaData;
         }
 
         public string UserId { get; set; }
         public string CampaignKey { get; set; }
         public string VariationName { get; set; }
         public string GoalIdentifier { get; set; }
+        public Dictionary<string, dynamic> MetaData { get; set; }
     }
 }

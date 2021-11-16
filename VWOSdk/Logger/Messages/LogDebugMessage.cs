@@ -89,6 +89,22 @@ namespace VWOSdk
         {
             Log.Debug($"({file}): impression built for track-user - {properties}", disableLogs);
         }
+        public static void ImpressionForTrackUserArchEnabled(string file, string a, string u, string c, bool disableLogs = false)
+        {
+            Log.Debug($"({file}):impression built for vwo_variationShown event for account ID:{a}, user ID:{u}, and campaign ID:{c} when EventArchEnabled is true", disableLogs);
+        }
+        public static void ImpressionForTrackGoalArchEnabled(string file, string a, string u, string c, string goalIdentifier, bool disableLogs = false)
+        {
+            Log.Debug($"({file}): impression built for {goalIdentifier} event for accountId:{a}, user ID:{u}, and campaign ID:{c} when EventArchEnabled is true", disableLogs);
+        }
+        public static void ImpressionForPushTagArchEnabled(string file, string a, string u, string properties, bool disableLogs = false)
+        {
+           Log.Debug($"({file}): Impression built for visitor property:{properties} for accountId:{a} and user ID:{u}", disableLogs);
+        }
+        public static void EventArchImpressionSuccess(string file, string a, string properties, bool disableLogs = false)
+        {
+            Log.Debug($"({file}): Impression built for visitor property:{properties} was successfully received by VWO for accountId:{a}", disableLogs);
+        }
         public static void ImpressionForBatchEvent(string file, string properties, bool disableLogs = false)
         {
             Log.Debug($"({file}): impression built for track-user - {properties}", disableLogs);
@@ -124,6 +140,14 @@ namespace VWOSdk
         public static void EventBatchingNotActivated(string file, string function, bool disableLogs = false)
         {
             Log.Debug($"({file}): Event batching is not activated for {function}  or send null", disableLogs);
+        }
+        public static void ActivatedEventArchEnabled(string file, string function, bool disableLogs = false)
+        {
+            Log.Debug($"({file}): EventArchEnabled is activated for {function}.", disableLogs);
+        }
+        public static void TrackApiRevenuePropFoundForRevenueGoal(string file, string goalIdentifier, string campaignKey, string userId, bool disableLogs = false)
+        {
+            Log.Debug($"({file}): Revenue prop found for revenue goal:{goalIdentifier} for campaign:{campaignKey} and userId:{userId}", disableLogs);
         }
         public static void EventBatchingActivated(string file, string function, bool disableLogs = false)
         {

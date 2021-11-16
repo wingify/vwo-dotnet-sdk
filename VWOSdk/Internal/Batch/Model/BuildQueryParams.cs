@@ -31,11 +31,9 @@ namespace VWOSdk
         public object r;
         public long sId;
         public string t;
-
         public int? e = null;
         public int? c = null;
         public int eT;
-
         public int? g = null;
         public string ap;
         public string ed;
@@ -53,8 +51,6 @@ namespace VWOSdk
             this.ed = builder.ed;
 
         }
-
-
         public class Builder
         {
             public string u;
@@ -65,24 +61,18 @@ namespace VWOSdk
             public int? c = null;
             public int eT;
             public int? g = null;
-             public string ap;
-        public string ed;
+            public string ap;
+            public string ed;
             public Builder withMinifiedCampaignId(int campaignId)
             {
                 this.e = campaignId;
                 return this;
             }
-            //private static double GetRandomNumber()
-            //{
-            //    Random random = new Random();
-            //    return random.NextDouble();
-            //}
             public Builder withAp()
             {
                 this.ap = "server";
                 return this;
             }
-
             public Builder withEd()
             {
                 this.ed = "{\"p\":\"server\"}";
@@ -108,7 +98,6 @@ namespace VWOSdk
                 this.g = goal_id;
                 return this;
             }
-
             public Builder withRevenue(object r)
             {
                 this.r = r;
@@ -137,8 +126,7 @@ namespace VWOSdk
         {
             string jsonString = Newtonsoft.Json.JsonConvert.SerializeObject(val);
             var allValue = JsonConvert.DeserializeObject<IDictionary<string, dynamic>>(jsonString);
-            var withoutNull = allValue.Where(f => f.Value != null ).ToDictionary(x => x.Key, x => x.Value);
-
+            var withoutNull = allValue.Where(f => f.Value != null).ToDictionary(x => x.Key, x => x.Value);
             return withoutNull;
         }
     }

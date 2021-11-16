@@ -93,7 +93,7 @@ namespace VWOSdk.Tests
             Assert.Equal("1", UserStorageService.getStorage().Count.ToString());
             bool isGoalTracked = vwoInstance.Track(campaignKey, "Ashley", "CUSTOM");
             Assert.True(isGoalTracked);
-            UserStorageService.getStorage().TryGetValue(campaignKey, out ConcurrentDictionary<string, Dictionary<string, string>> userMap);
+            UserStorageService.getStorage().TryGetValue(campaignKey, out ConcurrentDictionary<string, Dictionary<string, dynamic>> userMap);
             Assert.Equal("CUSTOM", userMap["Ashley"]["GoalIdentifier"]);
             Assert.Equal(variationName, userMap["Ashley"]["VariationName"]);
             ////now since one of the campaign is already present in the storage. Calling for other campaigns would return variation as null.
@@ -454,47 +454,47 @@ namespace VWOSdk.Tests
     }
     public class UserStorageService : IUserStorageService
     {
-        public static ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, string>>> _userStorageMap = new ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, string>>>();
+        public static ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, dynamic>>> _userStorageMap = new ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, dynamic>>>();
         public UserStorageService()
         {
             if (_userStorageMap == null)
-                _userStorageMap = new ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, string>>>();
+                _userStorageMap = new ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, dynamic>>>();
             try
             {
 
                 var data = _userStorageMap;
                 if (data != null)
                 {
-                    _userStorageMap = new ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, string>>>(data);
+                    _userStorageMap = new ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, dynamic>>>(data);
                 }
                 else
-                    _userStorageMap = new ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, string>>>();
+                    _userStorageMap = new ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, dynamic>>>();
             }
             catch { }
         }
 
-        public static ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, string>>> getStorage()
+        public static ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, dynamic>>> getStorage()
         {
             return _userStorageMap;
         }
 
         public UserStorageMap Get(string userId, string CampaignKey)
         {
-            Dictionary<string, string> userDict = null;
-            if (_userStorageMap.TryGetValue(CampaignKey, out ConcurrentDictionary<string, Dictionary<string, string>> userMap))
+            Dictionary<string, dynamic> userDict = null;
+            if (_userStorageMap.TryGetValue(CampaignKey, out ConcurrentDictionary<string, Dictionary<string, dynamic>> userMap))
                 userMap.TryGetValue(userId, out userDict);
 
             if (userDict != null)
-                return new UserStorageMap(userId, CampaignKey, userDict["VariationName"], userDict["GoalIdentifier"]);
+                return new UserStorageMap(userId, CampaignKey, userDict["VariationName"], userDict["GoalIdentifier"], userDict["MetaData"]);
 
             return null;
         }
 
         public void Set(UserStorageMap userStorageMap)
         {
-            if (_userStorageMap.TryGetValue(userStorageMap.CampaignKey, out ConcurrentDictionary<string, Dictionary<string, string>> userMap) == false)
+            if (_userStorageMap.TryGetValue(userStorageMap.CampaignKey, out ConcurrentDictionary<string, Dictionary<string, dynamic>> userMap) == false)
             {
-                userMap = new ConcurrentDictionary<string, Dictionary<string, string>>();
+                userMap = new ConcurrentDictionary<string, Dictionary<string, dynamic>>();
                 _userStorageMap[userStorageMap.CampaignKey] = userMap;
             }
             if (userMap.ContainsKey(userStorageMap.UserId) && userMap[userStorageMap.UserId] != null && userStorageMap.GoalIdentifier != null)
@@ -503,17 +503,14 @@ namespace VWOSdk.Tests
             }
             else
             {
-                userMap[userStorageMap.UserId] = new Dictionary<string, string>() {
+                userMap[userStorageMap.UserId] = new Dictionary<string, dynamic>() {
                     { "VariationName", userStorageMap.VariationName },
-                    { "GoalIdentifier", userStorageMap.GoalIdentifier }
+                    { "GoalIdentifier", userStorageMap.GoalIdentifier },
+                    { "MetaData",userStorageMap.MetaData }
                 };
             }
 
         }
 
-
     }
 }
-
-
-

@@ -2270,8 +2270,7 @@ namespace VWOSdk.Tests
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
             var result = vwoClient.IsFeatureEnabled("x", MockUserId);
             Assert.True(result);
-
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Once);
+            mockValidator.Verify(mock => mock.IsFeatureEnabled(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<Dictionary<string, dynamic>>()), Times.Once);          
         }
 
         // Unique Goal Conversion + Multiple Campaign Key Test cases

@@ -25,6 +25,9 @@ namespace VWOSdk
         internal static readonly string PLATFORM = "server";
         internal static readonly string GOAL_IDENTIFIER_SEPERATOR = "_vwo_";
         internal static readonly string DECISION_TYPES = "CAMPAIGN_DECISION";
+        internal static readonly string SDK_NAME = "netstandard2.0";
+        internal static readonly string TRACK_EVENT_NAME = "vwo_variationShown";
+        internal static readonly string PUSH_EVENT_NAME = "vwo_syncVisitorProp";
         internal static class Campaign
         {
             internal static readonly string STATUS_RUNNING = "RUNNING";
@@ -46,7 +49,7 @@ namespace VWOSdk
             internal static readonly string TRACK_GOAL = "track-goal";
             internal static readonly string PUSH_TAGS = "push";
             internal static readonly string BATCH_EVENTS = "batch-events";
-
+            internal static readonly string EVENT_ARCH = "events/t";
         }
 
         public static class CampaignStatus

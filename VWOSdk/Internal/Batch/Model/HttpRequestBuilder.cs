@@ -29,37 +29,26 @@ namespace VWOSdk
         /// <summary>
         /// Params For Tracking User.
         /// </summary>
-        public static IDictionary<string, dynamic> EventForTrackingUser(long accountId, int campaignId, int variationId, string userId,  bool isDevelopmentMode)
+        public static IDictionary<string, dynamic> EventForTrackingUser(long accountId, int campaignId, int variationId, string userId, bool isDevelopmentMode)
         {
-
             BuildQueryParams requestParams =
             BuildQueryParams.Builder.getInstance()
-                     //.withAp()
-                     //.withEd()
                     .withMinifiedCampaignId(campaignId)
                     .withMinifiedVariationId(variationId)
                     .withMinifiedEventType((int)EVENT_TYPES.TRACK_USER)
                     .withSid(DateTimeOffset.UtcNow.ToUnixTimeSeconds())
                     .withUuid(accountId, userId)
                     .build();
-
             IDictionary<string, dynamic> map = requestParams.removeNullValues(requestParams);
-
-
-
             return map;
         }
         /// <summary>
         /// Params For Tracking Goal.
         /// </summary>
         public static IDictionary<string, dynamic> EventForTrackingGoal(long accountId, int campaignId, int variationId, string userId,
-            int goalId,  string revenueValue, bool isDevelopmentMode)
+            int goalId, string revenueValue, bool isDevelopmentMode)
         {
-
-
             BuildQueryParams requestParams = BuildQueryParams.Builder.getInstance()
-                  // .withAp()
-                    // .withEd()
                 .withMinifiedCampaignId(campaignId)
                 .withMinifiedVariationId(variationId)
                 .withMinifiedEventType((int)EVENT_TYPES.TRACK_GOAL)
@@ -68,7 +57,6 @@ namespace VWOSdk
                 .withSid(DateTimeOffset.UtcNow.ToUnixTimeSeconds())
                 .withUuid(accountId, userId)
                 .build();
-
             IDictionary<string, dynamic> map = requestParams.removeNullValues(requestParams);
             return map;
         }
@@ -77,11 +65,8 @@ namespace VWOSdk
         /// </summary>
         public static IDictionary<string, dynamic> EventForPushTags(long accountId, string tagKey, string tagValue, string userId, bool isDevelopmentMode)
         {
-
             BuildQueryParams requestParams =
             BuildQueryParams.Builder.getInstance()
-              // .withAp()
-                   //  .withEd()
                     .withMinifiedEventType((int)EVENT_TYPES.PUSH)
                     .withMinifiedTags(tagKey, tagValue)
                     .withSid(DateTimeOffset.UtcNow.ToUnixTimeSeconds())
@@ -90,18 +75,15 @@ namespace VWOSdk
             IDictionary<string, dynamic> map = requestParams.removeNullValues(requestParams);
             return map;
         }
-
         /// <summary>
         ///Convert Queue data As Json String.
         /// </summary>
-        public static string GetJsonString( Queue<IDictionary<string, dynamic>> batchQueue)
+        public static string GetJsonString(Queue<IDictionary<string, dynamic>> batchQueue)
         {
             string jsonString = JsonConvert.SerializeObject(batchQueue);
             jsonString = "{\"ev\":" + jsonString + "}";
-
             return jsonString;
-
         }
-
+       
     }
 }
