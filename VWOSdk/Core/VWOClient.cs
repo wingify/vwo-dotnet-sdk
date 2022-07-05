@@ -1,4 +1,5 @@
-﻿#pragma warning disable 1587
+﻿
+#pragma warning disable 1587
 /**
  * Copyright 2019-2021 Wingify Software Pvt. Ltd.
  *
@@ -496,36 +497,38 @@ namespace VWOSdk
                 {
                     if (assignedVariation.DuplicateCall)
                     {
+                        LogInfoMessage.UserAlreadyTracked(typeof(IVWOClient).FullName, userId, campaignKey, nameof(IsFeatureEnabled));
                         LogDebugMessage.DuplicateCall(typeof(IVWOClient).FullName, nameof(IsFeatureEnabled));
-                        return false;
+                        return true;
                     }
                     if (campaign.Type == Constants.CampaignTypes.FEATURE_TEST || campaign.Type == Constants.CampaignTypes.FEATURE_ROLLOUT)
                     {
                         var result = campaign.Type == Constants.CampaignTypes.FEATURE_ROLLOUT ? true : assignedVariation.Variation.IsFeatureEnabled;
 
-                        if (result)
+                        if (this._BatchEventData != null)
                         {
-                            if (this._BatchEventData != null)
+                            LogDebugMessage.EventBatchingActivated(typeof(IVWOClient).FullName, nameof(IsFeatureEnabled));
+                            this._BatchEventQueue.addInQueue(HttpRequestBuilder.EventForTrackingUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode));
+                        }
+                        else
+                        {
+                            LogDebugMessage.EventBatchingNotActivated(typeof(IVWOClient).FullName, nameof(IsFeatureEnabled));
+                            if (_settings.IsEventArchEnabled)
                             {
-                                LogDebugMessage.EventBatchingActivated(typeof(IVWOClient).FullName, nameof(IsFeatureEnabled));
-                                this._BatchEventQueue.addInQueue(HttpRequestBuilder.EventForTrackingUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode));
+                                LogDebugMessage.ActivatedEventArchEnabled(typeof(IVWOClient).FullName, nameof(IsFeatureEnabled));
+                                var response = ServerSideVerb.TrackUserArchEnabled(this._settings.AccountId, assignedVariation.Campaign.Id,
+                                assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey, this._usageStats);
                             }
                             else
                             {
-                                LogDebugMessage.EventBatchingNotActivated(typeof(IVWOClient).FullName, nameof(IsFeatureEnabled));
-                                if (_settings.IsEventArchEnabled)
-                                {
-                                    LogDebugMessage.ActivatedEventArchEnabled(typeof(IVWOClient).FullName, nameof(IsFeatureEnabled));
-                                    var response = ServerSideVerb.TrackUserArchEnabled(this._settings.AccountId, assignedVariation.Campaign.Id,
+                                var trackUserRequest = ServerSideVerb.TrackUser(this._settings.AccountId, assignedVariation.Campaign.Id,
                                     assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey, this._usageStats);
-                                }
-                                else
-                                {
-                                    var trackUserRequest = ServerSideVerb.TrackUser(this._settings.AccountId, assignedVariation.Campaign.Id,
-                                        assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey, this._usageStats);
-                                    trackUserRequest.ExecuteAsync();
-                                }
+                                trackUserRequest.ExecuteAsync();
                             }
+                        }
+
+                        if (result)
+                        {
                             LogInfoMessage.FeatureEnabledForUser(typeof(IVWOClient).FullName, campaignKey, userId, nameof(IsFeatureEnabled));
                         }
                         else
@@ -534,7 +537,6 @@ namespace VWOSdk
                         }
                         return result;
                     }
-
                 }
                 else
                 {

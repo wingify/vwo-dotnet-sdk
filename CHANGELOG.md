@@ -5,6 +5,14 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
+## [1.26.0] - 2022-07-05
+
+### Changed
+
+- A tracking call wto VWO server was not being made when the feature was not enabled for the campaign's variation in case of `Feature Test` campaign. This was a bug and is fixed now.
+- Fixes a bug when User Storage Service is used and `isFeatureEnabled` API is called for the returning visitor, it was always returning `false`.
+- Add missing log for returning visitor in case of `isFeatureEnabled` API
+
 ## [1.25.0] - 2021-11-17
 
 ### Added

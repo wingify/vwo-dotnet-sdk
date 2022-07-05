@@ -2251,7 +2251,7 @@ namespace VWOSdk.Tests
             var result = vwoClient.IsFeatureEnabled(MockCampaignKey, MockUserId);
             Assert.False(result);
 
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Once);
         }
 
         [Fact]
@@ -2266,7 +2266,6 @@ namespace VWOSdk.Tests
             var mockVariationResolver = Mock.GetVariationResolver();
             var selectedVariation = GetVariation(IsFeatureEnabled: true);
             Mock.SetupResolve(mockVariationResolver, selectedVariation);
-
             var vwoClient = GetVwoClient(mockValidator: mockValidator, mockCampaignResolver: mockCampaignResolver, mockVariationResolver: mockVariationResolver);
             var result = vwoClient.IsFeatureEnabled("x", MockUserId);
             Assert.True(result);
