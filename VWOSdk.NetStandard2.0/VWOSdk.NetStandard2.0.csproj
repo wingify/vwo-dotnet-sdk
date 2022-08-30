@@ -1,4 +1,4 @@
-﻿<Project Sdk="Microsoft.NET.Sdk">
+<Project Sdk="Microsoft.NET.Sdk">
 
 	<PropertyGroup>
 		<OutputType>Library</OutputType>
@@ -9,7 +9,7 @@
 		<OutputType>Library</OutputType>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<PackageId>VWO.Sdk</PackageId>
-		<Version>1.26.0</Version>
+		<Version>1.27.0</Version>
 		<Authors>VWO devs</Authors>
 		<Company>Wingify</Company>
 		<Product>VWO</Product>
