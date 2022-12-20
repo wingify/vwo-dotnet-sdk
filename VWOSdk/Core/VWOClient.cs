@@ -252,7 +252,7 @@ namespace VWOSdk
                             revenuePropList.Add(assignedVariation.Goal.GetRevenueProp());
                             LogDebugMessage.TrackApiRevenuePropFoundForRevenueGoal(file, goalIdentifier, campaignKey, userId);
                         }
-                        else
+                        else if (assignedVariation.Goal.IsRevenueType() == false)
                         {
                             revenueValue = null;
                         }
