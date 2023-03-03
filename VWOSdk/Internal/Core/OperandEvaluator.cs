@@ -59,6 +59,14 @@ namespace VWOSdk
                     return this.Lower(operandValue, customVariablesValue);
                 case Constants.OperandValueTypes.REGEX:
                     return this.Regexp(operandValue, customVariablesValue);
+                case Constants.OperandValueTypes.GREATER_THAN:
+                        return this.GreaterThan(operandValue, customVariablesValue);
+                case Constants.OperandValueTypes.LESS_THAN:
+                    return this.LessThan(operandValue, customVariablesValue);
+                case Constants.OperandValueTypes.GREATER_THAN_EQUAL_TO:
+                    return this.GreaterThanEqualTo(operandValue, customVariablesValue);
+                case Constants.OperandValueTypes.LESS_THAN_EQUAL_TO:
+                    return this.LessThanEqualTo(operandValue, customVariablesValue);
                 default:
                     // Default is case of equals to
                     return this.Equals(operandValue, customVariablesValue);
@@ -127,6 +135,22 @@ namespace VWOSdk
                 }
             }
 
+            if(operandTypeName == Constants.OperandValueTypesName.GT)
+            {
+                operandType = Constants.OperandValueTypes.GREATER_THAN;
+            }
+            if(operandTypeName == Constants.OperandValueTypesName.LT)
+            {
+                operandType = Constants.OperandValueTypes.LESS_THAN;
+            }
+            if(operandTypeName == Constants.OperandValueTypesName.GTE)
+            {
+                operandType = Constants.OperandValueTypes.GREATER_THAN_EQUAL_TO;
+            }
+            if(operandTypeName == Constants.OperandValueTypesName.LTE)
+            {
+                operandType = Constants.OperandValueTypes.LESS_THAN_EQUAL_TO;
+            }
             // In case there is an abnormal patter, it would have passed all the above if cases, which means it
             // Should be equals, so set the whole operand as operand value and operand type as equals
             if (operandType.Length == 0)
@@ -189,6 +213,50 @@ namespace VWOSdk
                 return match.Success;
             }
             catch
+            {
+                return false;
+            }
+        }
+        private bool GreaterThan(string operandValue, string customVariablesValue)
+        {
+            try
+            {
+                return Convert.ToDouble(customVariablesValue) > Convert.ToDouble(operandValue);
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+        private bool LessThan(string operandValue, string customVariablesValue)
+        {
+            try
+            {
+                return Convert.ToDouble(customVariablesValue) < Convert.ToDouble(operandValue);
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+        private bool GreaterThanEqualTo(string operandValue, string customVariablesValue)
+        {
+            try
+            {
+                return Convert.ToDouble(customVariablesValue) >= Convert.ToDouble(operandValue);
+            }
+            catch (FormatException)
+            {
+                return false;
+            }
+        }
+        private bool LessThanEqualTo(string operandValue, string customVariablesValue)
+        {
+            try
+            {
+                return Convert.ToDouble(customVariablesValue) <= Convert.ToDouble(operandValue);
+            }
+            catch (FormatException)
             {
                 return false;
             }

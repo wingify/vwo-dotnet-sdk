@@ -111,6 +111,12 @@ namespace VWOSdk
             internal const string WILDCARD = "wildcard";
             internal const string LOWER = "lower";
             internal const string EQUALS = "equals";
+            internal const string GT = "gt";
+            internal const string LT = "lt";
+            internal const string GTE = "gte";
+            internal const string LTE = "lte";
+            
+
         }
 
         public static class OperandValueTypes
@@ -121,6 +127,10 @@ namespace VWOSdk
             internal const string ENDS_WITH = "ends_with";
             internal const string REGEX = "regex";
             internal const string EQUALS = "equals";
+            internal const string GREATER_THAN = "greater_than";
+            internal const string LESS_THAN = "less_than";
+            internal const string GREATER_THAN_EQUAL_TO = "greater_than_equal_to";
+            internal const string LESS_THAN_EQUAL_TO = "less_than_equal_to";
         }
 
         public static class OperandValueBooleanTypes
