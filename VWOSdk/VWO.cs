@@ -175,7 +175,7 @@ namespace VWOSdk
                 }
                 if (userStorageService != null && !usageStats.TryGetValue("ss", out int ss))
                     usageStats.Add("ss", 1);
-                if (batchData != null && !_tmpUsageStats.TryGetValue("eb", out int eb))
+                if (batchData != null && !usageStats.TryGetValue("eb", out int eb))
                     usageStats.Add("eb", 1);
                 if (goalTypeToTrack != null && !usageStats.TryGetValue("gt", out int gt))
                     usageStats.Add("gt", 1);
