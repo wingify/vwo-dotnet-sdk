@@ -29,6 +29,7 @@ namespace VWOSdk
     /// </summary>
     public partial class VWO : IVWOClient
     {
+        internal static readonly int RandomAlgo = 1;
         private readonly UserStorageAdapter _userStorageService;
         private readonly ICampaignAllocator _campaignAllocator;
         private readonly IVariationAllocator _variationAllocator;
@@ -853,6 +854,9 @@ namespace VWOSdk
                     LogInfoMessage.CalledCampaignNotWinner(file, campaignKey, userId, groupName.ToString());
                     return new UserAllocationInfo();
                 }
+                // Whether normalised/random implementation has to be done or advanced
+                int megAlgoNumber = this._settings.getGroups()[groupId.ToString()].et != 0 ? this._settings.getGroups()[groupId.ToString()].et : RandomAlgo ;
+
                 Dictionary<string, dynamic> processedCampaigns = CampaignHelper.getEligibleCampaigns(this._campaignAllocator, this._segmentEvaluator, campaignList, userId, apiName, customVariables);
                 processedCampaigns.TryGetValue("eligibleCampaigns", out dynamic eligibleCampaigns);
                 processedCampaigns.TryGetValue("inEligibleCampaigns", out dynamic inEligibleCampaigns);
@@ -878,8 +882,16 @@ namespace VWOSdk
                 }
                 else if (((List<BucketedCampaign>)eligibleCampaigns).Count > 1)
                 {
-                    BucketedCampaign winnerCampaign = CampaignHelper.normalizeAndFindWinningCampaign(this._campaignAllocator, (List<BucketedCampaign>)eligibleCampaigns,
-                       userId, groupId.ToString());
+                    BucketedCampaign winnerCampaign = null;
+                    if(megAlgoNumber == 1){
+                        winnerCampaign = CampaignHelper.normalizeAndFindWinningCampaign(this._campaignAllocator, (List<BucketedCampaign>)eligibleCampaigns,
+                        userId, groupId.ToString());
+                    }
+                    else
+                    {
+                        winnerCampaign = CampaignHelper.advancedAlgoFindWinningCampaign(this._campaignAllocator, (List<BucketedCampaign>)eligibleCampaigns,
+                        userId, groupId.ToString(),this._settings);
+                    }
                     if (winnerCampaign != null && winnerCampaign.Id.Equals(campaign.Id))
                     {
                         LogInfoMessage.GotWinnerCampaign(file, campaignKey, userId, groupName.ToString());

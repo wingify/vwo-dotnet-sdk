@@ -24,13 +24,20 @@ namespace VWOSdk
     public class Groups
     {
         [JsonConstructor]
-        internal Groups(string Name, List<int> campaigns)
+        internal Groups(string Name, List<int> campaigns,List<int> p,int et, Dictionary<string, double> wt)
         {          
             this.Name = Name;          
-            this.Campaigns = campaigns;          
+            this.Campaigns = campaigns;
+            this.p = p;
+            this.wt = wt;
+            this.et = et;
+
         }
         public List<int> Campaigns { get; internal set; }
         public string Name { get; internal set; }
+        public List<int> p {get; internal set;}
+        public int et {get; internal set;}
+        public Dictionary<string, double> wt {get; internal set;}
        
     }
 }

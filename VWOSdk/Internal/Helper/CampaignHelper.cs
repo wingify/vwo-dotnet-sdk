@@ -17,6 +17,7 @@
 #pragma warning restore 1587
 using System.Collections.Generic;
 using System;
+using System.Linq;
 
 namespace VWOSdk
 {
@@ -245,6 +246,81 @@ namespace VWOSdk
             double bucketValue = campaignAllocator.GetUserHashForCampaign(userId, Convert.ToInt32(groupId));
             BucketedCampaign winnerCampaign = getAllocatedItem(shortlistedCampaigns, bucketValue);
             return winnerCampaign;
+        }
+        /// <summary>
+        ///  Get the winning campaign from the shortlisted Campaigns using New MEG implementation.
+        /// </summary>
+        /// <param name="campaignAllocator"></param>
+        /// <param name="shortlistedCampaigns"></param>
+        /// <param name="userId"></param>
+        /// <param name="groupId"></param>
+        /// <returns>
+        /// BucketedCampaign object.
+        /// </returns>
+        public static BucketedCampaign advancedAlgoFindWinningCampaign(ICampaignAllocator campaignAllocator, List<BucketedCampaign> shortlistedCampaigns, string userId, string groupId, AccountSettings settings)
+        {
+            BucketedCampaign winnerCampaign = null;
+            bool found = false; // flag to check whether winnerCampaign has been found or not and helps to break from the outer loop
+
+            List<int> priorityOrder = settings.getGroups()[groupId.ToString()].p != null && settings.getGroups()[groupId.ToString()].p.Count>0  ? settings.getGroups()[groupId.ToString()].p : new List<int> ();
+            Dictionary<string, double> wt = settings.getGroups()[groupId.ToString()].wt != null && settings.getGroups()[groupId.ToString()].wt.Count>0? settings.getGroups()[groupId.ToString()].wt : new Dictionary<string, double>();
+        
+            for (int i = 0; i < priorityOrder.Count; i++)
+            {
+                for (int j = 0; j < shortlistedCampaigns.Count; j++)
+                {
+                    if (shortlistedCampaigns[j].Id == priorityOrder[i])
+                    {
+                        winnerCampaign = shortlistedCampaigns[j];
+                        found = true;
+                        break;
+                    }
+                }
+                if(found == true)
+                    break;
+            }
+            // If winnerCampaign not found through Priority, then go for weighted Random distribution and for that,
+            // Store the list of campaigns (participatingCampaigns) out of eligibleCampaigns and their corresponding weights which are present in weightage distribution array (wt) in 2 different lists
+            if (winnerCampaign == null)
+            {
+                List<double> weights = new List<double>();
+                List<BucketedCampaign> participatingCampaignList = new List<BucketedCampaign>();
+
+                for (int i = 0; i < shortlistedCampaigns.Count; i++)
+                {
+                    string campaignId = shortlistedCampaigns[i].Id.ToString();
+                    if (wt.ContainsKey(campaignId))
+                    {
+                        weights.Add(wt[campaignId]);
+                        participatingCampaignList.Add(shortlistedCampaigns[i]);
+                    }
+                }
+
+                /*
+                * Finding winner campaign using weighted random distribution :
+                1. Calculate the sum of all weights
+                2. Generate a random number between 0 and the weight sum:
+                3. Iterate over the weights array and subtract each weight from the random number until the random number becomes negative. The corresponding ith value is the required value
+                4. Set the ith campaign as WinnerCampaign
+                */
+                double weightSum = weights.Sum();
+                Random random = new Random();
+                int randomNumber = random.Next(1, (int)weightSum);
+
+                double sum = 0;
+                for (int i = 0; i < weights.Count; i++)
+                {
+                    sum += weights[i];
+                    if (randomNumber < sum)
+                    {
+                        winnerCampaign = participatingCampaignList[i];
+                        break;
+                    }
+                }
+            }
+
+            return winnerCampaign;
+            
         }
         /// <summary>
         ///  Check for Storage and Whitelisting of the shortlisted Campaigns.

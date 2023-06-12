@@ -26,6 +26,7 @@ namespace VWOSdk.Tests
     public class MEGTests
     {
         internal static Settings settings = new FileReaderApiCaller("SampleGroupSettingsFile").GetJsonContent<Settings>();
+        internal static Settings settingsFileNewMEG = new FileReaderApiCaller("NewMEGSettingsFile1").GetJsonContent<Settings>();
         internal static ILogWriter Logger { get; set; } = new DefaultLogWriter();
         private static IVWOClient vwoInstance { get; set; }
         [Fact]
@@ -451,6 +452,79 @@ namespace VWOSdk.Tests
             variationName = vwoInstance.Activate(calledCampaign, "Ashley");
             Assert.Equal("Control", variationName);
         }
+        [Fact]
+        public void EmptyObjectReturnedWhenWinnerCampaignIsNotTheCalledCampaignAfterPriority()
+        {
+            settingsFileNewMEG= new FileReaderApiCaller("NewMEGSettingsFile1").GetJsonContent<Settings>();
+            Logger.WriteLog(LogLevel.DEBUG, "when no WinnerCampaign is found after Priority");
+            var Campaigns = settingsFileNewMEG.getCampaigns();
+            var calledCampaign = Campaigns[2].Key;
+            vwoInstance = VWO.Launch(settingsFileNewMEG, true);
+            string variation = vwoInstance.Activate(calledCampaign, "George");
+            Assert.Null(variation);
+
+        }
+        [Fact]
+        public void EmptyObjectReturnedWhenWinnerCampaignIsNotTheCalledCampaignAfterWeightageDistribution()
+        {
+            // winnerCampaign is not the called campaign for most of the times
+            // distributions is 80:20 for winner and calledCampaign
+            // Called campaign (id - 34) has just 20% weighted distribution
+            settingsFileNewMEG = new FileReaderApiCaller("NewMEGSettingsFile2").GetJsonContent<Settings>();
+            Logger.WriteLog(LogLevel.DEBUG, "when no WinnerCampaign is found after Weightage distribution");
+            var Campaigns = settingsFileNewMEG.getCampaigns();
+            var calledCampaign = Campaigns[3].Key;
+            vwoInstance = VWO.Launch(settingsFileNewMEG, true);
+            
+            int iterations = 1000; // number of times to call the function
+            double expectedRatio = 0.2; // expected ratio for campaignId - 33 (20%) (called campaign -33)
+            double allowedError = 0.05; // allowed error range (5%)
+
+            int winners = 0;
+            for (int i = 0; i < iterations; i++)
+            {
+                string variation = vwoInstance.Activate(calledCampaign, "George");
+                winners = variation == "Control" ? winners + 1 : winners;
+            }
+
+            double actualRatio = (double)winners / iterations;
+            Assert.True(actualRatio > expectedRatio - allowedError && actualRatio < expectedRatio + allowedError);
+        }
+        [Fact]
+        public void ShouldReturnVariationWhenWinnerCampaignFoundThroughPriority()
+        {
+            settingsFileNewMEG = new FileReaderApiCaller("NewMEGSettingsFile1").GetJsonContent<Settings>();
+            Logger.WriteLog(LogLevel.DEBUG, "when WinnerCampaign is found and is same as CalledCampaign after Priority");
+            var Campaigns = settingsFileNewMEG.getCampaigns();
+            var calledCampaign = Campaigns[4].Key;
+            vwoInstance = VWO.Launch(settingsFileNewMEG, true);
+            string variation = vwoInstance.Activate(calledCampaign, "George");
+            Assert.Equal("Control", variation);
+    
+        }
+        [Fact]
+        public void ShouldReturnVariationWhenWinnerCampaignFoundThroughWeightage()
+        {
+            settingsFileNewMEG = new FileReaderApiCaller("NewMEGSettingsFile2").GetJsonContent<Settings>();
+            Logger.WriteLog(LogLevel.DEBUG, "when  WinnerCampaign is found ans is same as CalledCampaign after Weightage distribution");
+            var Campaigns = settingsFileNewMEG.getCampaigns();
+            var calledCampaign = Campaigns[1].Key;
+            vwoInstance = VWO.Launch(settingsFileNewMEG, true);
+            
+            int iterations = 1000; // number of times to call the function
+            double expectedRatio = 0.8; // expected ratio for campaignId - 31 (80%)
+            double allowedError = 0.05; // allowed error range (5%)
+
+            int winners = 0;
+            for (int i = 0; i < iterations; i++)
+            {
+                string variation = vwoInstance.Activate(calledCampaign, "George");
+                winners = variation == "Control" ? winners + 1 : winners;
+            }
+
+            double actualRatio = (double)winners / iterations;
+            Assert.True(actualRatio > expectedRatio - allowedError && actualRatio < expectedRatio + allowedError);
+        }    
     }
     public class UserStorageService : IUserStorageService
     {
