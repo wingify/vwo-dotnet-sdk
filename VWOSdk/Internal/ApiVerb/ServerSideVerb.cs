@@ -42,6 +42,7 @@ namespace VWOSdk
         private static readonly string sdkName = Constants.SDK_NAME;
         private static readonly string TrackEventName = Constants.TRACK_EVENT_NAME;
         private static readonly string PushEventName = Constants.PUSH_EVENT_NAME;
+        
         internal static ApiRequest SettingsRequest(long accountId, string sdkKey)
         {
             var settingsRequest = new ApiRequest(Method.GET)
@@ -60,26 +61,26 @@ namespace VWOSdk
             settingsRequest.WithCaller(AppContext.ApiCaller);
             return settingsRequest;
         }
-        internal static ApiRequest TrackUser(long accountId, int campaignId, int variationId, string userId, bool isDevelopmentMode, string sdkKey, Dictionary<string, int> usageStats)
+        internal static ApiRequest TrackUser(AccountSettings settings, long accountId, int campaignId, int variationId, string userId, bool isDevelopmentMode, string sdkKey, Dictionary<string, int> usageStats)
         {
             string queryParams = GetQueryParamertersForTrackUser(accountId, campaignId, variationId, userId, usageStats);
             var trackUserRequest = new ApiRequest(Method.GET, isDevelopmentMode)
             {
-                Uri = new Uri($"{Host}/{Verb}/{TrackUserVerb}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
-                logUri = new Uri($"{Host}/{Verb}/{TrackUserVerb}?{queryParams}"),
+                Uri = new Uri($"{Host}/{getDataLocation(settings, Verb)}/{TrackUserVerb}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
+                logUri = new Uri($"{Host}/{getDataLocation(settings, Verb)}/{TrackUserVerb}?{queryParams}"),
             };
             trackUserRequest.WithCaller(AppContext.ApiCaller);
             LogDebugMessage.ImpressionForTrackUser(file, queryParams);
             return trackUserRequest;
         }
         //Event Batching
-        internal static ApiRequest EventBatching(long accountId, bool isDevelopmentMode, string sdkKey, Dictionary<string, int> usageStats)
+        internal static ApiRequest EventBatching(AccountSettings settings, long accountId, bool isDevelopmentMode, string sdkKey, Dictionary<string, int> usageStats)
         {
             string queryParams = GetQueryParamertersForEventBatching(accountId, usageStats);
             var trackUserRequest = new ApiRequest(Method.POST, isDevelopmentMode)
             {
-                Uri = new Uri($"{Host}/{Verb}/{BatchEventVerb}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
-                logUri = new Uri($"{Host}/{Verb}/{BatchEventVerb}?{queryParams}"),
+                Uri = new Uri($"{Host}/{getDataLocation(settings, Verb)}/{BatchEventVerb}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
+                logUri = new Uri($"{Host}/{getDataLocation(settings, Verb)}/{BatchEventVerb}?{queryParams}"),
             };
 
             LogDebugMessage.ImpressionForBatchEvent(file, queryParams);
@@ -113,14 +114,14 @@ namespace VWOSdk
             return $"a={accountId}";
         }
         // End
-        internal static ApiRequest TrackGoal(int accountId, int campaignId, int variationId, string userId, int goalId,
+        internal static ApiRequest TrackGoal(AccountSettings settings, int accountId, int campaignId, int variationId, string userId, int goalId,
             string revenueValue, bool isDevelopmentMode, string sdkKey)
         {
             string queryParams = GetQueryParamertersForTrackGoal(accountId, campaignId, variationId, userId, goalId, revenueValue);
             var trackUserRequest = new ApiRequest(Method.GET, isDevelopmentMode)
             {
-                Uri = new Uri($"{Host}/{Verb}/{TrackGoalVerb}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
-                logUri = new Uri($"{Host}/{Verb}/{TrackGoalVerb}?{queryParams}"),
+                Uri = new Uri($"{Host}/{getDataLocation(settings, Verb)}/{TrackGoalVerb}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
+                logUri = new Uri($"{Host}/{getDataLocation(settings, Verb)}/{TrackGoalVerb}?{queryParams}"),
             };
             trackUserRequest.WithCaller(AppContext.ApiCaller);
             LogDebugMessage.ImpressionForTrackGoal(file, queryParams);
@@ -131,8 +132,8 @@ namespace VWOSdk
             string queryParams = GetQueryParamertersForPushTag(settings, tagKey, tagValue, userId);
             var trackPushRequest = new ApiRequest(Method.GET, isDevelopmentMode)
             {
-                Uri = new Uri($"{Host}/{Verb}/{PushTagsVerb}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
-                logUri = new Uri($"{Host}/{Verb}/{PushTagsVerb}?{queryParams}"),
+                Uri = new Uri($"{Host}/{getDataLocation(settings, Verb)}/{PushTagsVerb}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
+                logUri = new Uri($"{Host}/{getDataLocation(settings, Verb)}/{PushTagsVerb}?{queryParams}"),
             };
             trackPushRequest.WithCaller(AppContext.ApiCaller);
             LogDebugMessage.ImpressionForPushTag(file, queryParams);
@@ -258,13 +259,13 @@ namespace VWOSdk
             Random random = new Random();
             return random.NextDouble();
         }
-        internal async static Task<bool> TrackUserArchEnabled(long accountId, int campaignId, int variationId, string userId, bool isDevelopmentMode, string sdkKey, Dictionary<string, int> usageStats)
+        internal async static Task<bool> TrackUserArchEnabled(AccountSettings settings, long accountId, int campaignId, int variationId, string userId, bool isDevelopmentMode, string sdkKey, Dictionary<string, int> usageStats)
         {
             string queryParams = GetQueryParamertersForTrackUserArchEnabled(accountId, usageStats);
             var trackUserRequest = new ApiRequest(Method.POST, isDevelopmentMode)
             {
-                Uri = new Uri($"{Host}/{EventArchVerb}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
-                logUri = new Uri($"{Host}/{EventArchVerb}?{queryParams}"),
+                Uri = new Uri($"{Host}/{getDataLocation(settings, EventArchVerb)}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
+                logUri = new Uri($"{Host}/{getDataLocation(settings, EventArchVerb)}?{queryParams}"),
             };
             trackUserRequest.WithCaller(AppContext.ApiCaller);
             LogDebugMessage.ImpressionForTrackUserArchEnabled(file, accountId.ToString(), userId, campaignId.ToString());
@@ -291,14 +292,14 @@ namespace VWOSdk
             }
             return false;
         }
-        internal async static Task<bool> TrackGoalArchEnabled(int accountId, string goalIdentifier, string userId,
+        internal async static Task<bool> TrackGoalArchEnabled(AccountSettings settings, int accountId, string goalIdentifier, string userId,
             string revenueValue, bool isDevelopmentMode, string sdkKey, Dictionary<string, int> metricMap, List<string> revenueListProp)
         {
             string queryParams = GetQueryParamertersForTrackGoalArchEnabled(accountId, goalIdentifier);
             var trackUserRequest = new ApiRequest(Method.POST, isDevelopmentMode)
             {
-                Uri = new Uri($"{Host}/{EventArchVerb}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
-                logUri = new Uri($"{Host}/{EventArchVerb}?{queryParams}"),
+                Uri = new Uri($"{Host}/{getDataLocation(settings, EventArchVerb)}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
+                logUri = new Uri($"{Host}/{getDataLocation(settings, EventArchVerb)}?{queryParams}"),
             };
             trackUserRequest.WithCaller(AppContext.ApiCaller);
             LogDebugMessage.ImpressionForTrackGoalArchEnabled(file, accountId.ToString(), userId, $"{GetCampaigns(metricMap)}", goalIdentifier);
@@ -330,8 +331,8 @@ namespace VWOSdk
             string queryParams = GetQueryParamertersForPushTagsArchEnabled(settings.AccountId);
             var trackUserRequest = new ApiRequest(Method.POST, isDevelopmentMode)
             {
-                Uri = new Uri($"{Host}/{EventArchVerb}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
-                logUri = new Uri($"{Host}/{EventArchVerb}?{queryParams}"),
+                Uri = new Uri($"{Host}/{getDataLocation(settings, EventArchVerb)}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
+                logUri = new Uri($"{Host}/{getDataLocation(settings, EventArchVerb)}?{queryParams}"),
             };
             trackUserRequest.WithCaller(AppContext.ApiCaller);
             LogDebugMessage.ImpressionForPushTagArchEnabled(file, settings.AccountId.ToString(), userId, queryParams);
@@ -566,6 +567,12 @@ namespace VWOSdk
                     queryDict[parts[0].Trim()] = "";
             }
             return queryDict;
+        }
+        private static string getDataLocation(AccountSettings settings, string path){
+            if(settings.collectionPrefix != null){
+                return settings.collectionPrefix + "/" + path;
+            }
+            return path;
         }
     }
 }

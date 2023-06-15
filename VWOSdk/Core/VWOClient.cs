@@ -61,7 +61,7 @@ namespace VWOSdk
             this._goalTypeToTrack = goalTypeToTrack;
             this._BatchEventData = batchEventData;
             this._usageStats = usageStats;
-            this._BatchEventQueue = batchEventData != null ? new BatchEventQueue(batchEventData, settings.SdkKey, this._settings.AccountId, isDevelopmentMode, this._usageStats) : null;
+            this._BatchEventQueue = batchEventData != null ? new BatchEventQueue(settings, batchEventData, settings.SdkKey, this._settings.AccountId, isDevelopmentMode, this._usageStats) : null;
             this._HookManager = hookManager;
         }
 
@@ -120,12 +120,12 @@ namespace VWOSdk
                         if (_settings.IsEventArchEnabled)
                         {
                             LogDebugMessage.ActivatedEventArchEnabled(typeof(IVWOClient).FullName, nameof(Activate));
-                            var response = ServerSideVerb.TrackUserArchEnabled(this._settings.AccountId, assignedVariation.Campaign.Id,
+                            var response = ServerSideVerb.TrackUserArchEnabled(this._settings, this._settings.AccountId, assignedVariation.Campaign.Id,
                            assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey, this._usageStats);
                         }
                         else
                         {
-                            var trackUserRequest = ServerSideVerb.TrackUser(this._settings.AccountId,
+                            var trackUserRequest = ServerSideVerb.TrackUser(this._settings, this._settings.AccountId,
                             assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey, this._usageStats);
                             trackUserRequest.ExecuteAsync();
                         }
@@ -272,12 +272,12 @@ namespace VWOSdk
                                 {
                                     LogDebugMessage.ActivatedEventArchEnabled(typeof(IVWOClient).FullName, nameof(Track));
                                     metricMap.Add(assignedVariation.Campaign.Id.ToString(), assignedVariation.Goal.Id);
-                                    var response = ServerSideVerb.TrackGoalArchEnabled(this._settings.AccountId, goalIdentifier, userId, revenueValue,
+                                    var response = ServerSideVerb.TrackGoalArchEnabled(this._settings, this._settings.AccountId, goalIdentifier, userId, revenueValue,
                                     this._isDevelopmentMode, _settings.SdkKey, metricMap, revenuePropList);
                                 }
                                 else
                                 {
-                                    var trackGoalRequest = ServerSideVerb.TrackGoal(this._settings.AccountId, assignedVariation.Campaign.Id,
+                                    var trackGoalRequest = ServerSideVerb.TrackGoal(this._settings, this._settings.AccountId, assignedVariation.Campaign.Id,
                                     assignedVariation.Variation.Id, userId, assignedVariation.Goal.Id, revenueValue, this._isDevelopmentMode, _settings.SdkKey);
                                     trackGoalRequest.ExecuteAsync();
                                 }
@@ -395,7 +395,7 @@ namespace VWOSdk
                                     }
                                     else if (!this._isDevelopmentMode)
                                     {
-                                        var trackGoalRequest = ServerSideVerb.TrackGoal(this._settings.AccountId, assignedVariation.Campaign.Id,
+                                        var trackGoalRequest = ServerSideVerb.TrackGoal(this._settings, this._settings.AccountId, assignedVariation.Campaign.Id,
                                         assignedVariation.Variation.Id, userId, assignedVariation.Goal.Id, revenueValue, this._isDevelopmentMode, _settings.SdkKey);
                                         trackGoalRequest.ExecuteAsync();
                                     }
@@ -413,7 +413,7 @@ namespace VWOSdk
             }
             if (_settings.IsEventArchEnabled && metricMap.Count > 0)
             {
-                var response = ServerSideVerb.TrackGoalArchEnabled(this._settings.AccountId,
+                var response = ServerSideVerb.TrackGoalArchEnabled(this._settings, this._settings.AccountId,
                 goalIdentifier, userId, revenueValue, this._isDevelopmentMode, _settings.SdkKey, metricMap, revenuePropList);
                 LogDebugMessage.ActivatedEventArchEnabled(typeof(IVWOClient).FullName, nameof(Track));
             }
@@ -517,12 +517,12 @@ namespace VWOSdk
                             if (_settings.IsEventArchEnabled)
                             {
                                 LogDebugMessage.ActivatedEventArchEnabled(typeof(IVWOClient).FullName, nameof(IsFeatureEnabled));
-                                var response = ServerSideVerb.TrackUserArchEnabled(this._settings.AccountId, assignedVariation.Campaign.Id,
+                                var response = ServerSideVerb.TrackUserArchEnabled(this._settings, this._settings.AccountId, assignedVariation.Campaign.Id,
                                 assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey, this._usageStats);
                             }
                             else
                             {
-                                var trackUserRequest = ServerSideVerb.TrackUser(this._settings.AccountId, assignedVariation.Campaign.Id,
+                                var trackUserRequest = ServerSideVerb.TrackUser(this._settings, this._settings.AccountId, assignedVariation.Campaign.Id,
                                     assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey, this._usageStats);
                                 trackUserRequest.ExecuteAsync();
                             }

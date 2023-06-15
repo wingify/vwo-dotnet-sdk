@@ -26,7 +26,7 @@ namespace VWOSdk
 
 
         [JsonConstructor]
-        internal Settings(string sdkKey, List<Campaign> campaigns, int accountId, int version, Dictionary<string, Groups> groups, Dictionary<string, dynamic> campaignGroups,bool isEventArchEnabled=false)
+        internal Settings(string sdkKey, List<Campaign> campaigns, int accountId, int version, Dictionary<string, Groups> groups, Dictionary<string, dynamic> campaignGroups, bool isEventArchEnabled=false, string collectionPrefix="")
         {
             this.SdkKey = sdkKey;
             this.Campaigns = campaigns;
@@ -35,6 +35,7 @@ namespace VWOSdk
             this.Groups = groups;
             this.CampaignGroups = campaignGroups;
             this.IsEventArchEnabled = isEventArchEnabled;
+            this.collectionPrefix = collectionPrefix;
         }
 
         public string SdkKey { get; internal set; }
@@ -56,5 +57,6 @@ namespace VWOSdk
             return Campaigns;
         }
         public bool IsEventArchEnabled { get; internal set; }
+        public string collectionPrefix { get; internal set; }
     }
 }

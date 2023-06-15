@@ -39,6 +39,7 @@ namespace VWOSdk
         internal IFlushInterface flushCallback;
         internal Timer timer;
         private readonly int accountId;
+        private readonly AccountSettings _settings;
         private readonly string apikey;
         private bool isDevelopmentMode;
         private bool isBatchProcessing = false;
@@ -52,7 +53,7 @@ namespace VWOSdk
         /// <param name="accountId">VWO application accountId</param>
         /// <param name="isDevelopmentMode">isDevelopmentMode Boolean value specifying development mode is on or off</param>
         /// <param name="usageStats">Sending stats which are used for launching the SDK like storage service, logger, and integrations, etc.</param>
-        internal BatchEventQueue(BatchEventData batchEvents, string apikey, int accountId, bool isDevelopmentMode, Dictionary<string, int> usageStats)
+        internal BatchEventQueue(AccountSettings settings, BatchEventData batchEvents, string apikey, int accountId, bool isDevelopmentMode, Dictionary<string, int> usageStats)
         {
             if (batchEvents != null)
             {
@@ -100,6 +101,7 @@ namespace VWOSdk
             this.isDevelopmentMode = isDevelopmentMode;
             this.apikey = apikey;
             this._usageStats = usageStats;
+            this._settings = settings;
         }
         /// <summary>
         /// Insert the event in the queue and flush if the queue is full.
@@ -212,7 +214,7 @@ namespace VWOSdk
         private async Task<bool> sendPostCall()
         {
             string PayLoad = HttpRequestBuilder.GetJsonString(this.batchQueue);
-            var ApiRequest = ServerSideVerb.EventBatching(this.accountId, this.isDevelopmentMode, this.apikey, this._usageStats);
+            var ApiRequest = ServerSideVerb.EventBatching(_settings, this.accountId, this.isDevelopmentMode, this.apikey, this._usageStats);
             HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Add("Authorization", this.apikey);
