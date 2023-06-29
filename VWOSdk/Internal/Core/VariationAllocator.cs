@@ -23,6 +23,7 @@ namespace VWOSdk
 {
     internal class VariationAllocator : IVariationAllocator
     {
+        internal static ILogWriter Logger { get; set; } = new DefaultLogWriter();
         private static readonly string file = typeof(VariationAllocator).FullName;
         private readonly IBucketService _userHasher;
         internal VariationAllocator(IBucketService userHasher = null)
@@ -37,7 +38,7 @@ namespace VWOSdk
         /// <param name="campaign"></param>
         /// <param name="userId"></param>
         /// <returns></returns>
-        public Variation Allocate(UserStorageMap userStorageMap, BucketedCampaign campaign, string userId)
+        public Variation Allocate(UserStorageMap userStorageMap, BucketedCampaign campaign, string userId, bool isNewBucketingEnabled = false)
         {
             if (campaign == null)
                 return null;
@@ -47,8 +48,20 @@ namespace VWOSdk
 
                 double hashValue = 0;
                 double maxVal = Constants.Variation.MAX_TRAFFIC_VALUE;
-                double multiplier = maxVal / campaign.PercentTraffic / 100; //This is to evenly spread all user among variations.
-                var bucketValue = campaign.IsBucketingSeedEnabled == true ? this._userHasher.ComputeBucketValue(CampaignHelper.getBucketingSeed(userId, campaign, null), userId, maxVal, multiplier, out hashValue) : this._userHasher.ComputeBucketValue(userId, maxVal, multiplier, out hashValue);
+                double multiplier = 1.0 ;
+                double bucketValue = 0;
+                // use old algorithm if old bucketing flag is set
+                if((!isNewBucketingEnabled ) || (campaign.isOB != null && campaign.isOB)){
+                    // for old algo, regenerate seed using userId AND camapignId
+                    multiplier = maxVal / campaign.PercentTraffic / 100; //This is to evenly spread all user among variations.
+                    bucketValue = campaign.IsBucketingSeedEnabled == true ? this._userHasher.ComputeBucketValue(CampaignHelper.getBucketingSeed(userId, campaign, null,isNewBucketingEnabled), userId, maxVal, multiplier, out hashValue) : this._userHasher.ComputeBucketValue(userId, maxVal, multiplier, out hashValue);
+                    Logger.WriteLog(LogLevel.DEBUG, "Using Old Bucketing Algo for - " + userId + "," + campaign.Key);
+                }
+                else{
+                    // use new algorithm if newBucketin flag is set and old bucketing flag is not set
+                    bucketValue = this._userHasher.ComputeBucketValue(CampaignHelper.getBucketingSeed(userId, null, null,isNewBucketingEnabled), userId, maxVal, multiplier) ;
+                    Logger.WriteLog(LogLevel.DEBUG, "Using New Bucketing Algo for - " + userId + "," + campaign.Key);
+                }
                 var selectedVariation = campaign.Variations.Find(bucketValue);
                 LogDebugMessage.VariationHashBucketValue(file, userId, campaign.Key, campaign.PercentTraffic, hashValue, bucketValue);
                 return selectedVariation;
@@ -57,7 +70,7 @@ namespace VWOSdk
             return campaign.Variations.Find(userStorageMap.VariationName, GetVariationName);
         }
 
-        public Variation TargettedVariation(string userId, BucketedCampaign campaign, List<Variation> whiteListedVariations)
+        public Variation TargettedVariation(string userId, BucketedCampaign campaign, List<Variation> whiteListedVariations, bool isNewBucketingEnabled = false)
         {
 
             int whiteListedVariationsLength = whiteListedVariations.Count;
@@ -77,7 +90,7 @@ namespace VWOSdk
                 whiteListedVariationsList = GetVariationAllocationRanges(whiteListedVariations);
                 double maxVal = Constants.Variation.MAX_TRAFFIC_VALUE;
                 double multiplier = 1;
-                var bucketValue = this._userHasher.ComputeBucketValue(CampaignHelper.getBucketingSeed(userId, campaign, null), userId, Constants.Campaign.MAX_TRAFFIC_PERCENT, multiplier);
+                var bucketValue = this._userHasher.ComputeBucketValue(CampaignHelper.getBucketingSeed(userId, campaign, null,isNewBucketingEnabled), userId, Constants.Campaign.MAX_TRAFFIC_PERCENT, multiplier);
                 targettedVariation = whiteListedVariationsList.Find(bucketValue);
             }
             return targettedVariation;

@@ -87,22 +87,22 @@ namespace VWOSdk.Tests
             Assert.NotNull(selectedCampaign);
             Assert.Equal(MockCampaignKey, selectedCampaign.Key);
 
-            mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Once);
-            mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.Is<string>((val) => MockUserId.Equals(val)), It.Is<double>((val) => 100 == val), It.Is<double>(val => 1 == val)), Times.Once);
+            mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Once);
+            mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.Is<string>((val) => MockUserId.Equals(val)), It.Is<string>((val) => MockUserId.Equals(val)), It.Is<double>((val) => 100 == val), It.Is<double>(val => 1 == val)), Times.Once);
         }
 
         [Fact]
         public void Allocate_Should_Return_Null_Audience_Condition_Not_Met()
         {
             var mockUserHasher = Mock.GetUserHasher();
-            Mock.SetupCompute(mockUserHasher, returnVal: 80);
+            Mock.SetupSeedComputeBucketValue(mockUserHasher, returnVal: 80, outHashValue: 1234567);
             CampaignAllocator campaignResolver = GetCampaignResolver(mockUserHasher);
             UserStorageMap userStorageMap = null;
             var selectedCampaign = campaignResolver.Allocate(GetAccountSettings(), userStorageMap, MockCampaignKey, MockUserId);
             Assert.Null(selectedCampaign);
 
-            mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Once);
-            mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.Is<string>((val) => MockUserId.Equals(val)), It.Is<double>((val) => 100 == val), It.Is<double>(val => 1 == val)), Times.Once);
+            mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Once);
+            mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.Is<string>((val) => MockUserId.Equals(val)),It.Is<string>((val) => MockUserId.Equals(val)), It.Is<double>((val) => 100 == val), It.Is<double>(val => 1 == val)), Times.Once);
         }
 
         private AccountSettings GetAccountSettings(string status = "RUNNING")

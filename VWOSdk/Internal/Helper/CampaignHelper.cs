@@ -32,14 +32,14 @@ namespace VWOSdk
         /// <returns>
         /// Bucketing seed value.
         /// </returns>
-        public static string getBucketingSeed(string userId, Campaign campaign, int? groupId)
+        public static string getBucketingSeed(string userId, Campaign campaign, int? groupId, bool isNewBucketingEnabled = false)
         {
             if (groupId != null)
             {
                 return groupId + "_" + userId;
             }
 
-            if (campaign != null && campaign.IsBucketingSeedEnabled)
+            if (campaign != null && (isNewBucketingEnabled || campaign.IsBucketingSeedEnabled))
             {
                 return campaign.Id + "_" + userId;
             }
@@ -345,7 +345,7 @@ namespace VWOSdk
             string file, string apiName, List<BucketedCampaign> campaignList, string groupName,
            BucketedCampaign calledCampaign, string userId,
            Dictionary<string, dynamic> variationTargetingVariables,
-           Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> userStorageData = null, bool disableLogs = false)
+           Dictionary<string, dynamic> customVariables, bool isNewBucketingEnabled = false, Dictionary<string, dynamic> userStorageData = null, bool disableLogs = false)
         {
             bool otherCampaignWinner = false;
             foreach (BucketedCampaign campaign in campaignList)
@@ -357,7 +357,7 @@ namespace VWOSdk
                 List<Variation> whiteListedVariations = GetWhiteListedVariationsList(_segmentEvaluator, apiName, userId, campaign, campaign.Key, customVariables, variationTargetingVariables, disableLogs);
                 string status = Constants.WhitelistingStatus.FAILED;
                 string variationString = " ";
-                Variation variation = _variationAllocator.TargettedVariation(userId, campaign, whiteListedVariations);
+                Variation variation = _variationAllocator.TargettedVariation(userId, campaign, whiteListedVariations, isNewBucketingEnabled);
                 if (variation != null)
                 {
                     status = Constants.WhitelistingStatus.PASSED;

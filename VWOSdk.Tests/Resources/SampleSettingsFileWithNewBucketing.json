@@ -1,0 +1,158 @@
+{
+    "isNB" : true,
+    "sdkKey": "someuniquestuff1234567",
+    "campaigns": [
+      {
+        "goals": [
+          {
+            "identifier": "CUSTOM",
+            "id": 213,
+            "type": "CUSTOM_GOAL"
+          }
+        ],
+        "variations": [
+          {
+            "id": 1,
+            "name": "Control",
+            "changes": {},
+            "weight": 50
+          },
+          {
+            "id": 2,
+            "name": "Variation-1",
+            "changes": {},
+            "weight": 50
+          }
+        ],
+        "id": 200,
+        "percentTraffic": 100,
+        "key": "bucket_algo_without_seed",
+        "name": "bucket_algo_without_seed",
+        "status": "RUNNING",
+        "type": "VISUAL_AB"
+      },
+      {
+        "goals": [
+          {
+            "identifier": "CUSTOM",
+            "id": 213,
+            "type": "CUSTOM_GOAL"
+          }
+        ],
+        "variations": [
+          {
+            "id": 1,
+            "name": "Control",
+            "changes": {},
+            "weight": 50
+          },
+          {
+            "id": 2,
+            "name": "Variation-1",
+            "changes": {},
+            "weight": 50
+          }
+        ],
+        "id": 201,
+        "percentTraffic": 100,
+        "key": "bucket_algo_with_seed",
+        "name": "bucket_algo_with_seed",
+        "status": "RUNNING",
+        "type": "VISUAL_AB",
+        "isBucketingSeedEnabled" : true
+      },
+      {
+        "goals": [
+          {
+            "identifier": "CUSTOM",
+            "id": 213,
+            "type": "CUSTOM_GOAL"
+          }
+        ],
+        "variations": [
+          {
+            "id": 1,
+            "name": "Control",
+            "changes": {},
+            "weight": 50
+          },
+          {
+            "id": 2,
+            "name": "Variation-1",
+            "changes": {},
+            "weight": 50
+          }
+        ],
+        "id": 202,
+        "percentTraffic": 100,
+        "key": "bucket_algo_with_seed_with_isNB_with_isOB",
+        "name": "bucket_algo_with_seed_with_isNB_with_isOB",
+        "status": "RUNNING",
+        "type": "VISUAL_AB",
+        "isOB": true,
+        "isBucketingSeedEnabled" : true
+      },
+      {
+        "goals": [
+          {
+            "identifier": "CUSTOM",
+            "id": 213,
+            "type": "CUSTOM_GOAL"
+          }
+        ],
+        "variations": [
+          {
+            "id": 1,
+            "name": "Control",
+            "changes": {},
+            "weight": 50
+          },
+          {
+            "id": 2,
+            "name": "Variation-1",
+            "changes": {},
+            "weight": 50
+          }
+        ],
+        "id": 203,
+        "percentTraffic": 100,
+        "key": "bucket_algo_with_isNB_and_without_isOB",
+        "name": "bucket_algo_with_isNB_and_without_isOB",
+        "status": "RUNNING",
+        "type": "VISUAL_AB",
+        "isBucketingSeedEnabled": true
+      },
+      {
+        "goals": [
+          {
+            "identifier": "CUSTOM",
+            "id": 213,
+            "type": "CUSTOM_GOAL"
+          }
+        ],
+        "variations": [
+          {
+            "id": 1,
+            "name": "Control",
+            "changes": {},
+            "weight": 50
+          },
+          {
+            "id": 2,
+            "name": "Variation-1",
+            "changes": {},
+            "weight": 50
+          }
+        ],
+        "id": 204,
+        "percentTraffic": 100,
+        "key": "bucket_algo_without_seed_with_isNB_and_without_isOB",
+        "name": "bucket_algo_without_seed_with_isNB_and_without_isOB",
+        "status": "RUNNING",
+        "type": "VISUAL_AB"
+      }
+    ],
+    "accountId": 12345,
+    "version": 1
+  }
+  

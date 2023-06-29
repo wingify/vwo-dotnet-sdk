@@ -24,7 +24,7 @@ namespace VWOSdk
     public class Campaign
     {
         [JsonConstructor]
-        internal Campaign(int id, string Name, double PercentTraffic, string Key, string Status, string Type, List<Goal> goals, List<Variation> variations, bool isForcedVariationEnabled, bool isBucketingSeedEnabled, Dictionary<string, dynamic> segments = null, List<Dictionary<string, dynamic>> Variables = null)
+        internal Campaign(int id, string Name, double PercentTraffic, string Key, string Status, string Type, List<Goal> goals, List<Variation> variations, bool isForcedVariationEnabled, bool isBucketingSeedEnabled, Dictionary<string, dynamic> segments = null, List<Dictionary<string, dynamic>> Variables = null, bool isOB = false)
         {
             this.PercentTraffic = PercentTraffic;
             this.Key = Key;
@@ -40,6 +40,7 @@ namespace VWOSdk
             this.Segments = segments;
             if (Variables == null) Variables = new List<Dictionary<string, dynamic>>();
             this.Variables = Variables;
+            this.isOB = isOB;
         }
 
         public IReadOnlyList<Goal> Goals { get; internal set; }
@@ -63,5 +64,6 @@ namespace VWOSdk
         {
             this.PercentTraffic = PercentTraffic;
         }
+        public bool isOB { get; internal set; }
     }
 }

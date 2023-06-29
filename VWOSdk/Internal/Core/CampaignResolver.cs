@@ -42,7 +42,7 @@ namespace VWOSdk
             BucketedCampaign requestedCampaign = settings.Campaigns.Find((campaign) => campaign.Key.Equals(campaignKey));
             if (requestedCampaign != null)
             {
-                allocatedCampaign = AllocateCampaign(userId, campaignKey, userStorageMap, requestedCampaign);
+                allocatedCampaign = AllocateCampaign(userId, campaignKey, userStorageMap, requestedCampaign, settings.isNB);
 
                 if (allocatedCampaign != null)
                 {
@@ -79,7 +79,7 @@ namespace VWOSdk
         /// <returns></returns>
         public double GetUserHashForCampaign(string userId , int groupId)
         {
-            double userHash = this._userHasher.ComputeBucketValue(CampaignHelper.getBucketingSeed(userId, null, groupId), userId, 10000, 1);
+            double userHash = this._userHasher.ComputeBucketValue(CampaignHelper.getBucketingSeed(userId, null, groupId, false), userId, 10000, 1);
             return userHash;
 
         }
@@ -91,13 +91,13 @@ namespace VWOSdk
         /// <param name="userStorageMap"></param>
         /// <param name="requestedCampaign"></param>
         /// <returns></returns>
-        private BucketedCampaign AllocateCampaign(string userId, string campaignKey, UserStorageMap userStorageMap, BucketedCampaign requestedCampaign)
+        private BucketedCampaign AllocateCampaign(string userId, string campaignKey, UserStorageMap userStorageMap, BucketedCampaign requestedCampaign, bool isNewBucketingEnabled = false)
         {
             BucketedCampaign allocatedCampaign = null;
             LogDebugMessage.CheckUserEligibilityForCampaign(file, campaignKey, requestedCampaign.PercentTraffic, userId);
             if (userStorageMap == null)
             {
-                allocatedCampaign = AllocateByTrafficAllocation(userId, requestedCampaign);
+                allocatedCampaign = AllocateByTrafficAllocation(userId, requestedCampaign, isNewBucketingEnabled);
             }
             else if (userStorageMap.CampaignKey.Equals(requestedCampaign.Key))
             {
@@ -112,10 +112,10 @@ namespace VWOSdk
         /// <param name="userId"></param>
         /// <param name="requestedCampaign"></param>
         /// <returns></returns>
-        public BucketedCampaign AllocateByTrafficAllocation(string userId, BucketedCampaign requestedCampaign)
+        public BucketedCampaign AllocateByTrafficAllocation(string userId, BucketedCampaign requestedCampaign, bool isNewBucketingEnabled = false)
         {
             var selectedCampaign = requestedCampaign;
-            var userHash = requestedCampaign.IsBucketingSeedEnabled == true ? this._userHasher.ComputeBucketValue(CampaignHelper.getBucketingSeed(userId, requestedCampaign, null), userId, Constants.Campaign.MAX_TRAFFIC_PERCENT, 1) : this._userHasher.ComputeBucketValue(userId, Constants.Campaign.MAX_TRAFFIC_PERCENT, 1);          
+            var userHash = this._userHasher.ComputeBucketValue(CampaignHelper.getBucketingSeed(userId, requestedCampaign, null, isNewBucketingEnabled), userId, Constants.Campaign.MAX_TRAFFIC_PERCENT, 1) ;
             if (requestedCampaign.PercentTraffic < userHash)
             {
                 selectedCampaign = null;

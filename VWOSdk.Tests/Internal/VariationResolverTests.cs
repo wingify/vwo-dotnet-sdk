@@ -16,6 +16,7 @@
  */
 #pragma warning restore 1587
 
+using Newtonsoft.Json.Linq;
 using Moq;
 using Xunit;
 
@@ -23,9 +24,11 @@ namespace VWOSdk.Tests
 {
     public class VariationAllocatorTests
     {
+        internal static Settings SampleSettingsFileWithNewBucketing = new FileReaderApiCaller("SampleSettingsFileWithNewBucketing").GetJsonContent<Settings>();
         private readonly string MockUserId = "MockUserId";
         private readonly string MockCampaignKey = "MockCampaignKey";
         private readonly string MockVariationName = "VariationName";
+        private static IVWOClient vwoInstance { get; set; }
 
         public VariationAllocatorTests()
         {
@@ -111,7 +114,7 @@ namespace VWOSdk.Tests
 
             mockUserHasher.Verify(mock => mock.ComputeBucketValue(It.IsAny<string>(), It.IsAny<double>(), It.IsAny<double>()), Times.Never);
         }
-
+    
         private BucketedCampaign GetCampaign(string campaignKey = null, string variationName = null, bool isBucketingSeed = false, int campaignId = 0)
         {
             campaignKey = campaignKey ?? MockCampaignKey;

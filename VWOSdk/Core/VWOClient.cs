@@ -781,7 +781,7 @@ namespace VWOSdk
         {
             Dictionary<string, dynamic> integrationsMap = new Dictionary<string, dynamic>();
             dynamic groupId = 0, groupName = "";
-            Variation TargettedVariation = this.FindTargetedVariation(apiName, campaign, campaignKey, userId, customVariables, variationTargetingVariables);
+            Variation TargettedVariation = this.FindTargetedVariation(apiName, campaign, campaignKey, userId, customVariables, variationTargetingVariables, this._settings.isNB);
             if (TargettedVariation != null)
             {
                 if (_HookManager != null)
@@ -849,7 +849,7 @@ namespace VWOSdk
                 if (campaignList.Count == 0)
                     return new UserAllocationInfo();
                 if (CampaignHelper.checkForStorageAndWhitelisting(this._variationAllocator, this._userStorageService, this._segmentEvaluator, file, apiName, campaignList, groupName, campaign, userId,
-              variationTargetingVariables, customVariables, userStorageData, true))
+              variationTargetingVariables, customVariables,this._settings.isNB, userStorageData,  true))
                 {
                     LogInfoMessage.CalledCampaignNotWinner(file, campaignKey, userId, groupName.ToString());
                     return new UserAllocationInfo();
@@ -933,7 +933,7 @@ namespace VWOSdk
         {
             if (campaign != null)
             {
-                Variation variation = this._variationAllocator.Allocate(userStorageMap, campaign, userId);
+                Variation variation = this._variationAllocator.Allocate(userStorageMap, campaign, userId, this._settings.isNB);
                 if (variation != null)
                 {
                     LogInfoMessage.VariationAllocated(file, userId, campaignKey, variation.Name);
@@ -1013,7 +1013,7 @@ namespace VWOSdk
             }
             return true;
         }
-        private Variation FindTargetedVariation(string apiName, BucketedCampaign campaign, string campaignKey, string userId, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargetingVariables, bool disableLogs = false)
+        private Variation FindTargetedVariation(string apiName, BucketedCampaign campaign, string campaignKey, string userId, Dictionary<string, dynamic> customVariables, Dictionary<string, dynamic> variationTargetingVariables, bool isNewBucketingEnabled = false, bool disableLogs = false)
         {
             if (campaign.IsForcedVariationEnabled)
             {
@@ -1037,7 +1037,7 @@ namespace VWOSdk
 
                 string status = Constants.WhitelistingStatus.FAILED;
                 string variationString = " ";
-                Variation variation = this._variationAllocator.TargettedVariation(userId, campaign, whiteListedVariations);
+                Variation variation = this._variationAllocator.TargettedVariation(userId, campaign, whiteListedVariations, isNewBucketingEnabled);
                 if (variation != null)
                 {
                     status = Constants.WhitelistingStatus.PASSED;

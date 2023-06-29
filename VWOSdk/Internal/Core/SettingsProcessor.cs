@@ -29,7 +29,7 @@ namespace VWOSdk
             try
             {
                 var campaigns = Process(settings.Campaigns);
-                return new AccountSettings(settings.SdkKey, campaigns,  settings.AccountId, settings.Version,settings.Groups, settings.CampaignGroups, settings.IsEventArchEnabled, settings.collectionPrefix);
+                return new AccountSettings(settings.SdkKey, campaigns,  settings.AccountId, settings.Version,settings.Groups, settings.CampaignGroups, settings.IsEventArchEnabled, settings.collectionPrefix, settings.isNB);
             }
             catch (Exception exception)
             {
@@ -50,7 +50,7 @@ namespace VWOSdk
 
         private BucketedCampaign Process(Campaign campaign)
         {
-            return new BucketedCampaign(campaign.Id, campaign.Name, campaign.PercentTraffic, campaign.Key, campaign.Status, campaign.Type, campaign.IsForcedVariationEnabled,campaign.IsBucketingSeedEnabled, campaign.Segments, campaign.Variables)
+            return new BucketedCampaign(campaign.Id, campaign.Name, campaign.PercentTraffic, campaign.Key, campaign.Status, campaign.Type, campaign.IsForcedVariationEnabled,campaign.IsBucketingSeedEnabled, campaign.Segments, campaign.Variables, campaign.isOB)
             {
                 Goals = ToDictionary(campaign.Goals, (goal) => goal.Identifier),
                 Variations = Bucket(campaign.Variations, campaign.Key)

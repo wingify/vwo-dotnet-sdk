@@ -21,6 +21,7 @@
     <EmbeddedResource Include="Resources\SegmentExpectations.json" />
     <EmbeddedResource Include="Resources\NewMEGSettingsFile1.json" />
     <EmbeddedResource Include="Resources\NewMEGSettingsFile2.json" />
+    <EmbeddedResource Include="Resources\SampleSettingsFileWithNewBucketing.json" />
   </ItemGroup>
 
   <ItemGroup>
