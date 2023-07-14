@@ -26,6 +26,8 @@ namespace VWOSdk.Tests
 {
     public class VWOClientTests
     {
+        internal static Settings SettingsFileEventProperties = new FileReaderApiCaller("SettingsFileEventProperties").GetJsonContent<Settings>();
+        private static IVWOClient vwoInstance { get; set; }
         private readonly string MockCampaignKey = "MockCampaignKey";
         private readonly string MockCampaignKey1 = "MockCampaignKey1";
         private readonly string MockUserId = "MockUserId";
@@ -2549,8 +2551,60 @@ namespace VWOSdk.Tests
 
             Assert.Equal(0, vwoClient.getBatchEventQueue().BatchQueueCount());
         }
+        
+        [Fact]
+        public void WhenRevenueValueNotPassedInTheGoal()
+        {
+            var vwoClient = VWO.Launch(SettingsFileEventProperties, isDevelopmentMode: true);
+            var trackResponse = vwoClient.Track("track", "abby", "track3");
+            Assert.False(trackResponse);
+        }
 
+        [Fact]
+        public void WhenRevenueValueIsNotPassedForMetricOfTypeNumberOfTimesEventIsTriggered()
+        {
+            var vwoClient = VWO.Launch(SettingsFileEventProperties, isDevelopmentMode: true);
+            var trackResponse = vwoClient.Track("track", "abby", "track4");
+            Assert.True(trackResponse);
+        }
 
+        [Fact]
+        public void testIfEventPropertiesIsPassedInsteadOfRevenueValue()
+        {
+            var vwoClient = VWO.Launch(SettingsFileEventProperties, isDevelopmentMode: true);
+            Dictionary<string, dynamic> Options = new Dictionary<string, dynamic>()
+            {
+                {
+                "eventProperties", new Dictionary<string, dynamic>()
+                {
+                    {
+                        "abcd",100
+                    }
+                }
+                }
+            };
+            var trackResponse = vwoClient.Track("track", "abby", "track3",Options);
+            Assert.True(trackResponse);
+        }
+
+        [Fact]
+        public void testIfEventPropertiesDoNotHaveRevenuePropAndItIsPassedInsteadOfRevenueValue()
+        {
+            var vwoClient = VWO.Launch(SettingsFileEventProperties, isDevelopmentMode: true);
+            Dictionary<string, dynamic> Options = new Dictionary<string, dynamic>()
+            {
+                {
+                "eventProperties", new Dictionary<string, dynamic>()
+                {
+                    {
+                        "ab",100
+                    }
+                }
+                }
+            };
+            var trackResponse = vwoClient.Track("track", "abby", "track3",Options);
+            Assert.False(trackResponse);
+        }
 
         #endregion
 

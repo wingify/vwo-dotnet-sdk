@@ -293,7 +293,7 @@ namespace VWOSdk
             return false;
         }
         internal async static Task<bool> TrackGoalArchEnabled(AccountSettings settings, int accountId, string goalIdentifier, string userId,
-            string revenueValue, bool isDevelopmentMode, string sdkKey, Dictionary<string, int> metricMap, List<string> revenueListProp)
+            string revenueValue, bool isDevelopmentMode, string sdkKey, Dictionary<string, int> metricMap, List<string> revenueListProp, Dictionary<string,dynamic> eventProperties)
         {
             string queryParams = GetQueryParamertersForTrackGoalArchEnabled(accountId, goalIdentifier);
             var trackUserRequest = new ApiRequest(Method.POST, isDevelopmentMode)
@@ -303,7 +303,7 @@ namespace VWOSdk
             };
             trackUserRequest.WithCaller(AppContext.ApiCaller);
             LogDebugMessage.ImpressionForTrackGoalArchEnabled(file, accountId.ToString(), userId, $"{GetCampaigns(metricMap)}", goalIdentifier);
-            string PayLoad = GetGoalArchEnabledPayload(userId, accountId, sdkKey, sdkVersion, metricMap, revenueListProp, revenueValue, goalIdentifier);
+            string PayLoad = GetGoalArchEnabledPayload(userId, accountId, sdkKey, sdkVersion, metricMap, revenueListProp, revenueValue, goalIdentifier, eventProperties);
             HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Add("User-Agent", sdkName);
@@ -402,8 +402,9 @@ namespace VWOSdk
             $"&{GetUnixMsTimeStampArchEnabled()}";
         }
         public static string GetGoalArchEnabledPayload(string userId, long accountId, string sdkKey, string sdkVersion,
-            Dictionary<string, int> metricMap, List<string> revenueListProp, string revenue, string goalIdentifier)
+            Dictionary<string, int> metricMap, List<string> revenueListProp, string revenue, string goalIdentifier, Dictionary<string, dynamic> eventProperties = null)
         {
+            string additionalParams = GetEventProp(eventProperties);
             string payLoad = "{" +
                         "\"d\": {" +
                         "\"msgId\":\"" + UuidV5Helper.Compute(accountId, userId) + "-" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + "\"," +
@@ -416,7 +417,7 @@ namespace VWOSdk
                                             "\"sdkVersion\":\"" + sdkVersion + "\"," +
                                              "\"vwoMeta\":{\"metric\":{" + $"{GetGoal(metricMap)}" + "}" + $"{GetrevenueProp(revenueListProp, revenue)}" + "}" +
                                             "," +
-                                 "\"isCustomEvent\":true}," +
+                                  "\"isCustomEvent\":true "+ (additionalParams != "" ? "," : "") + additionalParams + "}," +
                                  "\"name\":\"" + goalIdentifier + "\"," +
                                  "\"time\":" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + "" +
                                  "}," +
@@ -469,6 +470,28 @@ namespace VWOSdk
                 revenueProp = "," + string.Join(",", listStats);
             }
             return revenueProp.TrimEnd(',');
+        }
+        private static string GetEventProp(Dictionary<string, dynamic> eventProperties)
+        {
+            string eventProp= "";
+            if (eventProperties != null && eventProperties.Count > 0){
+                var listStats = new List<string>();
+                foreach (var item in eventProperties)
+                {
+                    string valueString;
+                    if (item.Value is string)
+                    {
+                        valueString = "\"" + item.Value + "\"";
+                    }
+                    else
+                    {
+                        valueString = item.Value.ToString().ToLower();
+                    }
+                    listStats.Add("\"" + item.Key + "\":" + valueString);
+                }
+                eventProp = string.Join(",",listStats);
+             }
+             return eventProp.TrimEnd(',');
         }
         private static string GetQueryParamertersForPushTagsArchEnabled(long accountId)
         {

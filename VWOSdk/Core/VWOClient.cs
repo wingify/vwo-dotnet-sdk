@@ -209,6 +209,7 @@ namespace VWOSdk
             string goalTypeToTrack = options.ContainsKey("goalTypeToTrack") ? options["goalTypeToTrack"] : null;
             Dictionary<string, dynamic> userStorageData = options.ContainsKey("userStorageData") ? options["userStorageData"] : null;
             Dictionary<string, dynamic> metaData = options.ContainsKey("metaData") && options["metaData"] is Dictionary<string, dynamic> ? options["metaData"] : null;
+            Dictionary<string,dynamic> eventProperties = options.ContainsKey("eventProperties") && options["eventProperties"] is Dictionary<string, dynamic> ? options["eventProperties"] : null;
             Dictionary<string, int> metricMap = new Dictionary<string, int>();
             List<string> revenuePropList = new List<string>();
             if (this._validator.Track(campaignKey, userId, goalIdentifier, revenueValue, options))
@@ -245,8 +246,42 @@ namespace VWOSdk
                         bool sendImpression = true;
                         if (assignedVariation.Goal.IsRevenueType() && string.IsNullOrEmpty(revenueValue))
                         {
-                            sendImpression = false;
-                            LogErrorMessage.TrackApiRevenueNotPassedForRevenueGoal(file, goalIdentifier, campaignKey, userId);
+                            // mca implementation
+                                if(this._settings.IsEventArchEnabled){
+                                /* 
+                                If it's a metric of type - value of an event property and calculation logic is first Value (mca != -1)
+                                */
+                                    if(assignedVariation.Goal.mca != -1) {
+                                        /*
+                                        In this case it is expected that goal will have revenueProp
+                                        Error should be logged if eventProperties is not Defined ` OR ` eventProperties does not have revenueProp key
+                                        */
+                                        if(eventProperties == null || !eventProperties.ContainsKey(assignedVariation.Goal.GetRevenueProp())) {
+                                            sendImpression = false;
+                                            LogErrorMessage.TrackApiRevenueNotPassedForRevenueGoal(file, goalIdentifier, campaignKey, userId);
+                                        }
+                                    }
+                                    else {
+                                    /*
+                                    here mca == -1 so there could only be 2 scenarios, 
+                                    1. If revenueProp is defined then eventProperties should have revenueProp key
+                                    2. if revenueProp is not defined then it's a metric of type - Number of times an event has been triggered.
+                                    */
+                                    if (assignedVariation.Goal.GetRevenueProp() != null) {
+                                        if (!string.IsNullOrEmpty(assignedVariation.Goal.GetRevenueProp())) {
+                                            // Error should be logged if eventProperties is not defined OR eventProperties does not have revenueProp key.
+                                            if (eventProperties == null || !eventProperties.ContainsKey(assignedVariation.Goal.GetRevenueProp()))
+                                            {
+                                                sendImpression = false;
+                                                LogErrorMessage.TrackApiRevenueNotPassedForRevenueGoal(file, goalIdentifier, campaignKey, userId);
+                                            }
+                                        }
+                                     }
+                                    }
+                                } else {
+                                    sendImpression = false;
+                                    LogErrorMessage.TrackApiRevenueNotPassedForRevenueGoal(file, goalIdentifier, campaignKey, userId);
+                                }
                         }
                         else if (assignedVariation.Goal.IsRevenueType() && !string.IsNullOrEmpty(assignedVariation.Goal.GetRevenueProp()))
                         {
@@ -262,6 +297,9 @@ namespace VWOSdk
                             if (this._BatchEventData != null)
                             {
                                 LogDebugMessage.EventBatchingActivated(typeof(IVWOClient).FullName, nameof(Track));
+                                if(_settings.IsEventArchEnabled && assignedVariation.Goal.GetRevenueProp()!= null && eventProperties!= null && eventProperties.ContainsKey(assignedVariation.Goal.GetRevenueProp())){
+                                    revenueValue = eventProperties[assignedVariation.Goal.GetRevenueProp()].ToString();
+                                }
                                 this._BatchEventQueue.addInQueue(HttpRequestBuilder.EventForTrackingGoal(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id,
                                 userId, assignedVariation.Goal.Id, revenueValue, this._isDevelopmentMode));
                             }
@@ -273,7 +311,7 @@ namespace VWOSdk
                                     LogDebugMessage.ActivatedEventArchEnabled(typeof(IVWOClient).FullName, nameof(Track));
                                     metricMap.Add(assignedVariation.Campaign.Id.ToString(), assignedVariation.Goal.Id);
                                     var response = ServerSideVerb.TrackGoalArchEnabled(this._settings, this._settings.AccountId, goalIdentifier, userId, revenueValue,
-                                    this._isDevelopmentMode, _settings.SdkKey, metricMap, revenuePropList);
+                                    this._isDevelopmentMode, _settings.SdkKey, metricMap, revenuePropList, eventProperties);
                                 }
                                 else
                                 {
@@ -316,6 +354,7 @@ namespace VWOSdk
             string goalTypeToTrack = options.ContainsKey("goalTypeToTrack") ? options["goalTypeToTrack"] : null;
             Dictionary<string, dynamic> userStorageData = options.ContainsKey("userStorageData") ? options["userStorageData"] : null;
             Dictionary<string, dynamic> metaData = options.ContainsKey("metaData") && options["metaData"] is Dictionary<string, dynamic> ? options["metaData"] : null;
+            Dictionary<string,dynamic> eventProperties = options.ContainsKey("eventProperties") && options["eventProperties"] is Dictionary<string, dynamic> ? options["eventProperties"] : null;
             Dictionary<string, bool> result = new Dictionary<string, bool>();
             Dictionary<string, int> metricMap = new Dictionary<string, int>();
             List<string> revenuePropList = new List<string>();
@@ -360,9 +399,46 @@ namespace VWOSdk
 
                             if (assignedVariation.Goal.IsRevenueType() && string.IsNullOrEmpty(revenueValue))
                             {
-                                sendImpression = false;
-                                result[campaignKey] = false;
-                                LogErrorMessage.TrackApiRevenueNotPassedForRevenueGoal(file, goalIdentifier, campaignKey, userId);
+                                // mca implementation
+                                if(this._settings.IsEventArchEnabled){
+                                /* 
+                                If it's a metric of type - value of an event property and calculation logic is first Value (mca != -1)
+                                */
+                                    if(assignedVariation.Goal.mca != -1) {
+                                        /*
+                                        In this case it is expected that goal will have revenueProp
+                                        Error should be logged if eventProperties is not Defined ` OR ` eventProperties does not have revenueProp key
+                                        */
+
+                                        if(eventProperties == null || !eventProperties.ContainsKey(assignedVariation.Goal.GetRevenueProp())) {
+                                            sendImpression = false;
+                                            result[campaignKey] = false;
+                                            LogErrorMessage.TrackApiRevenueNotPassedForRevenueGoal(file, goalIdentifier, campaignKey, userId);
+                                        }
+                                    }
+                                    else {
+                                    /*
+                                    here mca == -1 so there could only be 2 scenarios, 
+                                    1. If revenueProp is defined then eventProperties should have revenueProp key
+                                    2. if revenueProp is not defined then it's a metric of type - Number of times an event has been triggered.
+                                    */
+                                    if (assignedVariation.Goal.GetRevenueProp() != null) {
+                                        if (!string.IsNullOrEmpty(assignedVariation.Goal.GetRevenueProp())) {
+                                            // Error should be logged if eventProperties is not defined OR eventProperties does not have revenueProp key.
+                                            if (eventProperties == null || !eventProperties.ContainsKey(assignedVariation.Goal.GetRevenueProp()))
+                                            {
+                                                sendImpression = false;
+                                                result[campaignKey] = false;
+                                                LogErrorMessage.TrackApiRevenueNotPassedForRevenueGoal(file, goalIdentifier, campaignKey, userId);
+                                            }
+                                        }
+                                     }
+                                    }
+                                } else {
+                                    sendImpression = false;
+                                    result[campaignKey] = false;
+                                    LogErrorMessage.TrackApiRevenueNotPassedForRevenueGoal(file, goalIdentifier, campaignKey, userId);
+                                }
                             }
                             else if (assignedVariation.Goal.IsRevenueType() && !string.IsNullOrEmpty(assignedVariation.Goal.GetRevenueProp()))
                             {
@@ -379,6 +455,9 @@ namespace VWOSdk
                                 if (this._BatchEventData != null)
                                 {
                                     LogDebugMessage.EventBatchingActivated(typeof(IVWOClient).FullName, nameof(Track));
+                                    if(_settings.IsEventArchEnabled && assignedVariation.Goal.GetRevenueProp()!= null && eventProperties!= null && eventProperties.ContainsKey(assignedVariation.Goal.GetRevenueProp())){
+                                        revenueValue = eventProperties[assignedVariation.Goal.GetRevenueProp()];
+                                    }
                                     this._BatchEventQueue.addInQueue(HttpRequestBuilder.EventForTrackingGoal(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id,
                                     userId, assignedVariation.Goal.Id, revenueValue, this._isDevelopmentMode));
                                 }
@@ -414,7 +493,7 @@ namespace VWOSdk
             if (_settings.IsEventArchEnabled && metricMap.Count > 0)
             {
                 var response = ServerSideVerb.TrackGoalArchEnabled(this._settings, this._settings.AccountId,
-                goalIdentifier, userId, revenueValue, this._isDevelopmentMode, _settings.SdkKey, metricMap, revenuePropList);
+                goalIdentifier, userId, revenueValue, this._isDevelopmentMode, _settings.SdkKey, metricMap, revenuePropList, eventProperties);
                 LogDebugMessage.ActivatedEventArchEnabled(typeof(IVWOClient).FullName, nameof(Track));
             }
             return result;
