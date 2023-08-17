@@ -169,5 +169,13 @@ namespace VWOSdk
                 "REVENUE_TRACKING", "CUSTOM_GOAL", "ALL"
             };
         }
+
+        public static class Visitor
+        {
+            internal const string USER_AGENT = "visitor_ua";
+            internal const string CUSTOM_HEADER_USER_AGENT = "X-Device-User-Agent";
+            internal const string IP = "visitor_ip";
+            internal const string CUSTOM_HEADER_IP = "VWO-X-Forwarded-For";
+        }
     }
 }

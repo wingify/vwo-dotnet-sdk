@@ -24,7 +24,7 @@ namespace VWOSdk
     {
         T Execute<T>(ApiRequest apiRequest);
         T GetJsonContent<T>();
-        Task<byte[]> ExecuteAsync(ApiRequest apiRequest);
+        Task<byte[]> ExecuteAsync(ApiRequest apiRequest, string visitorUserAgent, string userIpAddress);
 
     }
 }

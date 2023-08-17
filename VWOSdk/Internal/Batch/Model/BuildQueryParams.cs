@@ -35,6 +35,8 @@ namespace VWOSdk
         public int? c = null;
         public int eT;
         public int? g = null;
+        public string visitor_ua = null;
+        public string visitor_ip = null;
         public string ap;
         public string ed;
         public BuildQueryParams(Builder builder)
@@ -49,6 +51,8 @@ namespace VWOSdk
             this.g = builder.g;
             this.ap = builder.ap;
             this.ed = builder.ed;
+            this.visitor_ua = builder.visitor_ua;
+            this.visitor_ip = builder.visitor_ip;
 
         }
         public class Builder
@@ -63,6 +67,8 @@ namespace VWOSdk
             public int? g = null;
             public string ap;
             public string ed;
+            public string visitor_ua = null;
+            public string visitor_ip = null;
             public Builder withMinifiedCampaignId(int campaignId)
             {
                 this.e = campaignId;
@@ -111,6 +117,16 @@ namespace VWOSdk
             public Builder withMinifiedTags(String tagKey, String tagValue)
             {
                 this.t = "{\"u\":{\"" + tagKey + "\":\"" + tagValue + "\"}}";
+                return this;
+            }
+            public Builder withVisitorUserAgent(string visitorUserAgent)
+            {
+                this.visitor_ua = visitorUserAgent;
+                return this;
+            }
+            public Builder withVisitorIP(string userIpAddress)
+            {
+                this.visitor_ip = userIpAddress;
                 return this;
             }
             public static Builder getInstance()

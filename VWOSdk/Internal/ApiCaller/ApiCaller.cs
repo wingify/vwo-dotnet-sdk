@@ -25,6 +25,9 @@ namespace VWOSdk
 {
     internal class ApiCaller : IApiCaller
     {
+        private static readonly string CUSTOM_HEADER_USER_AGENT = Constants.Visitor.CUSTOM_HEADER_USER_AGENT;
+        private static readonly string CUSTOM_HEADER_IP = Constants.Visitor.CUSTOM_HEADER_IP;
+
         private static readonly string file = typeof(ApiCaller).FullName;
 
         private static HttpClient _httpClient = new HttpClient();
@@ -39,11 +42,14 @@ namespace VWOSdk
             return default(T);
         }
 
-        public async Task<byte[]> ExecuteAsync(ApiRequest apiRequest)
+        public async Task<byte[]> ExecuteAsync(ApiRequest apiRequest, string visitorUserAgent = null, string userIpAddress = null)
         {
             if (apiRequest == null)
                 return null;
             HttpRequestMessage httpRequestMessage = new HttpRequestMessage(apiRequest.Method.GetHttpMethod(), apiRequest.Uri.ToString());
+            httpRequestMessage.Headers.Add(CUSTOM_HEADER_USER_AGENT, visitorUserAgent);
+            httpRequestMessage.Headers.Add(CUSTOM_HEADER_IP, userIpAddress);
+            
             HttpResponseMessage httpResponseMessage = null;
             try
             {
@@ -67,10 +73,10 @@ namespace VWOSdk
             return null;
         }
 
-        private async Task<T> ExecuteAsync<T>(ApiRequest apiRequest)
+        private async Task<T> ExecuteAsync<T>(ApiRequest apiRequest, string visitorUserAgent = null, string userIpAddress = null)
         {
             try {
-                var responseContent = await ExecuteAsync(apiRequest);
+                var responseContent = await ExecuteAsync(apiRequest, visitorUserAgent, userIpAddress);
                 return Deserialize<T>(responseContent);
             }
             catch(Exception exception)

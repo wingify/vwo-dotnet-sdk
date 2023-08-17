@@ -92,7 +92,7 @@ namespace VWOSdk.Tests
             return null;
         }
 
-        public Task<byte[]> ExecuteAsync(ApiRequest apiRequest)
+        public Task<byte[]> ExecuteAsync(ApiRequest apiRequest, string visitorUserAgent = null, string userIpAddress = null)
         {
             return Task.FromResult(new byte[16]);
         }

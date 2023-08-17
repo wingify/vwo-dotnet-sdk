@@ -33,7 +33,7 @@ namespace VWOSdk.Tests
             Assert.Null(response);
 
             mockApiCaller.Verify(mock => mock.Execute<Settings>(It.IsAny<ApiRequest>()), Times.Never);
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>(),It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -44,7 +44,7 @@ namespace VWOSdk.Tests
             apiRequest.ExecuteAsync();
 
             mockApiCaller.Verify(mock => mock.Execute<Settings>(It.IsAny<ApiRequest>()), Times.Never);
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -57,7 +57,7 @@ namespace VWOSdk.Tests
 
             mockApiCaller.Verify(mock => mock.Execute<Settings>(It.IsAny<ApiRequest>()), Times.Once);
             mockApiCaller.Verify(mock => mock.Execute<Settings>(It.Is<ApiRequest>(val => ReferenceEquals(apiRequest, val))), Times.Once);
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -70,7 +70,7 @@ namespace VWOSdk.Tests
             Thread.Sleep(10);
 
             mockApiCaller.Verify(mock => mock.Execute<Settings>(It.IsAny<ApiRequest>()), Times.Never);
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.Is<ApiRequest>(val => ReferenceEquals(apiRequest, val))), Times.Once);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.Is<ApiRequest>(val => ReferenceEquals(apiRequest, val)),null,null), Times.Once);
         }
     }
 }

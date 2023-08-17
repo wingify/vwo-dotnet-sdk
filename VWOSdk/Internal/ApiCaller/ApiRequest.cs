@@ -31,16 +31,21 @@ namespace VWOSdk
     {
         private readonly bool _isDevelopmentMode;
 
-        public ApiRequest(Method method, bool isDevelopmentMode = false)
+        public ApiRequest(Method method, bool isDevelopmentMode = false, string visitorUserAgent = null, string userIpAddress = null)
         {
             this.Method = method;
             this._isDevelopmentMode = isDevelopmentMode;
+            this._visitorUserAgent = visitorUserAgent;
+            this._visitorIP = userIpAddress;
         }
 
         public Method Method { get; private set; }
         public Uri Uri { get; set; }
         public Uri logUri { get; set; }
         public IApiCaller ApiCaller { get; private set; }
+        private readonly string _visitorUserAgent;
+        private readonly string _visitorIP;
+        
         public ApiRequest WithCaller(IApiCaller apiCaller)
         {
             this.ApiCaller = apiCaller;
@@ -50,7 +55,7 @@ namespace VWOSdk
         {
             if (this._isDevelopmentMode)
                 return;
-            this.ApiCaller.ExecuteAsync(this);
+            this.ApiCaller.ExecuteAsync(this, _visitorUserAgent, _visitorIP);
         }
 
         public T Execute<T>()

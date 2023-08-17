@@ -55,7 +55,7 @@ namespace VWOSdk.Tests
             mockValidator.Verify(mock => mock.GetSettings(It.Is<long>(val => MockAccountId == val), It.Is<string>(val => MockSdkKey.Equals(val))), Times.Once);
 
             mockApiCaller.Verify(mock => mock.Execute<Settings>(It.IsAny<ApiRequest>()), Times.Never);
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -72,7 +72,7 @@ namespace VWOSdk.Tests
             mockValidator.Verify(mock => mock.GetSettings(It.IsAny<long>(), It.IsAny<string>()), Times.Once);
             mockValidator.Verify(mock => mock.GetSettings(It.Is<long>(val => MockAccountId == val), It.Is<string>(val => MockSdkKey.Equals(val))), Times.Once);
 
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -90,7 +90,7 @@ namespace VWOSdk.Tests
             mockValidator.Verify(mock => mock.GetSettings(It.IsAny<long>(), It.IsAny<string>()), Times.Once);
             mockValidator.Verify(mock => mock.GetSettings(It.Is<long>(val => MockAccountId == val), It.Is<string>(val => MockSdkKey.Equals(val))), Times.Once);
 
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
         [Fact]
         public void Instantiate_Should_Return_VWOClient_For_Valid_Settings_File_And_Call_Settings_Processor()

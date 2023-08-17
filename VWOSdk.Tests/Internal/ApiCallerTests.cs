@@ -70,7 +70,7 @@ namespace VWOSdk.Tests
                 Uri = new Uri("https://reqres.in/api/users/2"),
             };
             IApiCaller apiCaller = GetApiCaller();
-            var response = AsyncHelper.RunSync(() => apiCaller.ExecuteAsync(apiRequest));
+            var response = AsyncHelper.RunSync(() => apiCaller.ExecuteAsync(apiRequest,null,null));
             Assert.NotNull(response);
         }
 
@@ -78,7 +78,7 @@ namespace VWOSdk.Tests
         public void ExecuteAsync_Should_Return_Null_For_Null_ApiRequest()
         {
             IApiCaller apiCaller = GetApiCaller();
-            var response = AsyncHelper.RunSync(() => apiCaller.ExecuteAsync(null));
+            var response = AsyncHelper.RunSync(() => apiCaller.ExecuteAsync(null, null, null));
             Assert.Null(response);
         }
 
@@ -90,7 +90,7 @@ namespace VWOSdk.Tests
                 Uri = new Uri("http://r.in/api/users/2"),             
             };
             IApiCaller apiCaller = GetApiCaller();
-            var response = AsyncHelper.RunSync(() => apiCaller.ExecuteAsync(apiRequest));
+            var response = AsyncHelper.RunSync(() => apiCaller.ExecuteAsync(apiRequest, null, null));
             Assert.Null(response);
         }
 

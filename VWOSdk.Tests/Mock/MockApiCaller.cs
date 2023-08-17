@@ -47,8 +47,8 @@ namespace VWOSdk.Tests
         internal static void SetupExecuteAsync(Mock<IApiCaller> mockApiCaller, IApiCaller innerApiCaller = null)
         {
             innerApiCaller = innerApiCaller ?? new FileReaderApiCaller();
-            mockApiCaller.Setup(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()))
-                .Returns<ApiRequest>((rq) => innerApiCaller.ExecuteAsync(rq));
+            mockApiCaller.Setup(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>(), It.IsAny<string>(), It.IsAny<string>()))
+                .Returns<ApiRequest, string, string>((rq,visitorUserAgent,userIpAddress) => innerApiCaller.ExecuteAsync(rq, null, null));
         }
     }
 }

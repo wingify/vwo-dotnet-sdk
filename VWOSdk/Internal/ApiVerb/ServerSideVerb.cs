@@ -42,6 +42,10 @@ namespace VWOSdk
         private static readonly string sdkName = Constants.SDK_NAME;
         private static readonly string TrackEventName = Constants.TRACK_EVENT_NAME;
         private static readonly string PushEventName = Constants.PUSH_EVENT_NAME;
+        private static readonly string UserAgent = Constants.Visitor.USER_AGENT;
+        private static readonly string IP = Constants.Visitor.IP;
+        private static readonly string CUSTOM_HEADER_USER_AGENT = Constants.Visitor.CUSTOM_HEADER_USER_AGENT;
+        private static readonly string CUSTOM_HEADER_IP = Constants.Visitor.CUSTOM_HEADER_IP;
         
         internal static ApiRequest SettingsRequest(long accountId, string sdkKey)
         {
@@ -61,10 +65,11 @@ namespace VWOSdk
             settingsRequest.WithCaller(AppContext.ApiCaller);
             return settingsRequest;
         }
-        internal static ApiRequest TrackUser(AccountSettings settings, long accountId, int campaignId, int variationId, string userId, bool isDevelopmentMode, string sdkKey, Dictionary<string, int> usageStats)
+        internal static ApiRequest TrackUser(AccountSettings settings, long accountId, int campaignId, int variationId, string userId, bool isDevelopmentMode, string sdkKey, Dictionary<string, int> usageStats, string visitorUserAgent = null, string userIpAddress = null)
         {
-            string queryParams = GetQueryParamertersForTrackUser(accountId, campaignId, variationId, userId, usageStats);
-            var trackUserRequest = new ApiRequest(Method.GET, isDevelopmentMode)
+            //adding new params required for adding userAgent and userIpAddress to the query
+            string queryParams = GetQueryParamertersForTrackUser(accountId, campaignId, variationId, userId, usageStats, visitorUserAgent, userIpAddress);
+            var trackUserRequest = new ApiRequest(Method.GET, isDevelopmentMode, visitorUserAgent, userIpAddress)
             {
                 Uri = new Uri($"{Host}/{getDataLocation(settings, Verb)}/{TrackUserVerb}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
                 logUri = new Uri($"{Host}/{getDataLocation(settings, Verb)}/{TrackUserVerb}?{queryParams}"),
@@ -115,10 +120,10 @@ namespace VWOSdk
         }
         // End
         internal static ApiRequest TrackGoal(AccountSettings settings, int accountId, int campaignId, int variationId, string userId, int goalId,
-            string revenueValue, bool isDevelopmentMode, string sdkKey)
+            string revenueValue, bool isDevelopmentMode, string sdkKey, string visitorUserAgent = null, string userIpAddress = null)
         {
-            string queryParams = GetQueryParamertersForTrackGoal(accountId, campaignId, variationId, userId, goalId, revenueValue);
-            var trackUserRequest = new ApiRequest(Method.GET, isDevelopmentMode)
+            string queryParams = GetQueryParamertersForTrackGoal(accountId, campaignId, variationId, userId, goalId, revenueValue, visitorUserAgent, userIpAddress);
+            var trackUserRequest = new ApiRequest(Method.GET, isDevelopmentMode, visitorUserAgent, userIpAddress)
             {
                 Uri = new Uri($"{Host}/{getDataLocation(settings, Verb)}/{TrackGoalVerb}?{queryParams}&{GetSdkKeyQuery(sdkKey)}"),
                 logUri = new Uri($"{Host}/{getDataLocation(settings, Verb)}/{TrackGoalVerb}?{queryParams}"),
@@ -139,8 +144,8 @@ namespace VWOSdk
             LogDebugMessage.ImpressionForPushTag(file, queryParams);
             return trackPushRequest;
         }
-        private static string GetQueryParamertersForTrackGoal(int accountId, int campaignId, int variationId, string userId,
-            int goalId, string revenueValue)
+        public static string GetQueryParamertersForTrackGoal(int accountId, int campaignId, int variationId, string userId,
+            int goalId, string revenueValue, string visitorUserAgent = null, string userIpAddress = null)
         {
             return $"{GetAccountIdQuery(accountId)}" +
                 $"&{GetExperimentIdQuery(campaignId)}" +
@@ -151,7 +156,9 @@ namespace VWOSdk
                 $"&{GetUuidQuery(userId, accountId)}" +
                 $"&{GetGoalIdQuery(goalId)}" +
                 $"&{GetRevenueQuery(revenueValue)}" +
-                $"&{GetSdkQuery()}";
+                $"&{GetSdkQuery()}" +
+                $"&{GetVisitorUserAgent(visitorUserAgent)}" +
+                $"&{GetVisitorIP(userIpAddress)}" ;;
         }
         private static string GetQueryParamertersForPushTag(AccountSettings settings, string tagKey, string tagValue, string userId)
         {
@@ -181,7 +188,7 @@ namespace VWOSdk
         {
             return $"sdk={sdkName}&sdk-v={sdkVersion}";
         }
-        private static string GetQueryParamertersForTrackUser(long accountId, int campaignId, int variationId, string userId, Dictionary<string, int> usageStats)
+        public static string GetQueryParamertersForTrackUser(long accountId, int campaignId, int variationId, string userId, Dictionary<string, int> usageStats, string visitorUserAgent, string userIpAddress)
         {
             return $"{GetAccountIdQuery(accountId)}" +
                 $"&{GetExperimentIdQuery(campaignId)}" +
@@ -192,7 +199,9 @@ namespace VWOSdk
                 $"&{GetUuidQuery(userId, accountId)}" +
                 $"&{GetEdQuery()}" +
                 $"{GetUsageStatsQuery(usageStats)}" +
-                $"&{GetSdkQuery()}";
+                $"&{GetSdkQuery()}" +
+                $"&{GetVisitorUserAgent(visitorUserAgent)}" +
+                $"&{GetVisitorIP(userIpAddress)}" ;
         }
         private static string GetEdQuery()
         {
@@ -259,7 +268,15 @@ namespace VWOSdk
             Random random = new Random();
             return random.NextDouble();
         }
-        internal async static Task<bool> TrackUserArchEnabled(AccountSettings settings, long accountId, int campaignId, int variationId, string userId, bool isDevelopmentMode, string sdkKey, Dictionary<string, int> usageStats)
+        private static string GetVisitorUserAgent(string visitorUserAgent = null)
+        {
+            return $"{UserAgent}={visitorUserAgent}";
+        }
+        private static string GetVisitorIP(string userIpAddress = null)
+        {
+            return $"{IP}={userIpAddress}";
+        }
+        internal async static Task<bool> TrackUserArchEnabled(AccountSettings settings, long accountId, int campaignId, int variationId, string userId, bool isDevelopmentMode, string sdkKey, Dictionary<string, int> usageStats, string visitorUserAgent = null, string userIpAddress = null)
         {
             string queryParams = GetQueryParamertersForTrackUserArchEnabled(accountId, usageStats);
             var trackUserRequest = new ApiRequest(Method.POST, isDevelopmentMode)
@@ -269,10 +286,17 @@ namespace VWOSdk
             };
             trackUserRequest.WithCaller(AppContext.ApiCaller);
             LogDebugMessage.ImpressionForTrackUserArchEnabled(file, accountId.ToString(), userId, campaignId.ToString());
-            string PayLoad = GetTrackUserArchEnabledPayload(userId, accountId, sdkKey, sdkVersion, campaignId, variationId);
+            string PayLoad = GetTrackUserArchEnabledPayload(userId, accountId, sdkKey, sdkVersion, campaignId, variationId, visitorUserAgent, userIpAddress);
             HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Add("User-Agent", sdkName);
+            // adding respective headers to the http call
+            if(visitorUserAgent != null){
+                httpClient.DefaultRequestHeaders.Add(CUSTOM_HEADER_USER_AGENT, visitorUserAgent);
+            }
+            if(userIpAddress != null){
+                httpClient.DefaultRequestHeaders.Add(CUSTOM_HEADER_IP, userIpAddress);
+            }
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             var data = new StringContent(PayLoad, Encoding.UTF8, "application/json");
             try
@@ -293,7 +317,7 @@ namespace VWOSdk
             return false;
         }
         internal async static Task<bool> TrackGoalArchEnabled(AccountSettings settings, int accountId, string goalIdentifier, string userId,
-            string revenueValue, bool isDevelopmentMode, string sdkKey, Dictionary<string, int> metricMap, List<string> revenueListProp, Dictionary<string,dynamic> eventProperties)
+            string revenueValue, bool isDevelopmentMode, string sdkKey, Dictionary<string, int> metricMap, List<string> revenueListProp, Dictionary<string,dynamic> eventProperties, string visitorUserAgent = null, string userIpAddress = null)
         {
             string queryParams = GetQueryParamertersForTrackGoalArchEnabled(accountId, goalIdentifier);
             var trackUserRequest = new ApiRequest(Method.POST, isDevelopmentMode)
@@ -303,10 +327,16 @@ namespace VWOSdk
             };
             trackUserRequest.WithCaller(AppContext.ApiCaller);
             LogDebugMessage.ImpressionForTrackGoalArchEnabled(file, accountId.ToString(), userId, $"{GetCampaigns(metricMap)}", goalIdentifier);
-            string PayLoad = GetGoalArchEnabledPayload(userId, accountId, sdkKey, sdkVersion, metricMap, revenueListProp, revenueValue, goalIdentifier, eventProperties);
+            string PayLoad = GetGoalArchEnabledPayload(userId, accountId, sdkKey, sdkVersion, metricMap, revenueListProp, revenueValue, goalIdentifier, eventProperties, visitorUserAgent, userIpAddress);
             HttpClient httpClient = new HttpClient();
             httpClient.DefaultRequestHeaders.Accept.Clear();
             httpClient.DefaultRequestHeaders.Add("User-Agent", sdkName);
+             if(visitorUserAgent != null){
+                httpClient.DefaultRequestHeaders.Add(CUSTOM_HEADER_USER_AGENT, visitorUserAgent);
+            }
+            if(userIpAddress != null){
+                httpClient.DefaultRequestHeaders.Add(CUSTOM_HEADER_IP, userIpAddress);
+            }
             httpClient.DefaultRequestHeaders.Accept.Add(new MediaTypeWithQualityHeaderValue("application/json"));
             var data = new StringContent(PayLoad, Encoding.UTF8, "application/json");
             try
@@ -368,13 +398,15 @@ namespace VWOSdk
             $"&{GetUnixMsTimeStampArchEnabled()}" +
             $"{GetUsageStatsQuery(usageStats)}";
         }
-        public static string GetTrackUserArchEnabledPayload(string userId, long accountId, string sdkKey, string sdkVersion, int campaignId, int variationId)
+        public static string GetTrackUserArchEnabledPayload(string userId, long accountId, string sdkKey, string sdkVersion, int campaignId, int variationId, string visitorUserAgent = null, string userIpAddress = null)
         {
             string payLoad = "{" +
                         "\"d\": {" +
                         "\"msgId\":\"" + UuidV5Helper.Compute(accountId, userId) + "-" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + "\"," +
                         "\"visId\":\"" + UuidV5Helper.Compute(accountId, userId) + "\"," +
                         "\"sessionId\":" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + "," +
+                        "\"" + UserAgent + "\": \"" + visitorUserAgent + "\"," +
+                        "\"" + IP + "\": \"" + userIpAddress + "\"," +
                         "\"event\": {" +
                                  "\"props\": {" +
                                             "\"sdkName\": \"" + sdkName + "\"," +
@@ -402,7 +434,7 @@ namespace VWOSdk
             $"&{GetUnixMsTimeStampArchEnabled()}";
         }
         public static string GetGoalArchEnabledPayload(string userId, long accountId, string sdkKey, string sdkVersion,
-            Dictionary<string, int> metricMap, List<string> revenueListProp, string revenue, string goalIdentifier, Dictionary<string, dynamic> eventProperties = null)
+            Dictionary<string, int> metricMap, List<string> revenueListProp, string revenue, string goalIdentifier, Dictionary<string, dynamic> eventProperties = null, string visitorUserAgent = null, string userIpAddress = null)
         {
             string additionalParams = GetEventProp(eventProperties);
             string payLoad = "{" +
@@ -410,6 +442,8 @@ namespace VWOSdk
                         "\"msgId\":\"" + UuidV5Helper.Compute(accountId, userId) + "-" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + "\"," +
                         "\"visId\":\"" + UuidV5Helper.Compute(accountId, userId) + "\"," +
                         "\"sessionId\":" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + "," +
+                        "\"" + UserAgent + "\": \"" + visitorUserAgent + "\"," +
+                        "\"" + IP + "\": \"" + userIpAddress + "\"," +
                         "\"event\": {" +
                                  "\"props\": {" +
                                             "\"sdkName\":\"" + sdkName + "\"," +

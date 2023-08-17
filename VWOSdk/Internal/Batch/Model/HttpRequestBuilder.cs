@@ -29,7 +29,7 @@ namespace VWOSdk
         /// <summary>
         /// Params For Tracking User.
         /// </summary>
-        public static IDictionary<string, dynamic> EventForTrackingUser(long accountId, int campaignId, int variationId, string userId, bool isDevelopmentMode)
+        public static IDictionary<string, dynamic> EventForTrackingUser(long accountId, int campaignId, int variationId, string userId, bool isDevelopmentMode, string visitorUserAgent = null, string userIpAddress = null)
         {
             BuildQueryParams requestParams =
             BuildQueryParams.Builder.getInstance()
@@ -38,6 +38,8 @@ namespace VWOSdk
                     .withMinifiedEventType((int)EVENT_TYPES.TRACK_USER)
                     .withSid(DateTimeOffset.UtcNow.ToUnixTimeSeconds())
                     .withUuid(accountId, userId)
+                    .withVisitorUserAgent(visitorUserAgent)
+                    .withVisitorIP(userIpAddress)
                     .build();
             IDictionary<string, dynamic> map = requestParams.removeNullValues(requestParams);
             return map;
@@ -46,7 +48,7 @@ namespace VWOSdk
         /// Params For Tracking Goal.
         /// </summary>
         public static IDictionary<string, dynamic> EventForTrackingGoal(long accountId, int campaignId, int variationId, string userId,
-            int goalId, string revenueValue, bool isDevelopmentMode)
+            int goalId, string revenueValue, bool isDevelopmentMode, string visitorUserAgent = null, string userIpAddress = null)
         {
             BuildQueryParams requestParams = BuildQueryParams.Builder.getInstance()
                 .withMinifiedCampaignId(campaignId)
@@ -56,6 +58,8 @@ namespace VWOSdk
                 .withRevenue(revenueValue)
                 .withSid(DateTimeOffset.UtcNow.ToUnixTimeSeconds())
                 .withUuid(accountId, userId)
+                .withVisitorUserAgent(visitorUserAgent)
+                .withVisitorIP(userIpAddress)
                 .build();
             IDictionary<string, dynamic> map = requestParams.removeNullValues(requestParams);
             return map;

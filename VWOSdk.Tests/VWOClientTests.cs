@@ -16,6 +16,7 @@
  */
 #pragma warning restore 1587
 
+using System.Reflection;
 using Moq;
 using System.Collections.Generic;
 using System.Text.Json;
@@ -34,6 +35,7 @@ namespace VWOSdk.Tests
         private readonly string MockTagKey = "MockTagKey";
         private readonly string MockTagValue = "MockTagValue";
         private readonly string MockVariableKey = "MockVariableKey";
+        private static readonly string sdkVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
 
 
         private readonly Dictionary<string, dynamic> MockTrackCustomVariables = new Dictionary<string, dynamic>() {
@@ -447,7 +449,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
 
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -476,7 +478,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
 
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -495,7 +497,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
 
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
 
@@ -514,7 +516,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
 
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -557,7 +559,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
 
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -589,7 +591,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
 
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -611,7 +613,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
 
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -633,7 +635,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
 
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -2233,7 +2235,7 @@ namespace VWOSdk.Tests
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.IsAny<string>()), Times.Once);
             mockCampaignResolver.Verify(mock => mock.GetCampaign(It.IsAny<AccountSettings>(), It.Is<string>(val => MockCampaignKey.Equals(val))), Times.Once);
 
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Never);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Never);
         }
 
         [Fact]
@@ -2253,7 +2255,7 @@ namespace VWOSdk.Tests
             var result = vwoClient.IsFeatureEnabled(MockCampaignKey, MockUserId);
             Assert.False(result);
 
-            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>()), Times.Once);
+            mockApiCaller.Verify(mock => mock.ExecuteAsync(It.IsAny<ApiRequest>(), It.IsAny<string>(), It.IsAny<string>()), Times.Once);
         }
 
         [Fact]
@@ -2604,6 +2606,88 @@ namespace VWOSdk.Tests
             };
             var trackResponse = vwoClient.Track("track", "abby", "track3",Options);
             Assert.False(trackResponse);
+        }
+        
+        [Fact]
+        public void payloadForTrackUserArchEnabledWithUAAndIPTest()
+        {
+            var vwoClient = VWO.Launch(SettingsFileEventProperties, isDevelopmentMode: true);
+            string userAgent = "user_agent";
+            string userIP = "user_ip";
+            string payLoad = ServerSideVerb.GetTrackUserArchEnabledPayload("Ashley",SettingsFileEventProperties.AccountId , SettingsFileEventProperties.SdkKey, sdkVersion, 230, 1, userAgent,userIP );
+            Assert.Contains("\"visitor_ua\": \"user_agent\"", payLoad);
+            Assert.Contains("\"visitor_ip\": \"user_ip\"", payLoad);
+        }
+
+        [Fact]
+        public void payloadForTrackGoalArchEnabledWithUAAndIPTest()
+        {
+            var vwoClient = VWO.Launch(SettingsFileEventProperties, isDevelopmentMode: true);
+            string userAgent = "user_agent";
+            string userIP = "user_ip";
+
+            Dictionary<string, int> metricMap = new Dictionary<string, int>();
+            metricMap.Add("20", 20);
+            metricMap.Add("10", 30);
+            metricMap.Add("50", 40);
+
+            string payLoad = ServerSideVerb.GetGoalArchEnabledPayload("Ashley",SettingsFileEventProperties.AccountId , SettingsFileEventProperties.SdkKey, sdkVersion,metricMap, new List<string>() { "revenue" }, "100", "goalIdentifier", null,userAgent,userIP );
+            Assert.Contains("\"visitor_ua\": \"user_agent\"", payLoad);
+            Assert.Contains("\"visitor_ip\": \"user_ip\"", payLoad);
+        }
+
+        [Fact]
+        public void payloadForTrackUserWithUAAndIPTest()
+        {
+            var vwoClient = VWO.Launch(SettingsFileEventProperties, isDevelopmentMode: true);
+            string userAgent = "user_agent";
+            string userIP = "user_ip";
+            Dictionary<string, int> usageStats = new Dictionary<string, int>();
+            usageStats.Add("someRandomString", 20);
+            string payLoad = ServerSideVerb.GetQueryParamertersForTrackUser(SettingsFileEventProperties.AccountId, 230, 1, "Ashley", usageStats, userAgent, userIP);
+            Assert.Contains("visitor_ua=user_agent", payLoad);
+            Assert.Contains("visitor_ip=user_ip", payLoad);
+        }
+        
+        [Fact]
+        public void payloadForTrackGoalWithUAAndIPTest()
+        {
+            var vwoClient = VWO.Launch(SettingsFileEventProperties, isDevelopmentMode: true);
+            string userAgent = "user_agent";
+            string userIP = "user_ip";
+            Dictionary<string, int> usageStats = new Dictionary<string, int>();
+            usageStats.Add("someRandomString", 20);
+            string payLoad = ServerSideVerb.GetQueryParamertersForTrackGoal(SettingsFileEventProperties.AccountId, 230, 1, "Ashley", 1, "100", userAgent, userIP);
+            Assert.Contains("visitor_ua=user_agent", payLoad);
+            Assert.Contains("visitor_ip=user_ip", payLoad);
+        }
+
+        [Fact]
+        public void payloadForBatchingTrackUserWithUAAndIPTest()
+        {
+            BatchEventData _batchData = new BatchEventData();
+            _batchData.EventsPerRequest = 10;
+            var vwoClient = VWO.Launch(SettingsFileEventProperties, batchData: _batchData, isDevelopmentMode: true);
+            string userAgent = "user_agent";
+            string userIP = "user_ip";
+            var response = HttpRequestBuilder.EventForTrackingUser(SettingsFileEventProperties.AccountId, 230, 1 , "Ashley", true , userAgent, userIP); 
+            Assert.Equal(userAgent, response["visitor_ua"]);
+            Assert.Equal(userIP, response["visitor_ip"]);
+            
+        }
+
+        [Fact]
+        public void payloadForBatchingTrackGoalWithUAAndIPTest()
+        {
+            BatchEventData _batchData = new BatchEventData();
+            _batchData.EventsPerRequest = 10;
+            var vwoClient = VWO.Launch(SettingsFileEventProperties, batchData: _batchData, isDevelopmentMode: true);
+            string userAgent = "user_agent";
+            string userIP = "user_ip";
+            var response = HttpRequestBuilder.EventForTrackingGoal(SettingsFileEventProperties.AccountId, 230, 1 , "Ashley", 1, "100", true , userAgent, userIP); 
+            Assert.Equal(userAgent, response["visitor_ua"]);
+            Assert.Equal(userIP, response["visitor_ip"]);
+            
         }
 
         #endregion

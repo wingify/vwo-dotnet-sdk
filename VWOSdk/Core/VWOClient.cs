@@ -83,6 +83,8 @@ namespace VWOSdk
             Dictionary<string, dynamic> userStorageData = options.ContainsKey("userStorageData") ? options["userStorageData"] : null;
             Dictionary<string, dynamic> variationTargetingVariables = options.ContainsKey("variationTargetingVariables") ? options["variationTargetingVariables"] : null;
             Dictionary<string, dynamic> metaData = options.ContainsKey("metaData") && options["metaData"] is Dictionary<string, dynamic> ? options["metaData"] : null;
+            string visitorUserAgent = options.ContainsKey("userAgent") ? options["userAgent"] : null;
+            string userIpAddress = options.ContainsKey("userIpAddress") ? options["userIpAddress"] : null;
             if (this._validator.Activate(campaignKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignKey);
@@ -111,7 +113,7 @@ namespace VWOSdk
                     if (this._BatchEventData != null)
                     {
                         LogDebugMessage.EventBatchingActivated(typeof(IVWOClient).FullName, nameof(Activate));
-                        this._BatchEventQueue.addInQueue(HttpRequestBuilder.EventForTrackingUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode));
+                        this._BatchEventQueue.addInQueue(HttpRequestBuilder.EventForTrackingUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode, visitorUserAgent, userIpAddress));
                     }
                     else
                     {
@@ -121,12 +123,12 @@ namespace VWOSdk
                         {
                             LogDebugMessage.ActivatedEventArchEnabled(typeof(IVWOClient).FullName, nameof(Activate));
                             var response = ServerSideVerb.TrackUserArchEnabled(this._settings, this._settings.AccountId, assignedVariation.Campaign.Id,
-                           assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey, this._usageStats);
+                           assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey, this._usageStats, visitorUserAgent, userIpAddress);
                         }
                         else
                         {
                             var trackUserRequest = ServerSideVerb.TrackUser(this._settings, this._settings.AccountId,
-                            assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey, this._usageStats);
+                            assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey, this._usageStats, visitorUserAgent, userIpAddress);
                             trackUserRequest.ExecuteAsync();
                         }
 
@@ -212,6 +214,8 @@ namespace VWOSdk
             Dictionary<string,dynamic> eventProperties = options.ContainsKey("eventProperties") && options["eventProperties"] is Dictionary<string, dynamic> ? options["eventProperties"] : null;
             Dictionary<string, int> metricMap = new Dictionary<string, int>();
             List<string> revenuePropList = new List<string>();
+            string visitorUserAgent = options.ContainsKey("userAgent") ? options["userAgent"] : null;
+            string userIpAddress = options.ContainsKey("userIpAddress") ? options["userIpAddress"] : null;
             if (this._validator.Track(campaignKey, userId, goalIdentifier, revenueValue, options))
             {
                 goalTypeToTrack = !string.IsNullOrEmpty(goalTypeToTrack) ? goalTypeToTrack : this._goalTypeToTrack != null ? this._goalTypeToTrack : Constants.GoalTypes.ALL;
@@ -301,7 +305,7 @@ namespace VWOSdk
                                     revenueValue = eventProperties[assignedVariation.Goal.GetRevenueProp()].ToString();
                                 }
                                 this._BatchEventQueue.addInQueue(HttpRequestBuilder.EventForTrackingGoal(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id,
-                                userId, assignedVariation.Goal.Id, revenueValue, this._isDevelopmentMode));
+                                userId, assignedVariation.Goal.Id, revenueValue, this._isDevelopmentMode, visitorUserAgent, userIpAddress));
                             }
                             else
                             {
@@ -311,12 +315,12 @@ namespace VWOSdk
                                     LogDebugMessage.ActivatedEventArchEnabled(typeof(IVWOClient).FullName, nameof(Track));
                                     metricMap.Add(assignedVariation.Campaign.Id.ToString(), assignedVariation.Goal.Id);
                                     var response = ServerSideVerb.TrackGoalArchEnabled(this._settings, this._settings.AccountId, goalIdentifier, userId, revenueValue,
-                                    this._isDevelopmentMode, _settings.SdkKey, metricMap, revenuePropList, eventProperties);
+                                    this._isDevelopmentMode, _settings.SdkKey, metricMap, revenuePropList, eventProperties, visitorUserAgent, userIpAddress);
                                 }
                                 else
                                 {
                                     var trackGoalRequest = ServerSideVerb.TrackGoal(this._settings, this._settings.AccountId, assignedVariation.Campaign.Id,
-                                    assignedVariation.Variation.Id, userId, assignedVariation.Goal.Id, revenueValue, this._isDevelopmentMode, _settings.SdkKey);
+                                    assignedVariation.Variation.Id, userId, assignedVariation.Goal.Id, revenueValue, this._isDevelopmentMode, _settings.SdkKey, visitorUserAgent, userIpAddress);
                                     trackGoalRequest.ExecuteAsync();
                                 }
 
@@ -358,6 +362,8 @@ namespace VWOSdk
             Dictionary<string, bool> result = new Dictionary<string, bool>();
             Dictionary<string, int> metricMap = new Dictionary<string, int>();
             List<string> revenuePropList = new List<string>();
+            string visitorUserAgent = options.ContainsKey("userAgent") ? options["userAgent"] : null;
+            string userIpAddress = options.ContainsKey("userIpAddress") ? options["userIpAddress"] : null;
             foreach (string campaignKey in campaignKeys)
             {
                 if (this._validator.Track(campaignKey, userId, goalIdentifier, revenueValue, options))
@@ -459,7 +465,7 @@ namespace VWOSdk
                                         revenueValue = eventProperties[assignedVariation.Goal.GetRevenueProp()];
                                     }
                                     this._BatchEventQueue.addInQueue(HttpRequestBuilder.EventForTrackingGoal(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id,
-                                    userId, assignedVariation.Goal.Id, revenueValue, this._isDevelopmentMode));
+                                    userId, assignedVariation.Goal.Id, revenueValue, this._isDevelopmentMode, visitorUserAgent, userIpAddress));
                                 }
                                 else
                                 {
@@ -475,7 +481,7 @@ namespace VWOSdk
                                     else if (!this._isDevelopmentMode)
                                     {
                                         var trackGoalRequest = ServerSideVerb.TrackGoal(this._settings, this._settings.AccountId, assignedVariation.Campaign.Id,
-                                        assignedVariation.Variation.Id, userId, assignedVariation.Goal.Id, revenueValue, this._isDevelopmentMode, _settings.SdkKey);
+                                        assignedVariation.Variation.Id, userId, assignedVariation.Goal.Id, revenueValue, this._isDevelopmentMode, _settings.SdkKey, visitorUserAgent, userIpAddress);
                                         trackGoalRequest.ExecuteAsync();
                                     }
                                 }
@@ -493,7 +499,7 @@ namespace VWOSdk
             if (_settings.IsEventArchEnabled && metricMap.Count > 0)
             {
                 var response = ServerSideVerb.TrackGoalArchEnabled(this._settings, this._settings.AccountId,
-                goalIdentifier, userId, revenueValue, this._isDevelopmentMode, _settings.SdkKey, metricMap, revenuePropList, eventProperties);
+                goalIdentifier, userId, revenueValue, this._isDevelopmentMode, _settings.SdkKey, metricMap, revenuePropList, eventProperties, visitorUserAgent, userIpAddress);
                 LogDebugMessage.ActivatedEventArchEnabled(typeof(IVWOClient).FullName, nameof(Track));
             }
             return result;
@@ -558,6 +564,8 @@ namespace VWOSdk
             Dictionary<string, dynamic> customVariables = options.ContainsKey("customVariables") ? options["customVariables"] : null;
             Dictionary<string, dynamic> variationTargetingVariables = options.ContainsKey("variationTargetingVariables") ? options["variationTargetingVariables"] : null;
             Dictionary<string, dynamic> metaData = options.ContainsKey("metaData") && options["metaData"] is Dictionary<string, dynamic> ? options["metaData"] : null;
+            string visitorUserAgent = options.ContainsKey("userAgent") ? options["userAgent"] : null;
+            string userIpAddress = options.ContainsKey("userIpAddress") ? options["userIpAddress"] : null;
             if (this._validator.IsFeatureEnabled(campaignKey, userId, options))
             {
                 var campaign = this._campaignAllocator.GetCampaign(this._settings, campaignKey);
@@ -588,7 +596,7 @@ namespace VWOSdk
                         if (this._BatchEventData != null)
                         {
                             LogDebugMessage.EventBatchingActivated(typeof(IVWOClient).FullName, nameof(IsFeatureEnabled));
-                            this._BatchEventQueue.addInQueue(HttpRequestBuilder.EventForTrackingUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode));
+                            this._BatchEventQueue.addInQueue(HttpRequestBuilder.EventForTrackingUser(this._settings.AccountId, assignedVariation.Campaign.Id, assignedVariation.Variation.Id, userId, this._isDevelopmentMode, visitorUserAgent, userIpAddress));
                         }
                         else
                         {
@@ -597,12 +605,12 @@ namespace VWOSdk
                             {
                                 LogDebugMessage.ActivatedEventArchEnabled(typeof(IVWOClient).FullName, nameof(IsFeatureEnabled));
                                 var response = ServerSideVerb.TrackUserArchEnabled(this._settings, this._settings.AccountId, assignedVariation.Campaign.Id,
-                                assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey, this._usageStats);
+                                assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey, this._usageStats, visitorUserAgent, userIpAddress);
                             }
                             else
                             {
                                 var trackUserRequest = ServerSideVerb.TrackUser(this._settings, this._settings.AccountId, assignedVariation.Campaign.Id,
-                                    assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey, this._usageStats);
+                                    assignedVariation.Variation.Id, userId, this._isDevelopmentMode, _settings.SdkKey, this._usageStats, visitorUserAgent, userIpAddress);
                                 trackUserRequest.ExecuteAsync();
                             }
                         }
