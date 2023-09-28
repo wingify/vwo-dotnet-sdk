@@ -76,12 +76,11 @@ namespace VWOSdk.Tests
             Assert.True(typeof(string).IsInstanceOfType(parsed.SelectToken("d.visitor.props.vwo_fs_environment").Value<string>()));
             Assert.True(typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.name").Value<string>()));
             Assert.True(typeof(long).IsInstanceOfType(parsed.SelectToken("d.event.time").Value<long>()));
-            Assert.True(typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.sdkName").Value<string>()));
-            Assert.True(parsed.SelectToken("d.event").HasValues && typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.sdkVersion").Value<string>()));
+            Assert.True(typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.vwo_sdkName").Value<string>()));
+            Assert.True(parsed.SelectToken("d.event").HasValues && typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.vwo_sdkVersion").Value<string>()));
             Assert.True(typeof(int).IsInstanceOfType(parsed.SelectToken("d.event.props.id").Value<int>()));
             Assert.True(typeof(int).IsInstanceOfType(parsed.SelectToken("d.event.props.variation").Value<int>()));
             Assert.True(typeof(int).IsInstanceOfType(parsed.SelectToken("d.event.props.isFirst").Value<int>()));
-            Assert.True(parsed.SelectToken("d.event.props.$visitor").HasValues && typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.$visitor.props.vwo_fs_environment").Value<string>()));
         }
         [Fact]
         public void trackGoalPayloadTest()
@@ -121,9 +120,8 @@ namespace VWOSdk.Tests
             Assert.True(typeof(string).IsInstanceOfType(parsed.SelectToken("d.visitor.props.vwo_fs_environment").Value<string>()));
             Assert.True(typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.name").Value<string>()));
             Assert.True(typeof(long).IsInstanceOfType(parsed.SelectToken("d.event.time").Value<long>()));
-            Assert.True(typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.sdkName").Value<string>()));
-            Assert.True(parsed.SelectToken("d.event").HasValues && typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.sdkVersion").Value<string>()));
-            Assert.True(parsed.SelectToken("d.event.props.$visitor").HasValues && typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.$visitor.props.vwo_fs_environment").Value<string>()));
+            Assert.True(typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.vwo_sdkName").Value<string>()));
+            Assert.True(parsed.SelectToken("d.event").HasValues && typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.vwo_sdkVersion").Value<string>()));
             Assert.True(parsed.SelectToken("d.event.props.vwoMeta").HasValues && typeof(int).IsInstanceOfType(parsed.SelectToken("d.event.props.vwoMeta.revenue").Value<int>()));
             Assert.True(parsed.SelectToken("d.event.props.vwoMeta.metric.id_20").Value<JArray>().GetType().Name == "JArray");
             Assert.True(typeof(bool).IsInstanceOfType(parsed.SelectToken("d.event.props.isCustomEvent").Value<bool>()));
@@ -162,10 +160,8 @@ namespace VWOSdk.Tests
             Assert.True(typeof(string).IsInstanceOfType(parsed.SelectToken("d.visitor.props.vwo_fs_environment").Value<string>()));
             Assert.True(typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.name").Value<string>()));
             Assert.True(typeof(long).IsInstanceOfType(parsed.SelectToken("d.event.time").Value<long>()));
-            Assert.True(typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.sdkName").Value<string>()));
-            Assert.True(parsed.SelectToken("d.event").HasValues && typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.sdkVersion").Value<string>()));
-            Assert.True(parsed.SelectToken("d.event.props.$visitor").HasValues && typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.$visitor.props.vwo_fs_environment").Value<string>()));
-            Assert.True(parsed.SelectToken("d.event.props.$visitor").HasValues && typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.$visitor.props.tagKey").Value<string>()));
+            Assert.True(typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.vwo_sdkName").Value<string>()));
+            Assert.True(parsed.SelectToken("d.event").HasValues && typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.vwo_sdkVersion").Value<string>()));
             Assert.True(typeof(bool).IsInstanceOfType(parsed.SelectToken("d.event.props.isCustomEvent").Value<bool>()));
         }
         [Fact]
@@ -213,13 +209,8 @@ namespace VWOSdk.Tests
             Assert.Null(parsed.SelectToken("d.visitor.props.tagKey"));
             Assert.True(typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.name").Value<string>()));
             Assert.True(typeof(long).IsInstanceOfType(parsed.SelectToken("d.event.time").Value<long>()));
-            Assert.True(typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.sdkName").Value<string>()));
-            Assert.True(parsed.SelectToken("d.event").HasValues && typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.sdkVersion").Value<string>()));
-            Assert.True(parsed.SelectToken("d.event.props.$visitor").HasValues && typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.$visitor.props.vwo_fs_environment").Value<string>()));
-            Assert.True(parsed.SelectToken("d.event.props.$visitor").HasValues && typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.$visitor.props.string").Value<string>()));
-            Assert.True(parsed.SelectToken("d.event.props.$visitor").HasValues && typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.$visitor.props.int").Value<string>()));
-            Assert.True(parsed.SelectToken("d.event.props.$visitor").HasValues && typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.$visitor.props.double").Value<string>()));
-            Assert.True(parsed.SelectToken("d.event.props.$visitor").HasValues && typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.$visitor.props.boolean").Value<string>()));
+            Assert.True(typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.vwo_sdkName").Value<string>()));
+            Assert.True(parsed.SelectToken("d.event").HasValues && typeof(string).IsInstanceOfType(parsed.SelectToken("d.event.props.vwo_sdkVersion").Value<string>()));
             Assert.True(typeof(bool).IsInstanceOfType(parsed.SelectToken("d.event.props.isCustomEvent").Value<bool>()));
         }
     }

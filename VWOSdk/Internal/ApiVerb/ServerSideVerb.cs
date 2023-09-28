@@ -402,16 +402,15 @@ namespace VWOSdk
         {
             string payLoad = "{" +
                         "\"d\": {" +
-                        "\"msgId\":\"" + UuidV5Helper.Compute(accountId, userId) + "-" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + "\"," +
+                        "\"msgId\":\"" + UuidV5Helper.Compute(accountId, userId) + "-" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + "\"," +
                         "\"visId\":\"" + UuidV5Helper.Compute(accountId, userId) + "\"," +
                         "\"sessionId\":" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + "," +
                         "\"" + UserAgent + "\": \"" + visitorUserAgent + "\"," +
                         "\"" + IP + "\": \"" + userIpAddress + "\"," +
                         "\"event\": {" +
                                  "\"props\": {" +
-                                            "\"sdkName\": \"" + sdkName + "\"," +
-                                            "\"$visitor\": {\"props\": {\"vwo_fs_environment\": \"" + sdkKey + "\" }}," +
-                                            "\"sdkVersion\": \"" + sdkVersion + "\"," +
+                                            "\"vwo_sdkName\": \"" + sdkName + "\"," +
+                                            "\"vwo_sdkVersion\": \"" + sdkVersion + "\"," +
                                             "\"id\": " + campaignId + "," +
                                             "\"variation\": " + variationId + "," +
                                             "\"isFirst\": 1" +
@@ -439,16 +438,15 @@ namespace VWOSdk
             string additionalParams = GetEventProp(eventProperties);
             string payLoad = "{" +
                         "\"d\": {" +
-                        "\"msgId\":\"" + UuidV5Helper.Compute(accountId, userId) + "-" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + "\"," +
+                        "\"msgId\":\"" + UuidV5Helper.Compute(accountId, userId) + "-" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + "\"," +
                         "\"visId\":\"" + UuidV5Helper.Compute(accountId, userId) + "\"," +
                         "\"sessionId\":" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + "," +
                         "\"" + UserAgent + "\": \"" + visitorUserAgent + "\"," +
                         "\"" + IP + "\": \"" + userIpAddress + "\"," +
                         "\"event\": {" +
                                  "\"props\": {" +
-                                            "\"sdkName\":\"" + sdkName + "\"," +
-                                            "\"$visitor\":{\"props\":{\"vwo_fs_environment\": \"" + sdkKey + "\" }}," +
-                                            "\"sdkVersion\":\"" + sdkVersion + "\"," +
+                                            "\"vwo_sdkName\":\"" + sdkName + "\"," +
+                                            "\"vwo_sdkVersion\":\"" + sdkVersion + "\"," +
                                              "\"vwoMeta\":{\"metric\":{" + $"{GetGoal(metricMap)}" + "}" + $"{GetrevenueProp(revenueListProp, revenue)}" + "}" +
                                             "," +
                                   "\"isCustomEvent\":true "+ (additionalParams != "" ? "," : "") + additionalParams + "}," +
@@ -538,14 +536,13 @@ namespace VWOSdk
         {
             string payLoad = "{" +
                         "\"d\": {" +
-                        "\"msgId\":\"" + UuidV5Helper.Compute(accountId, userId) + "-" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + "\"," +
+                        "\"msgId\":\"" + UuidV5Helper.Compute(accountId, userId) + "-" + DateTimeOffset.UtcNow.ToUnixTimeMilliseconds() + "\"," +
                         "\"visId\":\"" + UuidV5Helper.Compute(accountId, userId) + "\"," +
                         "\"sessionId\":" + DateTimeOffset.UtcNow.ToUnixTimeSeconds() + "," +
                         "\"event\": {" +
                                  "\"props\": {" +
-                                            "\"sdkName\": \"" + sdkName + "\"," +
-                                            "\"$visitor\": {\"props\": {\"vwo_fs_environment\": \"" + sdkKey + "\"" + $"{GetTagValueMap(customDimensionMap)}" + "}}," +
-                                            "\"sdkVersion\": \"" + sdkVersion + "\"," +
+                                            "\"vwo_sdkName\": \"" + sdkName + "\"," +
+                                            "\"vwo_sdkVersion\": \"" + sdkVersion + "\"," +
                                              "\"isCustomEvent\":true" +
                                             "}," +
                                  "\"name\": \"vwo_syncVisitorProp\"," +
