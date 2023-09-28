@@ -23,12 +23,15 @@ using System.Text.Json;
 using System.Threading;
 using Xunit;
 using Newtonsoft.Json;
+using System.Collections.Concurrent;
 namespace VWOSdk.Tests
 {
     public class VWOClientTests
     {
         internal static Settings SettingsFileEventProperties = new FileReaderApiCaller("SettingsFileEventProperties").GetJsonContent<Settings>();
+        internal static Settings AB_TRAFFIC_100_HAS_PROPS = new FileReaderApiCaller("AB_TRAFFIC_100_HAS_PROPS").GetJsonContent<Settings>();
         private static IVWOClient vwoInstance { get; set; }
+        private IUserStorageService _userStorageService;
         private readonly string MockCampaignKey = "MockCampaignKey";
         private readonly string MockCampaignKey1 = "MockCampaignKey1";
         private readonly string MockUserId = "MockUserId";
@@ -2692,7 +2695,68 @@ namespace VWOSdk.Tests
 
         #endregion
 
+        [Fact]
+        public void trackGoal_hasProps()
+        {
+            var Campaigns = AB_TRAFFIC_100_HAS_PROPS.getCampaigns();
+            var campaignKey = Campaigns[0].Key;
+            var userStorageService = new UserStorageService();
 
+            Dictionary<string, string> userData = new Dictionary<string, string>
+            {
+                { "userId", "Ashley" },
+                { "campaignKey", campaignKey },
+                { "variationName", "Variation-1" },
+                { "goalIdentifier", "track1" }
+            };
+
+            UserStorageMap userStorageMapData = new UserStorageMap
+            {
+                UserId = userData["userId"],
+                CampaignKey = userData["campaignKey"],
+                VariationName = userData["variationName"],
+                GoalIdentifier = userData["goalIdentifier"],
+            };
+
+            userStorageService.Set(userStorageMapData);
+
+            vwoInstance = VWO.Launch(AB_TRAFFIC_100_HAS_PROPS, true, userStorageService: userStorageService);
+            var result = vwoInstance.Track(campaignKey, "Ashley", "track1");
+            Assert.Equal(result, true);
+
+        }
+        
+        [Fact]
+        public void trackGoal_NoHasProps()
+        {
+            var Campaigns = AB_TRAFFIC_100_HAS_PROPS.getCampaigns();
+            var campaignKey = Campaigns[0].Key;
+            var userStorageService = new UserStorageService();
+
+            
+            Dictionary<string, string> userData = new Dictionary<string, string>
+            {
+                { "userId", "Ashley" },
+                { "campaignKey", campaignKey },
+                { "variationName", "Variation-1" },
+                { "goalIdentifier", "track2" }
+            };
+
+            UserStorageMap userStorageMapData = new UserStorageMap
+            {
+                UserId = userData["userId"],
+                CampaignKey = userData["campaignKey"],
+                VariationName = userData["variationName"],
+                GoalIdentifier = userData["goalIdentifier"],
+            };
+
+            userStorageService.Set(userStorageMapData);
+
+            vwoInstance = VWO.Launch(AB_TRAFFIC_100_HAS_PROPS, true, userStorageService: userStorageService);
+            var result = vwoInstance.Track(campaignKey, "Ashley", "track2");
+            Assert.Equal(result, false);
+
+        }
 
         private bool VerifyTrackUserVerb(ApiRequest apiRequest)
         {
@@ -2830,6 +2894,68 @@ namespace VWOSdk.Tests
                 VariationName = MockVariationName,
                 GoalIdentifier = goalIdentifier
             };
+        }
+
+        public class UserStorageService : IUserStorageService
+        {
+            public static ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, dynamic>>> _userStorageMap = new ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, dynamic>>>();
+            public UserStorageService()
+            {
+                if (_userStorageMap == null)
+                    _userStorageMap = new ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, dynamic>>>();
+                try
+                {
+
+                    var data = _userStorageMap;
+                    if (data != null)
+                    {
+                        _userStorageMap = new ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, dynamic>>>(data);
+                    }
+                    else
+                        _userStorageMap = new ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, dynamic>>>();
+                }
+                catch { }
+            }
+
+            public static ConcurrentDictionary<string, ConcurrentDictionary<string, Dictionary<string, dynamic>>> getStorage()
+            {
+                return _userStorageMap;
+            }
+
+            public UserStorageMap Get(string userId, string CampaignKey)
+            {
+                Dictionary<string, dynamic> userDict = null;
+                if (_userStorageMap.TryGetValue(CampaignKey, out ConcurrentDictionary<string, Dictionary<string, dynamic>> userMap))
+                    userMap.TryGetValue(userId, out userDict);
+
+                if (userDict != null)
+                    return new UserStorageMap(userId, CampaignKey, userDict["VariationName"], userDict["GoalIdentifier"], userDict["MetaData"]);
+
+                return null;
+            }
+
+            public void Set(UserStorageMap userStorageMap)
+            {
+                if (_userStorageMap.TryGetValue(userStorageMap.CampaignKey, out ConcurrentDictionary<string, Dictionary<string, dynamic>> userMap) == false)
+                {
+                    userMap = new ConcurrentDictionary<string, Dictionary<string, dynamic>>();
+                    _userStorageMap[userStorageMap.CampaignKey] = userMap;
+                }
+                if (userMap.ContainsKey(userStorageMap.UserId) && userMap[userStorageMap.UserId] != null && userStorageMap.GoalIdentifier != null)
+                {
+                    userMap[userStorageMap.UserId]["GoalIdentifier"] = userStorageMap.GoalIdentifier;
+                }
+                else
+                {
+                    userMap[userStorageMap.UserId] = new Dictionary<string, dynamic>() {
+                        { "VariationName", userStorageMap.VariationName },
+                        { "GoalIdentifier", userStorageMap.GoalIdentifier },
+                        { "MetaData",userStorageMap.MetaData }
+                    };
+                }
+
+            }
+
         }
     }
 }

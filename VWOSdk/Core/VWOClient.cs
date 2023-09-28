@@ -243,7 +243,7 @@ namespace VWOSdk
                         {
                             return false;
                         }
-                        if (!this.isGoalTriggerRequired(campaignKey, userId, goalIdentifier, variationName, userStorageData, metaData))
+                        if (!this.isGoalTriggerRequired(assignedVariation, campaignKey, userId, goalIdentifier, variationName, userStorageData, metaData))
                         {
                             return false;
                         }
@@ -397,7 +397,7 @@ namespace VWOSdk
                                 sendImpression = false;
                                 result[campaignKey] = false;
                             }
-                            if (!this.isGoalTriggerRequired(campaignKey, userId, goalIdentifier, variationName, userStorageData, metaData))
+                            if (!this.isGoalTriggerRequired(assignedVariation , campaignKey, userId, goalIdentifier, variationName, userStorageData, metaData))
                             {
                                 sendImpression = false;
                                 result[campaignKey] = false;
@@ -1209,7 +1209,7 @@ namespace VWOSdk
             }
             return userAllocationInfo;
         }
-        private bool isGoalTriggerRequired(string campaignKey, string userId, string goalIdentifier, string variationName,
+        private bool isGoalTriggerRequired(UserAllocationInfo assignedVariation, string campaignKey, string userId, string goalIdentifier, string variationName,
                    Dictionary<string, dynamic> userStorageData = null, Dictionary<string, dynamic> metaData = null)
         {
             UserStorageMap userMap = this._userStorageService != null ? this._userStorageService.GetUserMap(campaignKey, userId, userStorageData) : null;
@@ -1220,14 +1220,17 @@ namespace VWOSdk
             {
                 storedGoalIdentifier = userMap.GoalIdentifier;
                 string[] identifiers = storedGoalIdentifier.Split(new string[] { Constants.GOAL_IDENTIFIER_SEPERATOR }, StringSplitOptions.None);
-                if (!((IList<string>)identifiers).Contains(goalIdentifier))
-                {
-                    storedGoalIdentifier = storedGoalIdentifier + Constants.GOAL_IDENTIFIER_SEPERATOR + goalIdentifier;
-                }
-                else
+                bool isMCA = assignedVariation.Goal.IsRevenueType() && (assignedVariation.Goal.mca!=null && assignedVariation.Goal.mca==-1);
+                //if (((IList<string>)identifiers).Contains(goalIdentifier) && !isMCA && !assignedVariation.Goal.hasProps)
+                if (((IList<string>)identifiers).Contains(goalIdentifier) && !isMCA && (assignedVariation.Goal == null || !assignedVariation.Goal.hasProps.GetValueOrDefault(false)))
                 {
                     LogInfoMessage.GoalAlreadyTracked(file, userId, campaignKey, goalIdentifier);
                     return false;
+                }
+                else
+                {
+                    storedGoalIdentifier = storedGoalIdentifier + Constants.GOAL_IDENTIFIER_SEPERATOR + goalIdentifier;
+                    
                 }
             }
             else

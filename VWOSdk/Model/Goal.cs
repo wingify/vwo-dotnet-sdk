@@ -23,13 +23,14 @@ namespace VWOSdk
     public class Goal
     {
         [JsonConstructor]
-        internal Goal(int id, string identifier, string type, string revenueProp = null, int? mca = null)
+        internal Goal(int id, string identifier, string type, string revenueProp = null, int? mca = null, bool? hasProps = false )
         {
             this.Id = id;
             this.Identifier = identifier;
             this.Type = type;
             this.RevenueProp = revenueProp;
             this.mca = mca;
+            this.hasProps = hasProps;
         }
         public string Identifier { get; internal set; }
         public int Id { get; internal set; }
@@ -37,6 +38,7 @@ namespace VWOSdk
         [JsonProperty(NullValueHandling = NullValueHandling.Ignore)]
         public string RevenueProp { get; set; }
         public int? mca { get; internal set; }
+        public bool? hasProps { get; internal set; }
         internal bool IsRevenueType()
         {
             return this.Type.Equals("REVENUE_TRACKING");
