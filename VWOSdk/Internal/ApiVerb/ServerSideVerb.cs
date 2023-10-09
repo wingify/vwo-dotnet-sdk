@@ -411,6 +411,7 @@ namespace VWOSdk
                                  "\"props\": {" +
                                             "\"vwo_sdkName\": \"" + sdkName + "\"," +
                                             "\"vwo_sdkVersion\": \"" + sdkVersion + "\"," +
+                                            "\"vwo_envKey\": \"" + sdkKey + "\"," +
                                             "\"id\": " + campaignId + "," +
                                             "\"variation\": " + variationId + "," +
                                             "\"isFirst\": 1" +
@@ -447,6 +448,7 @@ namespace VWOSdk
                                  "\"props\": {" +
                                             "\"vwo_sdkName\":\"" + sdkName + "\"," +
                                             "\"vwo_sdkVersion\":\"" + sdkVersion + "\"," +
+                                            "\"vwo_envKey\": \"" + sdkKey + "\"," +
                                              "\"vwoMeta\":{\"metric\":{" + $"{GetGoal(metricMap)}" + "}" + $"{GetrevenueProp(revenueListProp, revenue)}" + "}" +
                                             "," +
                                   "\"isCustomEvent\":true "+ (additionalParams != "" ? "," : "") + additionalParams + "}," +
@@ -543,6 +545,7 @@ namespace VWOSdk
                                  "\"props\": {" +
                                             "\"vwo_sdkName\": \"" + sdkName + "\"," +
                                             "\"vwo_sdkVersion\": \"" + sdkVersion + "\"," +
+                                            "\"vwo_envKey\": \"" + sdkKey + "\"," +
                                              "\"isCustomEvent\":true" +
                                             "}," +
                                  "\"name\": \"vwo_syncVisitorProp\"," +
