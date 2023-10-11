@@ -168,6 +168,11 @@ namespace VWOSdk.Tests
         [InlineData("bucket_algo_without_seed_with_isNB_and_without_isOB", "You", "Variation-1")]
         [InlineData("bucket_algo_without_seed_with_isNB_and_without_isOB", "Zeba", "Control")]
 
+
+        [InlineData("bucket_algo_with_isNB_and_without_isOB", "Ashley", "Control")]
+        [InlineData("bucket_algo_with_isNB_and_without_isOB_1", "Ashley", "Control")]
+        [InlineData("bucket_algo_with_isNB_and_without_isOB_2", "Ashley", "Control")]
+        
         public void NewBucketing_GetVariation_Should_Return_Desired_Output(string campaignKey, string userId, string expectedVariationName)
         {
             AppContext.Configure(new FileReaderApiCaller("SampleSettingsFileWithNewBucketing"));

@@ -42,7 +42,7 @@ namespace VWOSdk
             BucketedCampaign requestedCampaign = settings.Campaigns.Find((campaign) => campaign.Key.Equals(campaignKey));
             if (requestedCampaign != null)
             {
-                allocatedCampaign = AllocateCampaign(userId, campaignKey, userStorageMap, requestedCampaign, settings.isNB);
+                allocatedCampaign = AllocateCampaign(userId, campaignKey, userStorageMap, requestedCampaign, settings.isNB, settings.isNBv2);
 
                 if (allocatedCampaign != null)
                 {
@@ -91,13 +91,13 @@ namespace VWOSdk
         /// <param name="userStorageMap"></param>
         /// <param name="requestedCampaign"></param>
         /// <returns></returns>
-        private BucketedCampaign AllocateCampaign(string userId, string campaignKey, UserStorageMap userStorageMap, BucketedCampaign requestedCampaign, bool isNewBucketingEnabled = false)
+        private BucketedCampaign AllocateCampaign(string userId, string campaignKey, UserStorageMap userStorageMap, BucketedCampaign requestedCampaign, bool isNewBucketingEnabled = false, bool isNewBucketingv2Enabled = false)
         {
             BucketedCampaign allocatedCampaign = null;
             LogDebugMessage.CheckUserEligibilityForCampaign(file, campaignKey, requestedCampaign.PercentTraffic, userId);
             if (userStorageMap == null)
             {
-                allocatedCampaign = AllocateByTrafficAllocation(userId, requestedCampaign, isNewBucketingEnabled);
+                allocatedCampaign = AllocateByTrafficAllocation(userId, requestedCampaign, isNewBucketingEnabled, isNewBucketingv2Enabled);
             }
             else if (userStorageMap.CampaignKey.Equals(requestedCampaign.Key))
             {
@@ -112,10 +112,10 @@ namespace VWOSdk
         /// <param name="userId"></param>
         /// <param name="requestedCampaign"></param>
         /// <returns></returns>
-        public BucketedCampaign AllocateByTrafficAllocation(string userId, BucketedCampaign requestedCampaign, bool isNewBucketingEnabled = false)
+        public BucketedCampaign AllocateByTrafficAllocation(string userId, BucketedCampaign requestedCampaign, bool isNewBucketingEnabled = false, bool isNewBucketingv2Enabled = false)
         {
             var selectedCampaign = requestedCampaign;
-            var userHash = this._userHasher.ComputeBucketValue(CampaignHelper.getBucketingSeed(userId, requestedCampaign, null, isNewBucketingEnabled), userId, Constants.Campaign.MAX_TRAFFIC_PERCENT, 1) ;
+            var userHash = this._userHasher.ComputeBucketValue(CampaignHelper.getBucketingSeed(userId, requestedCampaign, null, isNewBucketingEnabled, isNewBucketingv2Enabled), userId, Constants.Campaign.MAX_TRAFFIC_PERCENT, 1) ;
             if (requestedCampaign.PercentTraffic < userHash)
             {
                 selectedCampaign = null;

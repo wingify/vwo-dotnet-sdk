@@ -22,6 +22,7 @@
     <EmbeddedResource Include="Resources\NewMEGSettingsFile1.json" />
     <EmbeddedResource Include="Resources\NewMEGSettingsFile2.json" />
     <EmbeddedResource Include="Resources\SampleSettingsFileWithNewBucketing.json" />
+    <EmbeddedResource Include="Resources\SampleSettingsFileWithNBv2.json" />
     <EmbeddedResource Include="Resources\SettingsFileEventProperties.json" />
     <EmbeddedResource Include="Resources\AB_TRAFFIC_100_HAS_PROPS.json" />
   </ItemGroup>

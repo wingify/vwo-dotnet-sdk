@@ -29,7 +29,7 @@ namespace VWOSdk.Tests
 
         internal static void SetupResolve(Mock<IVariationAllocator> mockVariationResolver, Variation variation)
         {
-            mockVariationResolver.Setup(mock => mock.Allocate(It.IsAny<UserStorageMap>(), It.IsAny<BucketedCampaign>(), It.IsAny<string>(), It.IsAny<bool>()))
+            mockVariationResolver.Setup(mock => mock.Allocate(It.IsAny<UserStorageMap>(), It.IsAny<BucketedCampaign>(), It.IsAny<string>(), It.IsAny<bool>(), It.IsAny<bool>(), It.IsAny<long>()))
                 .Returns(variation);
              mockVariationResolver.Setup(mock => mock.GetSavedVariation(It.IsAny<BucketedCampaign>(), It.IsAny<string>()))
                 .Returns(variation);

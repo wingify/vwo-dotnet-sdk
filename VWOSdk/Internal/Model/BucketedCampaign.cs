@@ -23,8 +23,8 @@ namespace VWOSdk
     internal class BucketedCampaign : Campaign
     {
         public BucketedCampaign(int id, string Name, double PercentTraffic, string Key, string Status, string Type, bool IsForcedVariationEnabled,
-            bool IsBucketingSeedEnabled, Dictionary<string, dynamic> Segments = null, List<Dictionary<string, dynamic>> Variables = null,bool isOB = false)
-            : base(id, Name, PercentTraffic, Key, Status, Type, null, null, IsForcedVariationEnabled,IsBucketingSeedEnabled, Segments, Variables, isOB)
+            bool IsBucketingSeedEnabled, Dictionary<string, dynamic> Segments = null, List<Dictionary<string, dynamic>> Variables = null,bool isOB = false, bool isOBv2 = false)
+            : base(id, Name, PercentTraffic, Key, Status, Type, null, null, IsForcedVariationEnabled,IsBucketingSeedEnabled, Segments, Variables, isOB, isOBv2)
         {
 
         }

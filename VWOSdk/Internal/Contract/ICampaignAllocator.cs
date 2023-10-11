@@ -22,7 +22,7 @@ namespace VWOSdk
     {
         BucketedCampaign Allocate(AccountSettings settings, UserStorageMap userStorageMap, string campaignKey, string userId, string apiName = null);
         BucketedCampaign GetCampaign(AccountSettings settings, string campaignKey);
-        BucketedCampaign AllocateByTrafficAllocation(string userId, BucketedCampaign requestedCampaign, bool isNewBucketingEnabled = false );
+        BucketedCampaign AllocateByTrafficAllocation(string userId, BucketedCampaign requestedCampaign, bool isNewBucketingEnabled = false, bool isNewBucketingv2Enabled = false );
         double GetUserHashForCampaign(string userId, int groupId);
     }
 }
