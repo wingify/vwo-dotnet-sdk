@@ -2722,7 +2722,7 @@ namespace VWOSdk.Tests
 
             vwoInstance = VWO.Launch(AB_TRAFFIC_100_HAS_PROPS, true, userStorageService: userStorageService);
             var result = vwoInstance.Track(campaignKey, "Ashley", "track1");
-            Assert.Equal(result, true);
+            Assert.True(result);
 
         }
         
@@ -2754,8 +2754,7 @@ namespace VWOSdk.Tests
 
             vwoInstance = VWO.Launch(AB_TRAFFIC_100_HAS_PROPS, true, userStorageService: userStorageService);
             var result = vwoInstance.Track(campaignKey, "Ashley", "track2");
-            Assert.Equal(result, false);
-
+            Assert.False(result);
         }
 
         private bool VerifyTrackUserVerb(ApiRequest apiRequest)

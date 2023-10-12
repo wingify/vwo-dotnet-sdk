@@ -1221,8 +1221,8 @@ namespace VWOSdk
                 storedGoalIdentifier = userMap.GoalIdentifier;
                 string[] identifiers = storedGoalIdentifier.Split(new string[] { Constants.GOAL_IDENTIFIER_SEPERATOR }, StringSplitOptions.None);
                 bool isMCA = assignedVariation.Goal.IsRevenueType() && (assignedVariation.Goal.mca!=null && assignedVariation.Goal.mca==-1);
-                //if (((IList<string>)identifiers).Contains(goalIdentifier) && !isMCA && !assignedVariation.Goal.hasProps)
-                if (((IList<string>)identifiers).Contains(goalIdentifier) && !isMCA && (assignedVariation.Goal == null || !assignedVariation.Goal.hasProps.GetValueOrDefault(false)))
+
+                if (((IList<string>)identifiers).Contains(goalIdentifier) && !isMCA && !(assignedVariation.Goal.hasProps == true ))
                 {
                     LogInfoMessage.GoalAlreadyTracked(file, userId, campaignKey, goalIdentifier);
                     return false;
