@@ -1227,7 +1227,7 @@ namespace VWOSdk
                     LogInfoMessage.GoalAlreadyTracked(file, userId, campaignKey, goalIdentifier);
                     return false;
                 }
-                else
+                else if (!(((IList<string>)identifiers).Contains(goalIdentifier)))
                 {
                     storedGoalIdentifier = storedGoalIdentifier + Constants.GOAL_IDENTIFIER_SEPERATOR + goalIdentifier;
                     
