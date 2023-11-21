@@ -280,10 +280,9 @@ namespace VWOSdk
                     break;
             }
             // If winnerCampaign not found through Priority, then go for weighted Random distribution and for that,
-            // Store the list of campaigns (participatingCampaigns) out of eligibleCampaigns and their corresponding weights which are present in weightage distribution array (wt) in 2 different lists
+            // Store the list of campaigns (participatingCampaigns) out of shortlistedCampaigns and their corresponding weights present in weightage distribution array (wt)
             if (winnerCampaign == null)
             {
-                List<double> weights = new List<double>();
                 List<BucketedCampaign> participatingCampaignList = new List<BucketedCampaign>();
 
                 for (int i = 0; i < shortlistedCampaigns.Count; i++)
@@ -291,32 +290,30 @@ namespace VWOSdk
                     string campaignId = shortlistedCampaigns[i].Id.ToString();
                     if (wt.ContainsKey(campaignId))
                     {
-                        weights.Add(wt[campaignId]);
+                        shortlistedCampaigns[i].Weight = wt[campaignId];
                         participatingCampaignList.Add(shortlistedCampaigns[i]);
                     }
                 }
 
-                /*
-                * Finding winner campaign using weighted random distribution :
-                1. Calculate the sum of all weights
-                2. Generate a random number between 0 and the weight sum:
-                3. Iterate over the weights array and subtract each weight from the random number until the random number becomes negative. The corresponding ith value is the required value
-                4. Set the ith campaign as WinnerCampaign
+                /* Finding winner campaign using weighted Distibution :
+                1. Re-distribute the traffic by assigning range values for each camapign in particaptingCampaignList 
+                2. Calculate bucket value for the given userId and groupId
+                3. Get the winnerCampaign by checking the Start and End Bucket Allocations of each campaign
                 */
-                double weightSum = weights.Sum();
-                Random random = new Random();
-                int randomNumber = random.Next(1, (int)weightSum);
-
-                double sum = 0;
-                for (int i = 0; i < weights.Count; i++)
+                int currentAllocation = 0;
+                foreach (BucketedCampaign campaign in participatingCampaignList)
                 {
-                    sum += weights[i];
-                    if (randomNumber < sum)
+                    int stepFactor = CampaignHelper.GetCampaignBucketingRange(campaign.Weight);
+                    if (stepFactor != 0)
                     {
-                        winnerCampaign = participatingCampaignList[i];
-                        break;
+                        campaign.StartRange = currentAllocation + 1;
+                        campaign.EndRange = currentAllocation + stepFactor;
+
+                        currentAllocation += stepFactor;
                     }
                 }
+                double bucketValue = campaignAllocator.GetUserHashForCampaign(userId, Convert.ToInt32(groupId));
+                winnerCampaign = getAllocatedItem(shortlistedCampaigns, bucketValue);
             }
 
             return winnerCampaign;

@@ -483,8 +483,9 @@ namespace VWOSdk.Tests
             int winners = 0;
             for (int i = 0; i < iterations; i++)
             {
-                string variation = vwoInstance.Activate(calledCampaign, "George");
-                winners = variation == "Control" ? winners + 1 : winners;
+                string userId = "user" + i;
+                string variation = vwoInstance.Activate(calledCampaign, userId);
+                winners = variation != null ? winners + 1 : winners;
             }
 
             double actualRatio = (double)winners / iterations;
@@ -518,8 +519,9 @@ namespace VWOSdk.Tests
             int winners = 0;
             for (int i = 0; i < iterations; i++)
             {
-                string variation = vwoInstance.Activate(calledCampaign, "George");
-                winners = variation == "Control" ? winners + 1 : winners;
+                string userId = "user" + i;
+                string variation = vwoInstance.Activate(calledCampaign, userId);
+                winners = variation != null ? winners + 1 : winners;
             }
 
             double actualRatio = (double)winners / iterations;
