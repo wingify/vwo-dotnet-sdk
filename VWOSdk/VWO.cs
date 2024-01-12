@@ -158,7 +158,7 @@ namespace VWOSdk
         /// </returns>
         public static IVWOClient Launch(Settings settingFile, bool isDevelopmentMode = false, IUserStorageService userStorageService = null,
            BatchEventData batchData = null, string goalTypeToTrack = null,
-           HookManager integrations = null)
+           HookManager integrations = null, RedisConfig redisConfig = null)
         {
             if (Validator.SettingsFile(settingFile))
             {
@@ -189,7 +189,7 @@ namespace VWOSdk
                     usageStats.Clear();
                 }
                 var vwoClient = new VWO(accountSettings, Validator, userStorageService, CampaignAllocator, SegmentEvaluator,
-                    VariationAllocator, isDevelopmentMode, batchData, goalTypeToTrack, integrations, usageStats);
+                    VariationAllocator, isDevelopmentMode, batchData, goalTypeToTrack, integrations, redisConfig, usageStats);
                 LogDebugMessage.SdkInitialized(file);
                 return vwoClient;
             }

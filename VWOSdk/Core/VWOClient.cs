@@ -40,6 +40,7 @@ namespace VWOSdk
         private readonly string _goalTypeToTrack;
         private readonly BatchEventData _BatchEventData;
         private readonly BatchEventQueue _BatchEventQueue;
+        private readonly RedisConfig _redisConfig;
         private static readonly string sdkVersion = Assembly.GetExecutingAssembly().GetName().Version.ToString();
         //Integration
         private Dictionary<string, dynamic> integrationsMap;
@@ -48,12 +49,15 @@ namespace VWOSdk
         internal VWO(AccountSettings settings, IValidator validator, IUserStorageService userStorageService,
             ICampaignAllocator campaignAllocator, ISegmentEvaluator segmentEvaluator,
             IVariationAllocator variationAllocator, bool isDevelopmentMode, BatchEventData batchEventData,
-            string goalTypeToTrack = Constants.GoalTypes.ALL, HookManager hookManager = null,
+            string goalTypeToTrack = Constants.GoalTypes.ALL, HookManager hookManager = null, RedisConfig redisConfig = null,
             Dictionary<string, int> usageStats = null)
         {
             this._settings = settings;
             this._validator = validator;
-            this._userStorageService = userStorageService != null ? new UserStorageAdapter(userStorageService) : null;
+            this._redisConfig = redisConfig;
+            //this._userStorageService = userStorageService != null ? new UserStorageAdapter(userStorageService) : null;
+            this._userStorageService = userStorageService != null ? new UserStorageAdapter(userStorageService) : ( redisConfig != null ? new UserStorageAdapter(new RedisUserStorageService (redisConfig)) : null );
+            
             this._campaignAllocator = campaignAllocator;
             this._variationAllocator = variationAllocator;
             this._isDevelopmentMode = isDevelopmentMode;

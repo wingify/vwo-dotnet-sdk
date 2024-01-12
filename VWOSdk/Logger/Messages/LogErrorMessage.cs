@@ -113,6 +113,23 @@ namespace VWOSdk
         {
             Log.Error($"({file}): Exception while executing http request.Error Details: {error}", disableLogs);
         }
+        public static void UnableToConnectToRedis(string file, string error, bool disableLogs = false)
+        {
+            Log.Error($"({file}): Error connecting to Redis. Error Details: {error}", disableLogs);
+        }
+        public static void UnableToRetrieveDataFromRedis(string file, string error, bool disableLogs = false)
+        {
+            Log.Error($"({file}): Error while getting data from Redis. Error Details: {error}", disableLogs);
+        }
+        public static void RedisClientError(string file, bool disableLogs = false)
+        {
+            Log.Error($"({file}): Redis client not initialized ", disableLogs);
+        } 
+        public static void UnableToSetDataToRedis(string file, string error, bool disableLogs = false)
+        {
+            Log.Error($"({file}): Error while setting data in Redis. Error Details: {error}", disableLogs);
+        }
+        
 
     }
 

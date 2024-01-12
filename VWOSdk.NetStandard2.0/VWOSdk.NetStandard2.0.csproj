@@ -9,7 +9,7 @@
 		<OutputType>Library</OutputType>
 		<TargetFramework>netstandard2.0</TargetFramework>
 		<PackageId>VWO.Sdk</PackageId>
-		<Version>1.66.0</Version>
+		<Version>1.68.0</Version>
 		<Authors>VWO devs</Authors>
 		<Company>Wingify</Company>
 		<Product>VWO</Product>
@@ -24,7 +24,9 @@
 	<ItemGroup>
 		<Compile Include="..\VWOSdk\Contract\ILogWriter.cs" Link="Contract\ILogWriter.cs" />
 		<Compile Include="..\VWOSdk\Contract\IUserStorageService.cs" Link="Contract\IUserStorageService.cs" />
+		<Compile Include="..\VWOSdk\Contract\IRedisUserStorageService.cs" Link="Contract\IRedisUserStorageService.cs" />
 		<Compile Include="..\VWOSdk\Contract\IVWOClient.cs" Link="Contract\IVWOClient.cs" />
+		<Compile Include="..\VWOSdk\Core\RedisUserStorageService.cs" Link="Core\RedisUserStorageService.cs" />
 		<Compile Include="..\VWOSdk\Core\VWOClient.cs" Link="Core\VWOClient.cs" />
 		<Compile Include="..\VWOSdk\Internal\Adapter\UserStorageAdapter.cs" Link="Internal\Adapter\UserStorageAdapter.cs" />
 		<Compile Include="..\VWOSdk\Internal\ApiCaller\ApiCaller.cs" Link="Internal\ApiCaller\ApiCaller.cs" />
@@ -70,6 +72,7 @@
 		<Compile Include="..\VWOSdk\Model\Variation.cs" Link="Model\Variation.cs" />
 		<Compile Include="..\VWOSdk\Model\Campaign.cs" Link="Model\Campaign.cs" />
 		<Compile Include="..\VWOSdk\Model\Groups.cs" Link="Model\Groups.cs" />
+		<Compile Include="..\VWOSdk\Model\RedisConfig.cs" Link="Model\RedisConfig.cs" />
 		<Compile Include="..\VWOSdk\VWO.cs" Link="VWO.cs" />
 		<Compile Include="..\VWOSdk\Internal\Integration\HookManager.cs" Link="Internal\Integration\HookManager.cs" />
 		<Compile Include="..\VWOSdk\Internal\Integration\IntegrationEventListener.cs" Link="Internal\Integration\IntegrationEventListener.cs" />
@@ -84,6 +87,7 @@
 		<PackageReference Include="murmurhash" Version="1.0.3" />
 		<PackageReference Include="Newtonsoft.Json" Version="12.0.2" />
 		<PackageReference Include="Microsoft.CSharp" Version="4.0.1" />
+		<PackageReference Include="StackExchange.Redis" Version="2.6.122" />
 	</ItemGroup>
 
 	<ItemGroup>
