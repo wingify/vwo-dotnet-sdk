@@ -88,13 +88,8 @@ namespace VWOSdk
         /// <param name="key"></param>
         internal static void SetUsageStats(string key)
         {
-            if (_tmpUsageStats != null && !_tmpUsageStats.TryGetValue(key, out int val))
-                _tmpUsageStats.Add(key, 1);
-            else
-            {
-                _tmpUsageStats = new Dictionary<string, int>();
-                _tmpUsageStats.Add(key, 1);
-            }
+            _tmpUsageStats = _tmpUsageStats ?? new Dictionary<string, int>();
+            _tmpUsageStats[key] = 1;
         }
         /// <summary>
         /// Fetch SettingsFile for provided accountId and sdkKey.
